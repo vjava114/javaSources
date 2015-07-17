@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wallet.admin.mapper.MwAdIntroPopupMapper">
+	
+	<resultMap id="BaseResultMap" type="com.wallet.admin.model.MwAdIntroPopup">
+		<id column="idx" property="idx" jdbcType="INTEGER" />
+    <result column="stat" property="stat" jdbcType="CHAR" />
+    <result column="os" property="os" jdbcType="VARCHAR" />
+    <result column="sday" property="sday" jdbcType="VARCHAR" />
+    <result column="eday" property="eday" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="reg_tm" property="regTm" jdbcType="VARCHAR" />
+    <result column="chg_tm" property="chgTm" jdbcType="VARCHAR" />
+    <result column="event_type" property="eventType" jdbcType="VARCHAR" />
+    <result column="row_num" property="rowNum" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<!-- 인트로 팝업 조회 -->
+	<select id="selectIntroPopupList" parameterType="HashMap" resultMap="BaseResultMap">
+		select a.row_num
+		      ,a.idx
+	        ,a.stat
+				  ,a.os
+				  ,a.sday
+				  ,a.eday
+				  ,a.url
+				  ,a.reg_tm
+				  ,a.chg_tm
+				  ,a.event_type
+			from (
+					select	<if test="top != null and top != ''">
+											top ${top}
+									</if>   
+									Row_Number()OVER(order by reg_tm desc, convert(varchar, idx))as row_num
+									,idx
+									,stat
+									,os
+									,LEFT(CONVERT(VARCHAR, CONVERT(datetime, sday, 120), 120), 10) sday
+									,LEFT(CONVERT(VARCHAR, CONVERT(datetime, eday, 120), 120), 10) eday
+									,url
+									,LEFT(CONVERT(VARCHAR, CONVERT(datetime, reg_tm, 120), 120), 16) reg_tm
+									,LEFT(CONVERT(VARCHAR, CONVERT(datetime, chg_tm, 120), 120), 16) chg_tm
+									,event_type
+					from   mw_ws_popup
+					<where>
+						<choose>
+							<when test="view.equals('dtl')">
+							 	and idx = #{idx,jdbcType=VARCHAR}
+				  		and os = #{os,jdbcType=VARCHAR}
+							</when>
+							<otherwise>
+								<if test="os != null and os != ''">
+					        and os = #{os,jdbcType=VARCHAR}
+					    	</if>
+							</otherwise>
+						</choose>
+				  </where>
+			) a
+			where 1=1
+      <if test="start_row != null and start_row != ''">
+        and row_num BETWEEN #{start_row,jdbcType=INTEGER} AND #{end_row,jdbcType=INTEGER}
+      </if>
+	</select>
+	
+	<!-- 인트로 팝업 total count 조회 -->
+	<select id="selectIntroPopupListTotalCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		select count(idx) total_count
+		from mw_ws_popup
+		where 1=1
+      <if test="os != null and os != ''">
+        and ( os = #{os,jdbcType=VARCHAR} or os = 'common' )
+      </if>
+	</select>
+	
+	<!-- 인트로 팝업   INSERT -->
+  <insert id="insertIntroPopupReg" parameterType="HashMap">
+  	INSERT INTO mw_ws_popup (
+  			 reg_tm
+        ,chg_tm
+  		<if test="stat != null and stat != ''">
+        ,stat
+      </if>
+      <if test="os != null and os != ''">
+        ,os
+      </if>
+      <if test="sday != null and sday != ''">
+        ,sday
+      </if>
+      <if test="eday != null and eday != ''">
+        ,eday
+      </if>
+      <if test="url != null and url != ''">
+        ,url
+      </if>
+      <if test="event_type != null and event_type != ''">
+        ,event_type
+      </if>
+		) VALUES  (
+			   GETDATE()
+        ,GETDATE()
+      <if test="stat != null and stat != ''">
+        ,#{stat,jdbcType=VARCHAR}
+      </if>
+      <if test="os != null and os != ''">
+        ,#{os,jdbcType=VARCHAR}
+      </if>
+      <if test="sday != null and sday != ''">
+        ,#{sday,jdbcType=VARCHAR}
+      </if>
+      <if test="eday != null and eday != ''">
+        ,#{eday,jdbcType=VARCHAR}
+      </if>
+      <if test="url != null and url != ''">
+        ,#{url,jdbcType=VARCHAR}
+      </if>
+      <if test="event_type != null and event_type != ''">
+        ,#{event_type,jdbcType=VARCHAR}
+      </if>
+		)
+  </insert>
+  
+  <!-- 인트로 팝업 TB UPDATE -->
+	<update id="updateIntroPopupDtl" parameterType="HashMap">
+		 update mw_ws_popup
+    <set>
+    	chg_tm = GETDATE()
+    	<if test="stat != null and stat != ''">
+        ,stat = #{stat,jdbcType=VARCHAR}
+      </if>
+      <if test="os != null and os != ''">
+        ,os = #{os,jdbcType=VARCHAR}
+      </if>
+      <if test="sday != null and sday != ''">
+        ,sday = #{sday,jdbcType=VARCHAR}
+      </if>
+      <if test="eday != null and eday != ''">
+        ,eday = #{eday,jdbcType=VARCHAR}
+      </if>
+      <if test="url != null and url != ''">
+        ,url = #{url,jdbcType=VARCHAR}
+      </if>
+      <if test="reg_tm != null and reg_tm != ''">
+        ,reg_tm = #{reg_tm,jdbcType=VARCHAR}
+      </if>
+       <if test="event_type != null and event_type != ''">
+        ,event_type = #{event_type,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where 1=1
+    and idx = #{idx,jdbcType=INTEGER}
+    and os = #{os_org,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 인트로 팝업 게재상태 TB UPDATE -->
+	<update id="updateIntroPopupStat" parameterType="HashMap">
+		 update mw_ws_popup
+    <set>
+        stat = #{stat,jdbcType=VARCHAR}
+        ,chg_tm = GETDATE()
+    </set>
+    where 1=1
+    	and os = #{os,jdbcType=INTEGER}
+    <if test="idx != null and idx != ''">
+        and idx = #{idx,jdbcType=INTEGER}
+    </if>
+    <if test="stat_update != null and stat_update != ''">
+    	<if test="stat_update = 'N'">
+    		and stat = 'R'
+    	</if>
+    </if>
+	</update>
+
+	<!-- 인트로 팝업   DELETE -->
+  <delete id="deleteIntroPopupDtl" parameterType="HashMap">
+  	delete from mw_ws_popup
+    where idx = #{idx,jdbcType=INTEGER}
+    <if test="os != null and os != ''">
+        and os = #{os,jdbcType=VARCHAR}
+    </if>
+  </delete>
+</mapper>

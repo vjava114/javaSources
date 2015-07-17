@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.stat.mapper.MwStUserStatsMapper" >
+
+	<resultMap id="BaseResultMap" type="com.wallet.stat.model.MwStUserStats" >
+    <id column="day" property="day" jdbcType="VARCHAR" />
+    <result column="user_android" property="userAndroid" jdbcType="INTEGER" />
+    <result column="user_apple" property="userApple" jdbcType="INTEGER" />
+    <result column="usim_android" property="usimAndroid" jdbcType="INTEGER" />
+    <result column="usim_apple" property="usimApple" jdbcType="INTEGER" />
+  </resultMap>
+  
+	<!-- 	전체가입자통계 -->
+	<resultMap type="com.wallet.stat.model.MwStUserStats" id="UserAll">
+		<result column="code" property="code" jdbcType="CHAR"/>
+		<result column="cday" property="cday" jdbcType="CHAR"/>
+		<result column="name" property="name" jdbcType="VARCHAR"/>
+		<result column="val1" property="val1" jdbcType="INTEGER"/>
+		<result column="val2" property="val2" jdbcType="INTEGER"/>
+		<result column="val3" property="val3" jdbcType="INTEGER"/>
+		<result column="val4" property="val4" jdbcType="INTEGER"/>
+		<result column="val5" property="val5" jdbcType="INTEGER"/>
+		<result column="val6" property="val6" jdbcType="INTEGER"/>
+		<result column="val7" property="val7" jdbcType="INTEGER"/>
+		<result column="val8" property="val8" jdbcType="INTEGER"/>
+		<result column="val9" property="val9" jdbcType="INTEGER"/>
+		<result column="val10" property="val10" jdbcType="INTEGER"/>
+		<result column="val11" property="val11" jdbcType="INTEGER"/>
+		<result column="val12" property="val12" jdbcType="INTEGER"/>
+		<result column="val13" property="val13" jdbcType="INTEGER"/>
+		<result column="val14" property="val14" jdbcType="INTEGER"/>
+		<result column="val15" property="val15" jdbcType="INTEGER"/>
+		<result column="val16" property="val16" jdbcType="INTEGER"/>
+		<result column="val17" property="val17" jdbcType="INTEGER"/>
+		<result column="val18" property="val18" jdbcType="INTEGER"/>
+		<result column="val19" property="val19" jdbcType="INTEGER"/>
+		<result column="val20" property="val20" jdbcType="INTEGER"/>
+	</resultMap>
+  
+	<!-- 이용자 통계 조회 -->
+	<select id="selectUserStatsList" parameterType="HashMap" resultMap="BaseResultMap">
+		select case when a.day = 'TOTAL' then 'TOTAL'
+					 else SUBSTRING(a.day,1,4) + '-' + SUBSTRING(a.day,5,2) + '-' + SUBSTRING(a.day,7,2)
+					 end day
+					,Sum(isnull(a.user_android,0)) user_android
+					,Sum(isnull(a.user_apple,0)) user_apple
+					,Sum(isnull(a.usim_android,0)) usim_android
+					,Sum(isnull(a.usim_apple,0)) usim_apple
+		from (
+				  SELECT	
+								 us.day day
+								,isnull(us.user_android,0) user_android
+								,isnull(us.user_apple,0) user_apple
+								,isnull(us.usim_android,0) usim_android
+								,isnull(us.usim_apple,0) usim_apple
+				  FROM stat_user_use us
+				  <where>
+				  	<if test="sday != null and sday != ''">
+					  	<![CDATA[
+				        and us.day >=  #{sday,jdbcType=VARCHAR}
+				        ]]>	
+			    	</if>
+			    	<if test="eday != null and eday != ''">
+			        <![CDATA[
+			        	and us.day <=  #{eday,jdbcType=VARCHAR}
+			        ]]>	
+		    		</if>
+				  </where>
+				  union all
+				  SELECT 'TOTAL' day
+								,sum(isnull(us.user_android,0)) user_android
+								,sum(isnull(us.user_apple,0)) user_apple
+								,sum(isnull(us.usim_android,0)) usim_android
+								,sum(isnull(us.usim_apple,0)) usim_apple
+				  FROM stat_user_use us
+				  <where>
+				  	<if test="sday != null and sday != ''">
+					  	<![CDATA[
+				        and us.day >=  #{sday,jdbcType=VARCHAR}
+				        ]]>	
+			    	</if>
+			    	<if test="eday != null and eday != ''">
+			        <![CDATA[
+			        	and us.day <=  #{eday,jdbcType=VARCHAR}
+			        ]]>	
+		    		</if>
+				  </where>
+		) a
+		group by a.day
+		order by a.day asc
+	</select>
+	
+<!-- 	가입자전체통계 -->
+	<select id="selectUserStatsListAll" parameterType="HashMap" resultMap="UserAll">
+		SELECT
+			 code
+			,cday
+			,name
+			,val1
+			,val2
+			,val3
+			,val4
+			,val5
+			,val6
+			,val7
+			,val8
+			,val9
+			,val10
+			,val11
+			,val12
+			,val13
+			,val14
+			,val15
+			,val16
+			,val17
+			,val18
+			,val19
+			,val20
+		FROM
+			stat_user_hit
+	</select>
+	
+</mapper>

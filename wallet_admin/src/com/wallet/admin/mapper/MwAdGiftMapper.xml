@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wallet.admin.mapper.MwAdGiftMapper">
+	
+	<resultMap id="BaseResultMap" type="com.wallet.admin.model.MwAdGift">
+		<id column="gift_id" property="giftId" jdbcType="VARCHAR" />
+    <result column="gift_sid" property="giftSid" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="info" property="info" jdbcType="VARCHAR" />
+    <result column="sday" property="sday" jdbcType="VARCHAR" />
+    <result column="eday" property="eday" jdbcType="VARCHAR" />
+    <result column="chg_day" property="chgDay" jdbcType="VARCHAR" />
+    <result column="admin_id" property="adminId" jdbcType="VARCHAR" />
+    <result column="main_idx" property="mainIdx" jdbcType="INTEGER" />
+    <result column="display_yn" property="displayYn" jdbcType="VARCHAR" />
+    <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="stat" property="stat" jdbcType="CHAR" />
+    <result column="os" jdbcType="VARCHAR" property="os" />
+    <result column="img_host" property="imgHost" jdbcType="VARCHAR" />
+    <result column="l_img_i3" property="lImgI3" jdbcType="VARCHAR" />
+    <result column="l_img_i4" property="lImgI4" jdbcType="VARCHAR" />
+    <result column="l_img_r4" property="lImgR4" jdbcType="VARCHAR" />
+    <result column="l_img_r5" property="lImgR5" jdbcType="VARCHAR" />
+    <result column="l_img_r6" property="lImgR6" jdbcType="VARCHAR" />
+    <result column="l_img_r7" property="lImgR7" jdbcType="VARCHAR" />
+    <result column="d_img_i3" property="dImgI3" jdbcType="VARCHAR" />
+    <result column="d_img_i4" property="dImgI4" jdbcType="VARCHAR" />
+    <result column="d_img_r4" property="dImgR4" jdbcType="VARCHAR" />
+    <result column="d_img_d5" property="dImgD5" jdbcType="VARCHAR" />
+    <result column="d_img_r6" property="dImgR6" jdbcType="VARCHAR" />
+    <result column="d_img_r7" property="dImgR7" jdbcType="VARCHAR" />
+    <result column="operater" jdbcType="VARCHAR" property="operater" />
+	</resultMap>
+	
+	<!-- 상품권  TB 조회 -->
+	<select id="selectGiftList" parameterType="HashMap" resultMap="BaseResultMap">
+		Select
+			<if test="top != null and top != ''">
+					top ${top}
+			</if>  
+					 gift_id
+		      ,gift_sid
+		      ,name
+		      ,info
+		      ,sday
+		      ,eday
+		      ,chg_day
+		      ,admin_id
+		      ,main_idx
+		      ,display_yn
+		      ,memo
+		      ,stat
+		      ,os
+		      ,img_host
+		      ,l_img_i3
+		      ,l_img_i4
+		      ,l_img_r4
+		      ,l_img_r5
+		      ,l_img_r6
+		      ,l_img_r7
+		      ,d_img_i3
+		      ,d_img_i4
+		      ,d_img_r4
+		      ,d_img_d5
+		      ,d_img_r6
+		      ,d_img_r7
+		      ,operater
+		from gift_list
+		<where>
+			<choose>
+				<when test="view.equals('dtl')">
+				 	and gift_id = #{gift_id,jdbcType=VARCHAR}
+				</when>
+			</choose>
+	  </where>
+		order by main_idx
+	</select>
+	
+	<!-- 상품권 max+1 idx 조회 -->
+	<select id="selectGiftMainIdx" parameterType="HashMap" resultMap="BaseResultMap">
+		select isnull(cast(max(main_idx) as int),0) + 1 main_idx from gift_list
+	</select>
+	
+	 <!-- 상품권 정보 등록 INSERT -->
+  <insert id="insertGiftReg" parameterType="HashMap">
+  	insert into gift_list (
+  		chg_day
+			<if test="gift_id != null and gift_id != ''">
+        ,gift_id
+      </if>
+      <if test="gift_sid != null and gift_sid != ''">
+        ,gift_sid
+      </if>
+      <if test="name != null and name != ''">
+        ,name
+      </if>
+      <if test="info != null and info != ''">
+        ,info
+      </if>
+      <if test="sday != null and sday != ''">
+        ,sday
+      </if>
+      <if test="eday != null and eday != ''">
+        ,eday
+      </if>
+      <if test="admin_id != null and admin_id != ''">
+        ,admin_id
+      </if>
+      <if test="main_idx != null and main_idx != ''">
+        ,main_idx
+      </if>
+      <if test="display_yn != null and display_yn != ''">
+        ,display_yn
+      </if>
+      <if test="memo != null and memo != ''">
+        ,memo
+      </if>
+      <if test="stat != null and stat != ''">
+        ,stat
+      </if>
+      <if test="os != null and os != ''">
+        ,os
+      </if>
+      <if test="img_host != null and img_host != ''">
+        ,img_host
+      </if>
+      <if test="l_img_i3 != null and l_img_i3 != ''">
+        ,l_img_i3
+      </if>
+      <if test="l_img_i4 != null and l_img_i4 != ''">
+        ,l_img_i4
+      </if>
+      <if test="l_img_r4 != null and l_img_r4 != ''">
+        ,l_img_r4
+      </if>
+      <if test="l_img_r5 != null and l_img_r5 != ''">
+        ,l_img_r5
+      </if>
+      <if test="l_img_r6 != null and l_img_r6 != ''">
+        ,l_img_r6
+      </if>
+      <if test="l_img_r7 != null and l_img_r7 != ''">
+        ,l_img_r7
+      </if>
+      <if test="d_img_i3 != null and d_img_i3 != ''">
+        ,d_img_i3
+      </if>
+      <if test="d_img_i4 != null and d_img_i4 != ''">
+        ,d_img_i4
+      </if>
+      <if test="d_img_r4 != null and d_img_r4 != ''">
+        ,d_img_r4
+      </if>
+      <if test="d_img_d5 != null and d_img_d5 != ''">
+        ,d_img_d5
+      </if>
+      <if test="d_img_r6 != null and d_img_r6 != ''">
+        ,d_img_r6
+      </if>
+      <if test="d_img_r7 != null and d_img_r7 != ''">
+        ,d_img_r7
+      </if>
+      <if test="operater != null and operater != ''">
+        ,operater
+      </if>
+		)  values (
+				 replace(replace(replace(convert(varchar,getdate(),120),'-',''),':',''),' ','')
+      <if test="gift_id != null and gift_id != ''">
+        ,#{gift_id,jdbcType=VARCHAR}
+      </if>
+      <if test="gift_sid != null and gift_sid != ''">
+        ,#{gift_sid,jdbcType=VARCHAR}
+      </if>
+      <if test="name != null and name != ''">
+        ,#{name,jdbcType=VARCHAR}
+      </if>
+      <if test="info != null and info != ''">
+        ,#{info,jdbcType=VARCHAR}
+      </if>
+      <if test="sday != null and sday != ''">
+        ,#{sday,jdbcType=VARCHAR}
+      </if>
+      <if test="eday != null and eday != ''">
+        ,#{eday,jdbcType=VARCHAR}
+      </if>
+      <if test="chg_day != null and chg_day != ''">
+        ,#{chg_day,jdbcType=VARCHAR}
+      </if>
+      <if test="admin_id != null and admin_id != ''">
+        ,#{admin_id,jdbcType=VARCHAR}
+      </if>
+      <if test="main_idx != null and main_idx != ''">
+        ,#{main_idx,jdbcType=INTEGER}
+      </if>
+      <if test="display_yn != null and display_yn != ''">
+        ,#{display_yn,jdbcType=VARCHAR}
+      </if>
+      <if test="memo != null and memo != ''">
+        ,#{memo,jdbcType=VARCHAR}
+      </if>
+      <if test="stat != null and stat != ''">
+        ,#{stat,jdbcType=CHAR}
+      </if>
+      <if test="os != null and os != ''">
+        ,#{os,jdbcType=VARCHAR}
+      </if>
+      <if test="img_host != null and img_host != ''">
+        ,#{img_host,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_i3 != null and l_img_i3 != ''">
+        ,#{l_img_i3,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_i4 != null and l_img_i4 != ''">
+        ,#{l_img_i4,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r4 != null and l_img_r4 != ''">
+        ,#{l_img_r4,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r5 != null and l_img_r5 != ''">
+        ,#{l_img_r5,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r6 != null and l_img_r6 != ''">
+        ,#{l_img_r6,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r7 != null and l_img_r7 != ''">
+        ,#{l_img_r7,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_i3 != null and d_img_i3 != ''">
+        ,#{d_img_i3,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_i4 != null and d_img_i4 != ''">
+        ,#{d_img_i4,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_r4 != null and d_img_r4 != ''">
+        ,#{d_img_r4,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_d5 != null and d_img_d5 != ''">
+        ,#{d_img_d5,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_r6 != null and d_img_r6 != ''">
+        ,#{d_img_r6,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_r7 != null and d_img_r7 != ''">
+        ,#{d_img_r7,jdbcType=VARCHAR}
+      </if>
+      <if test="operater != null and operater != ''">
+        ,#{operater,jdbcType=VARCHAR}
+      </if>
+		)
+  </insert>
+  
+  <!-- 상품권 정보 TB UPDATE -->
+	<update id="updateGiftDtl" parameterType="HashMap">
+    update gift_list
+    <set>
+    		chg_day = replace(replace(replace(convert(varchar,getdate(),120),'-',''),':',''),' ','')
+      <if test="gift_id != null and gift_id != ''">
+        ,gift_id = #{gift_id,jdbcType=VARCHAR}
+      </if>
+      <if test="gift_sid != null and gift_sid != ''">
+        ,gift_sid = #{gift_sid,jdbcType=VARCHAR}
+      </if>
+      <if test="name != null and name != ''">
+        ,name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="info != null and info != ''">
+        ,info = #{info,jdbcType=VARCHAR}
+      </if>
+      <if test="sday != null and sday != ''">
+        ,sday = #{sday,jdbcType=VARCHAR}
+      </if>
+      <if test="eday != null and eday != ''">
+        ,eday = #{eday,jdbcType=VARCHAR}
+      </if>
+      <if test="chg_day != null and chg_day != ''">
+        ,chg_day = #{chg_day,jdbcType=VARCHAR}
+      </if>
+      <if test="admin_id != null and admin_id != ''">
+        ,admin_id = #{admin_id,jdbcType=VARCHAR}
+      </if>
+      <if test="main_idx != null and main_idx != ''">
+        ,main_idx = #{main_idx,jdbcType=INTEGER}
+      </if>
+      <if test="display_yn != null and display_yn != ''">
+        ,display_yn = #{display_yn,jdbcType=VARCHAR}
+      </if>
+      <if test="memo != null and memo != ''">
+        ,memo = #{memo,jdbcType=VARCHAR}
+      </if>
+      <if test="stat != null and stat != ''">
+        ,stat = #{stat,jdbcType=CHAR}
+      </if>
+      <if test="os != null and os != ''">
+        ,os = #{os,jdbcType=VARCHAR}
+      </if>
+       <if test="img_host != null and img_host != ''">
+        ,img_host = #{img_host,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_i3 != null and l_img_i3 != ''">
+        ,l_img_i3 = #{l_img_i3,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_i4 != null and l_img_i4 != ''">
+        ,l_img_i4 = #{l_img_i4,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r4 != null and l_img_r4 != ''">
+        ,l_img_r4 = #{l_img_r4,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r5 != null and l_img_r5 != ''">
+        ,l_img_r5 = #{l_img_r5,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r6 != null and l_img_r6 != ''">
+        ,l_img_r6 = #{l_img_r6,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r7 != null and l_img_r7 != ''">
+        ,l_img_r7 = #{l_img_r7,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_i3 != null and d_img_i3 != ''">
+        ,d_img_i3 = #{d_img_i3,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_i4 != null and d_img_i4 != ''">
+        ,d_img_i4 = #{d_img_i4,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_r4 != null and d_img_r4 != ''">
+        ,d_img_r4 = #{d_img_r4,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_d5 != null and d_img_d5 != ''">
+        ,d_img_d5 = #{d_img_d5,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_r6 != null and d_img_r6 != ''">
+        ,d_img_r6 = #{d_img_r6,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_r7 != null and d_img_r7 != ''">
+        ,d_img_r7 = #{d_img_r7,jdbcType=VARCHAR}
+      </if>
+      <if test="operater != null and operater != ''">
+        ,operater = #{operater,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where gift_id = #{gift_id_org,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 상품권 TB 순위 조정 UPDATE -->
+  <update id="updateGiftIdx" parameterType="HashMap">
+	  update gift_list
+	   <set>
+	   		<choose>
+	   			<when test="idxGb.equals('update')">
+	   				<if test="gift_id != null and gift_id != ''">
+			        gift_id = #{gift_id,jdbcType=VARCHAR},
+			      </if>
+			      <if test="os != null and os != ''">
+			        os = #{os,jdbcType=VARCHAR},
+			      </if>
+			      <if test="main_idx != null and main_idx != ''">
+			        main_idx = #{main_idx,jdbcType=VARCHAR},
+			      </if>
+			       <if test="thisIdx !=null and thisIdx != '' and targetIdx != null and targetIdx != ''">
+			       		<if test="thisIdx &gt; targetIdx">
+					      	main_idx = main_idx + 1
+					      </if>
+					      <if test="thisIdx &lt; targetIdx">
+					      	main_idx = main_idx - 1
+					      </if>
+			       </if>
+	   			</when>
+	   			<otherwise>
+	   				main_idx = main_idx - 1
+	   			</otherwise>
+	   		</choose>
+	    </set>
+	    <where>
+	    	<choose>
+	   			<when test="idxGb.equals('update')">
+	   				<if test="gift_id != null and gift_id != ''">
+			       and gift_id = #{gift_id,jdbcType=VARCHAR}
+			      </if>
+			      <if test="os != null and os != ''">
+			        and os = #{os,jdbcType=VARCHAR}
+			      </if>
+			      <if test="thisIdx != null and thisIdx != '' and targetIdx != null and targetIdx != ''">
+			      	<if test="thisIdx &lt; targetIdx">
+								and main_idx between ${thisIdx} and ${targetIdx}
+							</if>
+					    <if test="thisIdx &gt; targetIdx">
+								and main_idx between ${targetIdx} and ${thisIdx}
+							</if>
+			      </if>
+	   			</when>
+	   			<otherwise>
+	   				main_idx > #{main_idx,jdbcType=INTEGER}
+	   			</otherwise>
+	   		</choose>
+	    </where>
+  </update>
+	
+	<!-- 상품권 TB DELETE -->
+	<delete id="deleteGiftDtl" parameterType="HashMap">
+    delete from gift_list
+    <where>
+    	gift_id = #{gift_id,jdbcType=VARCHAR}
+    </where>
+
+  </delete>
+
+</mapper>

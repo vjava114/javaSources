@@ -1,0 +1,864 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wallet.harex.mapper.SettleTrnsMapper">   
+  <resultMap id="BaseResultMap1" type="com.wallet.harex.model.SettleTrns"> 
+    <id column="ACPOS_TID" jdbcType="VARCHAR" property="acposTid" /> 
+    <result column="seq" jdbcType="INTEGER" property="seq" />
+    <result column="brandId" jdbcType="VARCHAR" property="brandId" />
+    <result column="compId" jdbcType="VARCHAR" property="compId" />
+    <result column="expTtlPrice" jdbcType="INTEGER" property="expTtlPrice" />
+    <result column="realDcPrice" jdbcType="INTEGER" property="realDcPrice" />
+    <result column="realMembDcPrice" jdbcType="INTEGER" property="realMembDcPrice" />
+    <result column="realUsePoint" jdbcType="INTEGER" property="realUsePoint" />
+    <result column="realSavePoint" jdbcType="INTEGER" property="realSavePoint" />
+    <result column="realSaveCnt" jdbcType="INTEGER" property="realSaveCnt" />
+    <result column="regDttm" jdbcType="VARCHAR" property="regDttm" />
+    <result column="lastDttm" jdbcType="VARCHAR" property="lastDttm" />
+    <result column="phoneNo" jdbcType="VARCHAR" property="phoneNo" />
+    <result column="custId" jdbcType="VARCHAR" property="custId" />
+    <result column="cpnId" jdbcType="VARCHAR" property="cpnId" />
+    <result column="apprDate" jdbcType="CHAR" property="apprDate" />
+    <result column="apprTime" jdbcType="CHAR" property="apprTime" />
+    <result column="membId" jdbcType="CHAR" property="membId" />
+    <result column="cpnNo" jdbcType="CHAR" property="cpnNo" />
+    <result column="memApprDate" jdbcType="CHAR" property="memApprDate" />
+    <result column="memApprTime" jdbcType="CHAR" property="memApprTime" />
+    <result column="msCardNo" jdbcType="CHAR" property="msCardNo" />
+    <result column="rgType" jdbcType="CHAR" property="rgType" />
+    <result column="kShopId" jdbcType="CHAR" property="kShopId" />
+  </resultMap>
+  
+  <resultMap id="ResultMapDaily" type="com.wallet.harex.model.SettleTrns"> 
+    <result column="tr_date" jdbcType="CHAR" property="tr_date" />
+    <result column="tr_date_txt" jdbcType="CHAR" property="tr_date_txt" />
+    <result column="cnt" jdbcType="INTEGER" property="cnt" />
+    <result column="coup_cnt" jdbcType="INTEGER" property="coup_cnt" />
+    <result column="mem_dc_cnt" jdbcType="INTEGER" property="mem_dc_cnt" />
+    <result column="mem_pot_use_cnt" jdbcType="INTEGER" property="mem_pot_use_cnt" />
+    <result column="mem_pot_dep_cnt" jdbcType="INTEGER" property="mem_pot_dep_cnt" />
+    <result column="coup_amt" jdbcType="INTEGER" property="coup_amt" />
+	</resultMap>
+
+  <resultMap id="ResultCouponPop" type="com.wallet.harex.model.SettleTrns"> 
+    <result column="regDay" jdbcType="CHAR" property="regDay" />
+    <result column="compId" jdbcType="VARCHAR" property="compId" />
+    <result column="compName" jdbcType="VARCHAR" property="compName" />
+    <result column="brandId" jdbcType="VARCHAR" property="brandId" />
+    <result column="brandName" jdbcType="VARCHAR" property="brandName" />
+    <result column="cpnId" jdbcType="VARCHAR" property="cpnId" />
+    <result column="brandCode" jdbcType="CHAR" property="brandCode" />
+    <result column="pointDupUsable" jdbcType="CHAR" property="pointDupUsable" />
+    <result column="cpnDupUsableYn" jdbcType="CHAR" property="cpnDupUsableYn" />
+    <result column="cpnSort" jdbcType="CHAR" property="cpnSort" />
+    <result column="minPayPrice" jdbcType="INTEGER" property="minPayPrice" />
+    <result column="maxDicPrice" jdbcType="INTEGER" property="maxDicPrice" />
+    <result column="payComopId" jdbcType="VARCHAR" property="payComopId" />
+    <result column="payCompName" jdbcType="VARCHAR" property="payCompName" />
+	</resultMap>
+	
+  <resultMap id="ResultMemberPop" type="com.wallet.harex.model.SettleTrns">    
+    <result column="regDay" jdbcType="CHAR" property="regDay" />
+    <result column="compId" jdbcType="VARCHAR" property="compId" />
+    <result column="compName" jdbcType="VARCHAR" property="compName" />
+    <result column="brandId" jdbcType="VARCHAR" property="brandId" />
+    <result column="brandName" jdbcType="VARCHAR" property="brandName" />
+    <result column="dcRate" jdbcType="INTEGER" property="dcRate" />
+    <result column="dcExp" jdbcType="CHAR" property="dcExp" />
+    <result column="dcUnit" jdbcType="CHAR" property="dcUnit" />
+    <result column="dcMinAmt" jdbcType="INTEGER" property="dcMinAmt" />
+    <result column="dcMaxAmt" jdbcType="INTEGER" property="dcMaxAmt" />
+    <result column="saveRateFiexedYn" jdbcType="CHAR" property="saveRateFiexedYn" />
+    <result column="saveCashRate" jdbcType="INTEGER" property="saveCashRate" />
+    <result column="saveCardRate" jdbcType="INTEGER" property="saveCardRate" />
+    <result column="saveCompRate" jdbcType="INTEGER" property="saveCompRate" />
+    <result column="saveDebitRate" jdbcType="INTEGER" property="saveDebitRate" />
+    <result column="saveNotice" jdbcType="VARCHAR" property="saveNotice" />
+    <result column="saveExp" jdbcType="CHAR" property="saveExp" />
+    <result column="saveAmtSort" jdbcType="VARCHAR" property="saveAmtSort" />
+    <result column="saveMinPayPrice" jdbcType="INTEGER" property="saveMinPayPrice" />
+    <result column="saveMaxPayPrice" jdbcType="INTEGER" property="saveMaxPayPrice" />
+    <result column="saveMaxPoint" jdbcType="INTEGER" property="saveMaxPoint" />
+    <result column="usePointType" jdbcType="CHAR" property="usePointType" />
+    <result column="usePointUnit" jdbcType="CHAR" property="usePointUnit" />
+    <result column="useExp" jdbcType="CHAR" property="useExp" />
+    <result column="useFixedRate" jdbcType="INTEGER" property="useFixedRate" />
+    <result column="useMinPayPrice" jdbcType="INTEGER" property="useMinPayPrice" />
+    <result column="useMinPoint" jdbcType="INTEGER" property="useMinPoint" />
+    <result column="useMaxPoint" jdbcType="INTEGER" property="useMaxPoint" />
+	</resultMap>
+	
+  <resultMap id="ResultSettleDataFix" type="com.wallet.harex.model.SettleTrns">
+      <result column="seq" jdbcType="INTEGER" property="seq"/>
+      <result column="trDate" jdbcType="CHAR" property="tr_date"/>
+      <result column="compId" jdbcType="VARCHAR" property="compId"/>
+      <result column="compName" jdbcType="VARCHAR" property="compName"/>
+      <result column="brandId" jdbcType="VARCHAR" property="brandId"/>
+      <result column="brandName" jdbcType="VARCHAR" property="brandName"/>
+      <result column="shopName" jdbcType="VARCHAR" property="shopName"/>
+      <result column="kShopId" jdbcType="VARCHAR" property="kShopId"/>
+      <result column="apprCnt" jdbcType="INTEGER" property="apprCnt"/>
+      <result column="cancelCnt" jdbcType="INTEGER" property="cancelCnt"/>
+      <result column="apprAmt" jdbcType="INTEGER" property="apprAmt"/>
+      <result column="cancelAmt" jdbcType="INTEGER" property="cancelAmt"/>
+	</resultMap>
+	
+  <resultMap id="ResultSettleDataPer" type="com.wallet.harex.model.SettleTrns">
+      <result column="seq" jdbcType="INTEGER" property="seq"/>
+      <result column="trDate" jdbcType="CHAR" property="tr_date"/>
+      <result column="compId" jdbcType="VARCHAR" property="compId"/>
+      <result column="compName" jdbcType="VARCHAR" property="compName"/>
+      <result column="brandId" jdbcType="VARCHAR" property="brandId"/>
+      <result column="brandName" jdbcType="VARCHAR" property="brandName"/>
+      <result column="shopName" jdbcType="VARCHAR" property="shopName"/>
+      <result column="kShopId" jdbcType="VARCHAR" property="kShopId"/>
+      <result column="apprCnt" jdbcType="INTEGER" property="apprCnt"/>
+      <result column="cancelCnt" jdbcType="INTEGER" property="cancelCnt"/>
+      <result column="setCnt" jdbcType="INTEGER" property="setCnt"/>
+      <result column="setAmt" jdbcType="INTEGER" property="setAmt"/>
+      <result column="payTot" jdbcType="INTEGER" property="payTot"/>
+	</resultMap>
+  
+  <resultMap id="ResultSettleDataCnp" type="com.wallet.harex.model.SettleTrns">
+  	<result column="cpnId" jdbcType="VARCHAR" property="cpnId"/>       						
+		<result column="compId" jdbcType="VARCHAR" property="compId"/>                 
+		<result column="compName" jdbcType="VARCHAR" property="compName"/>             
+		<result column="pointDupUsable" jdbcType="VARCHAR" property="pointDupUsable"/> 
+		<result column="cpnDupUsableYn" jdbcType="VARCHAR" property="cpnDupUsableYn"/> 
+		<result column="cpnSort" jdbcType="VARCHAR" property="cpnSort"/>               
+		<result column="minPayPrice" jdbcType="INTEGER" property="minPayPrice"/>       
+		<result column="maxDicPrice" jdbcType="INTEGER" property="maxDicPrice"/>       
+		<result column="brandId" jdbcType="VARCHAR" property="brandId"/>               
+		<result column="brandName" jdbcType="VARCHAR"	property="brandName"/>								
+		<result column="payCompId" jdbcType="VARCHAR" property="payCompId"/>           
+		<result column="payCompName" jdbcType="VARCHAR" property="payCompName"/>       
+	</resultMap>
+	
+  <resultMap id="ResultSettleDataTot" type="com.wallet.harex.model.SettleTrns">
+  	<result column="seq" jdbcType="INTEGER" property="seq"/>
+  	<result column="apprNo" jdbcType="VARCHAR" property="apprNo"/>
+  	<result column="payTot" jdbcType="INTEGER" property="payTot"/>
+  	<result column="dcAmt" jdbcType="INTEGER" property="dcAmt"/>
+	</resultMap>
+	
+  <!-- 정산관리 > 일별현황관리 -->
+  <select id="selectSettleTrnsDaily" parameterType="HashMap" resultMap="ResultMapDaily">
+   	SELECT *
+		FROM (
+			SELECT <if test='top!=null and top!=""'> top ${top} </if> 
+					row_number() over (order by a.tr_date)  as SEQ,          
+					 substring(a.tr_date, 1, 4)+'년 '+substring(a.tr_date, 5, 2)+'월 '+substring(a.tr_date, 7, 2)+'일' as tr_date_txt,
+					 	 a.tr_date as tr_date,
+				     count(a.ACPOS_TID) as cnt,    
+				     count(x1.ACPOS_TID)as coup_cnt,   
+				     count(x2.ACPOS_TID) as mem_dc_cnt,   
+				     count(x3.ACPOS_TID) as mem_pot_use_cnt,    
+				     count(x4.ACPOS_TID) as mem_pot_dep_cnt,   
+				     sum(x1.real_dc_price) as coup_amt  
+				from
+					    mw_ps_trns_mst a
+					    left outer join mw_ps_trns_cpn as x1     		on  a.acpos_tid = x1.acpos_tid
+					    left outer join mw_ps_trns_ms_dc as x2   		on  a.acpos_tid = x2.acpos_tid
+					    left outer join mw_ps_trns_ms_use as x3  	on  a.acpos_tid = x3.acpos_tid
+					    left outer join mw_ps_trns_ms_save as x4		on  a.acpos_tid = x4.acpos_tid
+			where
+				      1= 1
+					  
+				   <if test="pStatus == 'ok' or pStatus == ''" >
+				   		and a.tr_fg='0' 
+					    and a.CSTATUS = '0'         
+					    and a.PSTATUS = 'PS'	
+				   </if>     
+				   <if test="pStatus == 'cancel'" >
+						and a.tr_fg='9'
+						and a.CSTATUS = '0'         
+						and a.PSTATUS = 'SC'   
+				   </if>     
+		<![CDATA[  
+					    and a.tr_date >= #{pMonth} + '01' and a.tr_date <= #{pMonth} + '31' 
+		]]>	
+				group by a.tr_date
+				) AA
+		WHERE 1=1
+		<if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+ 				AND AA.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+  </select>
+
+  <!-- 정산관리 > 일별현황관리 > 카운트-->
+  <select id="selectSettleTrnsDailyCnt" parameterType="HashMap" resultType="java.lang.Integer">
+   	SELECT COUNT(*) AS CNT
+		FROM (
+			SELECT 
+					row_number() over (order by a.tr_date)  as SEQ          
+					 ,substring(a.tr_date, 1, 4)+'년 '+substring(a.tr_date, 5, 2)+'월 '+substring(a.tr_date, 7, 2)+'일' as tr_date,
+				     count(a.ACPOS_TID) as cnt,    
+				     count(x1.ACPOS_TID)as coup_cnt,   
+				     count(x2.ACPOS_TID) as mem_dc_cnt,   
+				     count(x3.ACPOS_TID) as mem_pot_use_cnt,    
+				     count(x4.ACPOS_TID) as mem_pot_dep_cnt,   
+				     sum(x1.real_dc_price) as coup_amt  
+				from
+					    mw_ps_trns_mst a
+					    left outer join mw_ps_trns_cpn as x1     		on  a.acpos_tid = x1.acpos_tid
+					    left outer join mw_ps_trns_ms_dc as x2   		on  a.acpos_tid = x2.acpos_tid
+					    left outer join mw_ps_trns_ms_use as x3  	on  a.acpos_tid = x3.acpos_tid
+					    left outer join mw_ps_trns_ms_save as x4		on  a.acpos_tid = x4.acpos_tid
+			where
+				      1= 1
+					  
+				   <if test="pStatus == 'ok' or pStatus == ''" > 
+					    and a.CSTATUS = '0'         
+					    and a.PSTATUS = 'PS'	
+				   </if>     
+				   <if test="pStatus == 'cancel'" >
+							and a.CSTATUS = '9'         
+							and a.PSTATUS = 'SC'   
+				   </if>     
+		<![CDATA[  
+					    and a.tr_date >= #{pMonth} + '01' and a.tr_date <= #{pMonth} + '31' 
+		]]>	
+				group by a.tr_date
+			) AA
+		
+  </select>  
+  
+  <!-- 정산관리 > 거래내역조회 -->
+  <select id="selectSettleTrnsList" parameterType="HashMap" resultMap="BaseResultMap1">
+			SELECT <if test='top!=null and top!=""'> top ${top} </if>
+								*
+					from
+					(
+						select
+									  row_number() over (order by a.acpos_tid)  														as seq
+									, ( select comp_id from dbo.GET_COMPANY_INFO(y.comp_id))    	as compId
+						      , ( select comp_name from dbo.GET_COMPANY_INFO(y.comp_id)) as compName
+						      , y.UPPER_COMP_ID                                             									as brandId
+						      , ( select comp_name from dbo.GET_BRAND_INFO(y.comp_id))    	as brandName
+						      , y.comp_id                                     as shopId
+		     					, y.comp_name                                as shopName							
+									, a.acpos_tid																		as acposTid
+									, isnull(a.EXP_TTL_PRICE,0)								as expTtlPrice
+									, isnull(x1.REAL_DC_PRICE,0)							as realDcPrice       
+									, isnull(x2.REAL_MEMB_DC_PRICE,0) 		as realMembDcPrice  
+									, isnull(x3.REAL_USE_POINT,0)						as realUsePoint      
+									, isnull(x4.REAL_SAVE_POINT,0)					as realSavePoint    
+									, isnull(x5.REAL_SAVE_CNT,0)							as realSaveCnt     
+									, convert(char(19), a.reg_dttm, 120) 	as regDttm                         
+									, convert(char(19), a.last_dttm, 120)	as lastDttm                        
+									, a.cust_id									as custId                        
+									, a.phone_no								as phoneNo                     
+									, x1.CPN_ID									as cpnId 	                      
+									, x1.appr_date							as apprDate                     
+									, x1.appr_time							as apprTime                   
+									, x2.MEMB_ID							as membId									  
+									, x1.cpn_no       				as cpnNo                        
+									, x2.APPR_DATE    			as memApprDate	
+		     					, x2.APPR_TIME    			as memApprTime    
+		     					, x2.MEMB_CARD_NO 	as msCardNo 
+						      , y.REGION_TYPE 				as rgType
+						      , a.k_shop_id 							as kShopId                
+						from
+							    mw_ps_trns_mst a
+							    left outer join mw_ps_trns_cpn      			as x1 on  a.acpos_tid = x1.acpos_tid
+							    left outer join mw_ps_trns_ms_dc    		as x2 on  a.acpos_tid = x2.acpos_tid
+							    left outer join mw_ps_trns_ms_use   		as x3 on  a.acpos_tid = x3.acpos_tid
+							    left outer join mw_ps_trns_ms_save  		as x4 on  a.acpos_tid = x4.acpos_tid
+							    left outer join mw_ps_trns_ms_stamp 	as x5 on  a.acpos_tid = x5.acpos_tid
+							    left outer join mw_cm_company       		as y  on  a.k_shop_id = y.comp_id
+						where
+						      1= 1
+					<choose>
+					    <when test="status == 'cancel'">
+					        and a.tr_fg = '9'       
+									and a.CSTATUS = '0'     
+					 				and a.PSTATUS = 'SC'
+					    </when>
+					    <otherwise>
+							    and a.tr_fg = '0'       
+							    and a.CSTATUS = '0'     
+							    and a.PSTATUS = 'PS'    
+					    </otherwise>
+					</choose>	
+						
+					<if test="kShopId != ''">
+					    and a.k_shop_id  		= #{kShopId}
+					</if>
+					<if test="brandId != ''">
+					    and y.UPPER_COMP_ID 	= #{brandId}
+					</if>
+					<if test="region_type != ''">
+					    and y.REGION_TYPE  = #{region_type}
+					</if>
+					<if test="acposTid != ''">
+					    and a.acpos_tid	 		= #{acposTid}
+					</if>
+					<if test="compId != ''">
+					    and ( select comp_id from dbo.GET_COMPANY_INFO(y.comp_id)) 		= #{compId}													    
+					</if>
+					<if test="phoneNo != ''">
+					    and a.phone_no 			like	'%' + #{phoneNo} + '%'
+					</if>
+				<![CDATA[ 		    
+						  and a.tr_date >= #{sdate} and a.tr_date <= #{edate}
+				]]>
+				
+				)T
+		where 	1=1
+		<if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+ 				AND T.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+			
+</select>
+
+  <!-- 정산관리 > 거래내역조회 -->
+  <select id="selectSettleTrnsListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+      
+		select
+				count(*) AS CNT
+		from
+				(
+						select
+									  row_number() over (order by a.acpos_tid)  														as seq
+									, ( select comp_id from dbo.GET_COMPANY_INFO(y.comp_id))    	as compId
+						      , ( select comp_name from dbo.GET_COMPANY_INFO(y.comp_id)) as compName
+						      , y.UPPER_COMP_ID                                             									as brandId
+						      , ( select comp_name from dbo.GET_BRAND_INFO(y.comp_id))    	as brandName
+						      , y.comp_id                                     as shopId
+		     					, y.comp_name                                as shopName							
+									, a.acpos_tid																		as acposTid
+									, isnull(a.EXP_TTL_PRICE,0)								as expTtlPrice
+									, isnull(x1.REAL_DC_PRICE,0)							as realDcPrice       
+									, isnull(x2.REAL_MEMB_DC_PRICE,0) 		as realMembDcPrice  
+									, isnull(x3.REAL_USE_POINT,0)						as realUsePoint      
+									, isnull(x4.REAL_SAVE_POINT,0)					as realSavePoint    
+									, isnull(x5.REAL_SAVE_CNT,0)							as realSaveCnt     
+									, convert(char(19), a.reg_dttm, 120) 	as regDttm                         
+									, convert(char(19), a.last_dttm, 120)	as lastDttm                        
+									, a.cust_id									as custId                        
+									, a.phone_no								as phoneNo                     
+									, x1.CPN_ID									as cpnId 	                      
+									, x1.appr_date							as apprDate                     
+									, x1.appr_time							as apprTime                   
+									, x2.MEMB_ID							as membId									     
+									, x1.cpn_no       				as cpnNo                        
+									, x2.APPR_DATE    			as memApprDate	
+		     					, x2.APPR_TIME    			as memApprTime    
+		     					, x2.MEMB_CARD_NO 	as msCardNo 
+						      , y.REGION_TYPE 				as rgType
+						      , a.k_shop_id 							as kShopId                
+						from
+							    mw_ps_trns_mst a
+							    left outer join mw_ps_trns_cpn      			as x1 on  a.acpos_tid = x1.acpos_tid
+							    left outer join mw_ps_trns_ms_dc    		as x2 on  a.acpos_tid = x2.acpos_tid
+							    left outer join mw_ps_trns_ms_use   		as x3 on  a.acpos_tid = x3.acpos_tid
+							    left outer join mw_ps_trns_ms_save  		as x4 on  a.acpos_tid = x4.acpos_tid
+							    left outer join mw_ps_trns_ms_stamp 	as x5 on  a.acpos_tid = x5.acpos_tid
+							    left outer join mw_cm_company       		as y  on  a.k_shop_id = y.comp_id
+						where
+						      1= 1
+					<choose>
+					    <when test="status == 'cancel'">
+					        and a.tr_fg = '9'       
+									and a.CSTATUS = '0'     
+					 				and a.PSTATUS = 'SC'
+					    </when>
+					    <otherwise>
+							    and a.tr_fg = '0'       
+							    and a.CSTATUS = '0'     
+							    and a.PSTATUS = 'PS'    
+					    </otherwise>
+					</choose>		
+					<![CDATA[ 		    
+							    and a.tr_date >= #{sdate} and a.tr_date <= #{edate}
+					]]>
+				
+				)T
+		where 	1=1
+		<if test="kShopId != ''">
+		    and T.kShopId 		= #{kShopId}
+		</if>
+		<if test="brandId != ''">
+		    and T.brandId 				= #{brandId}
+		</if>
+		<if test="region_type != ''">
+		    and T.rgType = #{region_type}
+		</if>
+		<if test="acposTid != ''">
+		    and T.acposTid 		= #{acposTid}
+		</if>
+		<if test="compId != ''">
+		    and T.compId 				= #{compId}													    
+		</if>
+		<if test="phoneNo != ''">
+		    and T.phoneNo 			like	'%' + #{phoneNo} + '%'
+		</if>
+</select>
+
+  
+  <!-- 정산관리 > 거래내역조회 > 쿠폰상세조회팝업-->
+  <select id="selectSettleCouponPop" parameterType="HashMap" resultMap="ResultCouponPop">
+  	select  
+			    
+			      left(convert(varchar, convert(datetime, x1.reg_day, 120), 120), 10)			as regDay                  
+			    , (select COMP_ID from MW_CM_COMPANY where comp_id = a.COMP_ID) as compId 
+			    ,  (select COMP_NAME from MW_CM_COMPANY where comp_id = (select COMP_ID from MW_CM_COMPANY where comp_id = a.COMP_ID)) as compName  
+			    , a.BRAN_ID          							as brandId 
+			    , x2.comp_name       					as brandName 
+			    , a.cpn_id   											as cpnId               
+			    , x1.barcode 											as brandCode       
+			    , case	when a.POINT_DUP_USABLE_YN	= 'Y' then '가능'
+										when a.POINT_DUP_USABLE_YN	= 'N' then '불가능' end  as pointDupUsable 
+					, case	when a.CPN_DUP_USABLE_YN			= 'Y' then '가능'
+										when a.CPN_DUP_USABLE_YN			= 'N' then '불가능' end  		as cpnDupUsableYn    
+			    , case 	when a.CPN_DISC_TYPE 	= '01'  then '정액'
+			            	when a.CPN_DISC_TYPE 	= '02'  then '정율(' + convert(varchar, a.CPN_DISC_AMOUNT)  + '%)' end		as cpnSort
+			    , a.MIN_PAY_PRICE  						as minPayPrice             
+			    , a.MAX_DIC_PRICE  						as maxDicPrice             
+			    , x3.PAYCOMP_ID  							as payComopId               
+			    , x4.paycomp_name 						as payCompName                
+			from
+			    MW_CS_CPN_LIST a
+			    left outer join my_cpn               				as x1 on  a.cpn_id = x1.cpn_id
+			    left outer join mw_cm_company        	as x2 on  a.BRAN_ID = x2.comp_id
+			    left outer join MW_CS_CPN_PAYCOMP  as x3 on  x1.cpn_id = x3.cpn_id
+			    left outer join MW_CM_PAYCOMPANY   as x4 on  x3.PAYCOMP_ID = x4.PAYCOMP_ID
+			where
+			        1= 1
+					    and a.cpn_id = #{cpnId}       
+					    and x1.user_id = ( select max(user_id) from user_info where stat='R' and ubpay_id = #{ubpayId})    
+			      
+  </select>
+
+  <!-- 정산관리 > 거래내역조회 > 멤버십상세조회팝업-->
+  <select id="selectSettleMemberPop" parameterType="HashMap" resultMap="ResultMemberPop">
+	  select
+			       
+			      left(convert(varchar, convert(datetime, x1.reg_dt, 120), 120), 10)   			as regDt         
+			    , (select COMP_ID from MW_CM_COMPANY where comp_id = a.COMP_ID)   as compId 
+			    , (select COMP_name from MW_CM_COMPANY where comp_id = (select COMP_ID from MW_CM_COMPANY where comp_id = a.COMP_ID))     as compName 
+			    , a.BRAN_ID          as brandId 
+			    , (select COMP_NAME from MW_CM_COMPANY where comp_id = a.BRAN_ID)   as brandName 
+			    , x3.dc_rate        	as dcRate 
+			    , dbo.GET_CODE_NM('0023',x3.DC_ROUND_TYPE)     AS dcExp 
+			    , dbo.GET_CODE_NM('0008', x3.DC_UNIT) 							AS dcUnit 
+			    , x3.MIN_PAY_PRICE              	AS  dcMinAmt 
+			    , x3.MAX_DC_PRICE               	AS  dcMaxAmt
+			    , dbo.GET_CODE_NM('0010', X3.SAVE_RATE_FIXED_YN)		AS saveRateFiexedYn 
+			    , x3.CASH_SAVE_RATE          	AS saveCashRate
+			    , x3.CARD_SAVE_RATE          	AS saveCardRate
+			    , x3.COMP_SAVE_RATE          	AS saveCompRate
+			    , x3.DEBIT_SAVE_RATE         		AS saveDebitRate
+			    , x3.SAVE_NOTICE             			AS saveNotice 
+			    , dbo.GET_CODE_NM('0023',x3.SAVE_ROUND_TYPE)     	AS saveExp 
+			    , dbo.GET_CODE_NM('0011',x3.DC_SAVE_PRICE_TYPE)  AS saveAmtSort
+			    , x3.SAVE_MIN_PAY_PRICE     AS saveMinPayPrice 
+			    , x3.SAVE_MAX_PAY_PRICE    AS saveMaxPayPrice
+			    , X3.MAX_SAVE_POINT          AS saveMaxPoint  
+			    , dbo.GET_CODE_NM('0007',X3.POINT_USE_TYPE)   			AS usePointType 
+			    , dbo.GET_CODE_NM('0008',X3.POINT_USE_UNIT)    			AS usePointUnit
+			    , dbo.GET_CODE_NM('0023',X3.USE_ROUND_TYPE)  			AS useExp
+			    , X3.FIXED_RATE         					AS useFixedRate
+			    , x3.MIN_PAY_PRICE      				AS useMinPayPrice
+			    , x3.MIN_USE_POINT      				AS useMinPoint
+			    , x3.MAX_USE_POINT      			AS useMaxPoint
+		from
+			    MEMB_CARDLIST a
+			    left outer join my_member            as x1 on  a.memb_id = x1.memb_id
+			    left outer join mw_cm_company        as x2 on  a.comp_id = x2.comp_id
+			    left outer join MW_MS_COMP_PAYMENT   as x3 on  a.comp_id = x3.COMP_id
+	
+		where
+	        1= 1
+			    and a.memb_id = #{membId}       
+			    and x1.user_id = ( select max(user_id) from user_info where stat='R' and ubpay_id = #{ubpayId})
+  </select>
+      
+  <!-- 정산관리 > 정산DATA조회 (정액)  -  쿠폰  총갯수 -->
+  <select id="selectSettleDataFixListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		select 
+						count(*) as CNT
+    from
+    (  
+			  	select 
+						      row_number() over (order by t.tr_date desc)  as seq
+						    , TR_DATE   AS trDate
+						    , (SELECT COMP_ID   FROM GET_COMPANY_INFO(t.k_shop_id))     	AS compId 
+						    , (SELECT COMP_NAME FROM GET_COMPANY_INFO(t.k_shop_id))   AS compName 
+						    , (SELECT COMP_ID FROM GET_BRAND_INFO(t.k_shop_id))     				AS brandId 
+						    , (SELECT COMP_NAME FROM GET_BRAND_INFO(t.k_shop_id))     		AS brandName 
+						    , (select comp_name from MW_CM_COMPANY where comp_id = t.k_shop_id)  as shopName 
+						    , t.k_shop_id as kShopId
+						    , sum(t.x1) as apprCnt
+						    , sum(t.x2) as cancelCnt
+						    , sum(t.x3) as apprAmt
+							  , sum(t.x4) as cancelAmt
+						
+						from
+						(
+						    select
+						         a.tr_date
+						        ,a.k_shop_id
+						        ,a.tr_fg, a.cstatus, a.pstatus, a.tr_status
+						        , case when a.tr_fg = '0'
+						                   and a.CSTATUS = '0'     
+						                   and a.PSTATUS = 'PS'
+						                        
+						                then count(*) else 0 end            as x1
+						        , case when a.tr_fg = '9'       
+						                   and a.CSTATUS = '0'     
+						                   and a.PSTATUS = 'SC' 
+						                          
+						                then count(*) else 0 end            as x2
+						        , case when a.tr_fg = '0'       
+						                   and a.CSTATUS = '0'    
+						                   and a.PSTATUS = 'PS' 
+						                         
+						                then isNULL(sum(a.real_cpn_dc_price),0)  else 0 end  as x3
+										, case when a.tr_fg = '9'       
+						                   and a.CSTATUS = '0'    
+						                   and a.PSTATUS = 'SC' 
+						                         
+						                then isNULL(sum(a.real_cpn_dc_price),0)  else 0 end  as x4
+						    from mw_ps_trns_mst a, mw_ps_trns_cpn b, MW_CM_COMPANY c, MW_CM_COMPANY d
+			
+					    where 
+					            1 = 1
+					        and a.acpos_tid 	= b.acpos_tid
+					        and a.K_SHOP_ID = c.COMP_ID
+							and c.COMP_LEVEL_TYPE = '03'		
+						<if test="brandId != ''">	    
+							and c.UPPER_COMP_ID = #{brandId}
+						</if>
+						<if test="couponId != ''">
+					       and b.cpn_id 		= #{couponId}
+				    </if>
+				    	and c.UPPER_COMP_ID = d.COMP_ID
+				    <if test="compId != ''">	    
+						and d.UPPER_COMP_ID = #{compId}
+						</if>
+				    <if test="shopId != ''">
+				        and a.K_SHOP_ID     = #{shopId}
+				    </if>   
+ 						<if test="regType != ''">
+				        and c.REGION_TYPE = #{regType}
+				    </if>    
+					    group by a.tr_date, a.k_shop_id, a.tr_fg, a.cstatus, a.pstatus, a.tr_status
+					) T
+					where 
+					        1 = 1
+					<![CDATA[ 		
+							and t.tr_date >= #{sDate} and tr_date <= #{eDate}
+					]]>        
+					group by t.tr_date, t.k_shop_id
+		) TT
+  </select>
+      
+  <!-- 정산관리 > 정산DATA조회 (정액) - 쿠폰-->
+  <select id="selectSettleDataFixList" parameterType="HashMap" resultMap="ResultSettleDataFix">
+     
+		select <if test='top!=null and top!=""'> top ${top} </if>
+						  TT.seq
+					    , TT.trDate
+					    , TT.compId 
+					    , TT.compName 
+					    , TT.brandId 
+					    , TT.brandName 
+					    , TT.shopName 
+					    , TT.kShopId
+					    , TT.apprCnt
+					    , TT.cancelCnt
+					    , TT.apprAmt
+					    , TT.cancelAmt 
+    from
+    (  
+			  	select 
+						      row_number() over (order by t.tr_date desc)  as seq
+						    , left(convert(varchar, convert(datetime, TR_DATE, 120), 120), 10) AS trDate
+						    , (SELECT COMP_ID   FROM GET_COMPANY_INFO(t.k_shop_id))     	AS compId 
+						    , (SELECT COMP_NAME FROM GET_COMPANY_INFO(t.k_shop_id))   AS compName 
+						    , (SELECT COMP_ID FROM GET_BRAND_INFO(t.k_shop_id))     				AS brandId 
+						    , (SELECT COMP_NAME FROM GET_BRAND_INFO(t.k_shop_id))     		AS brandName 
+						    , (select comp_name from MW_CM_COMPANY where comp_id = t.k_shop_id)  as shopName 
+						    , t.k_shop_id as kShopId
+						    , sum(t.x1) as apprCnt
+						    , sum(t.x2) as cancelCnt
+						    , sum(t.x3) as apprAmt
+							  , sum(t.x4) as cancelAmt
+						
+						from
+						(
+						    select
+						         a.tr_date
+						        ,a.k_shop_id
+						        ,a.tr_fg, a.cstatus, a.pstatus, a.tr_status
+						        , case when a.tr_fg = '0'
+						                        and a.CSTATUS = '0'     
+						                        and a.PSTATUS = 'PS'
+						                         
+						                then count(*) else 0 end            as x1
+						        , case when a.tr_fg = '9'       
+						                        and a.CSTATUS = '0'     
+						                        and a.PSTATUS = 'SC' 
+						                            
+						                then count(*) else 0 end            as x2
+						        , case when a.tr_fg = '0'       
+						                        and a.CSTATUS = '0'    
+						                        and a.PSTATUS = 'PS' 
+						                           
+						                then isNULL(sum(a.real_cpn_dc_price),0)  else 0 end  as x3
+										, case when a.tr_fg = '9'       
+						                        and a.CSTATUS = '0'    
+						                        and a.PSTATUS = 'SC' 
+						                           
+						                then isNULL(sum(a.real_cpn_dc_price),0)  else 0 end  as x4
+						    from mw_ps_trns_mst a, mw_ps_trns_cpn b, MW_CM_COMPANY c, MW_CM_COMPANY d
+			
+					    where 
+					            1 = 1
+					        and a.acpos_tid 	= b.acpos_tid
+					        and a.K_SHOP_ID = c.COMP_ID
+							and c.COMP_LEVEL_TYPE = '03'		
+				    	and c.UPPER_COMP_ID = d.COMP_ID
+						<if test="brandId != ''">	    
+							and c.UPPER_COMP_ID = #{brandId}
+						</if>
+						<if test="couponId != ''">
+					        and b.cpn_id 		= #{couponId}
+				    </if>
+				    <if test="compId != ''">	    
+							and d.UPPER_COMP_ID = #{compId}
+						</if>
+				    <if test="shopId != ''">
+				        and a.K_SHOP_ID     = #{shopId}
+				    </if>    
+				    <if test="regType != ''">
+				        and c.REGION_TYPE = #{regType}
+				    </if>    
+					    group by a.tr_date, a.k_shop_id, a.tr_fg, a.cstatus, a.pstatus, a.tr_status
+					) T
+					where 
+					        1 = 1
+					<![CDATA[ 		
+							and t.tr_date >= #{sDate} and tr_date <= #{eDate}
+					]]>        
+					group by t.tr_date, t.k_shop_id
+		) TT
+		WHERE 1=1
+		<if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+ 				AND TT.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+  </select>
+  
+  <!-- 정산관리 > 정산DATA조회 (정률) 총갯수-->
+  <select id="selectSettleDataPerListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+  	select
+  				count(*) CNT
+  	from			
+  	(
+			  	select 
+						     count(*) CNT
+						from
+						(
+						    select
+						         a.tr_date
+						        ,a.k_shop_id
+						        ,a.tr_fg, a.cstatus, a.pstatus, a.tr_status
+						        , case when a.tr_fg = '0'       
+						                        and a.CSTATUS = '0'    
+						                        and a.PSTATUS = 'PS'
+						                        and a.tr_status='00'  
+						                then count(*) else 0 end            as x1
+						        , case when a.tr_fg = '9'       
+						                        and a.CSTATUS = '0'     
+						                        and a.PSTATUS = 'SC' 
+						                        and a.tr_status='01'    
+						                then count(*) else 0 end            as x2
+						        , case when a.tr_fg = '0'       
+						                        and a.CSTATUS = '0'    
+						                        and a.PSTATUS = 'PS' 
+						                        and a.tr_status='02'  
+						                then count(*)  else 0 end               as x3
+						        , case when a.tr_fg = '0'       
+						                        and a.CSTATUS = '0'     
+						                        and a.PSTATUS = 'PS' 
+						                        and a.tr_status='02'   
+						                then isNULL(sum(a.REAL_TTL_PRICE),0)  else 0 end  as x4
+						        , case when a.tr_fg = '0'       
+						                        and a.CSTATUS = '0'      
+						                        and a.PSTATUS = 'PS' 
+						                        and a.tr_status='02'   
+						                then isNULL(sum(a.real_cpn_dc_price),0)  else 0 end  as x5
+						    from mw_ps_trns_mst a, mw_ps_trns_cpn b
+						    where 
+						             a.acpos_tid = b.acpos_tid
+						       and b.cpn_id 				= #{couponSel} 
+					         and a.K_SHOP_ID 	= #{shopSel}    
+						    group by a.tr_date, a.k_shop_id, a.tr_fg, a.cstatus, a.pstatus, a.tr_status
+						) T
+						where 
+						        1 = 1
+			    	<![CDATA[ 		    
+						    and t.tr_date >= #{sdate} and tr_date <= #{edate}
+						]]>
+						group by t.tr_date, t.k_shop_id   
+				) A 
+  </select>
+  
+  <!-- 정산관리 > 정산DATA조회 (정률)-->
+  <select id="selectSettleDataPerList" parameterType="HashMap" resultMap="ResultSettleDataPer">
+    	select 
+    					<if test='top!=null and top!=""'> top ${top} </if>
+						  	TT.seq
+					    , TT.trDate
+					    , TT.compId 
+					    , TT.compName 
+					    , TT.brandId 
+					    , TT.brandName 
+					    , TT.shopName 
+					    , TT.kShopId
+					    , TT.apprCnt
+					    , TT.cancelCnt
+					    , TT.setCnt
+					    , TT.payTot
+					    , TT.setAmt 
+    from
+    (    
+			  	select  
+						      row_number() over (order by t.tr_date desc)  as seq
+						    , TR_DATE   AS trDate 
+						    , (SELECT COMP_ID   FROM GET_COMPANY_INFO(t.k_shop_id))     AS compId 
+						    , (SELECT COMP_NAME FROM GET_COMPANY_INFO(t.k_shop_id))     AS compName 
+						    , (SELECT COMP_ID   FROM GET_BRAND_INFO(t.k_shop_id))       AS brandId 
+						    , (SELECT COMP_NAME FROM GET_BRAND_INFO(t.k_shop_id))       AS brandName 
+						    , (select comp_name from MW_CM_COMPANY where comp_id = t.k_shop_id)  + '(' + t.k_shop_id + ')' as shopName 
+						    , t.k_shop_id as kShopId
+						    , sum(t.x1) as apprCnt
+						    , sum(t.x2) as cancelCnt
+						    , sum(t.x3) as setCnt
+						    , sum(t.x4) as payTot
+						    , sum(t.x5) as setAmt
+						
+						from
+						(
+						    select
+						         a.tr_date
+						        ,a.k_shop_id
+						        ,a.tr_fg, a.cstatus, a.pstatus, a.tr_status
+						        , case when a.tr_fg = '0'       
+						                        and a.CSTATUS = '0'    
+						                        and a.PSTATUS = 'PS'
+						                        and a.tr_status='00'  
+						                then count(*) else 0 end            as x1
+						        , case when a.tr_fg = '9'       
+						                        and a.CSTATUS = '0'     
+						                        and a.PSTATUS = 'SC' 
+						                        and a.tr_status='01'    
+						                then count(*) else 0 end            as x2
+						        , case when a.tr_fg = '0'       
+						                        and a.CSTATUS = '0'    
+						                        and a.PSTATUS = 'PS' 
+						                        and a.tr_status='02'  
+						                then count(*)  else 0 end               as x3
+						        , case when a.tr_fg = '0'       
+						                        and a.CSTATUS = '0'     
+						                        and a.PSTATUS = 'PS' 
+						                        and a.tr_status='02'   
+						                then isNULL(sum(a.REAL_TTL_PRICE),0)  else 0 end  as x4
+						        , case when a.tr_fg = '0'       
+						                        and a.CSTATUS = '0'      
+						                        and a.PSTATUS = 'PS' 
+						                        and a.tr_status='02'   
+						                then isNULL(sum(a.real_cpn_dc_price),0)  else 0 end  as x5
+						    from mw_ps_trns_mst a, mw_ps_trns_cpn b
+						    where 
+						             a.acpos_tid = b.acpos_tid
+						       and b.cpn_id 				= #{couponSel} 
+					         and a.K_SHOP_ID 	= #{shopSel}    
+						    group by a.tr_date, a.k_shop_id, a.tr_fg, a.cstatus, a.pstatus, a.tr_status
+						) T
+						where 
+						        1 = 1
+			    	<![CDATA[ 		    
+						    and t.tr_date >= #{sdate} and tr_date <= #{edate}
+						]]>
+						group by t.tr_date, t.k_shop_id
+			) TT			
+			WHERE 1=1
+		<if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+ 				AND TT.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+  </select>
+   
+  <!-- 정산관리 > 정산DATA조회 > 쿠폰상세정보-->
+  <select id="selectSettleDataCpnInfoPop" parameterType="HashMap" resultMap="ResultSettleDataCnp">
+  	select
+		      x1.cpn_id as cpnId                       
+		    , x1.ISSUE_COMP_ID as compId        
+		    , x2.comp_name as compName         
+		    , case when x1.POINT_DUP_USABLE_YN = 'Y'  then '가능'
+			       when x1.POINT_DUP_USABLE_YN = 'N'  then '불가능'
+			    end  as pointDupUsable  
+		    , case when x1.CPN_DUP_USABLE_YN = 'Y'  then '가능'
+			       when x1.CPN_DUP_USABLE_YN = 'N'  then '불가능'
+			    end  as cpnDupUsableYn                 
+		    , case 	when x1.CPN_DISC_TYPE = '01'  then '정액'
+		            	when x1.CPN_DISC_TYPE = '02'  then '정율(' + convert(varchar, x1.CPN_DISC_AMOUNT)  + '%)'
+		      end  	as cpnSort                                                        
+		    , x1.MIN_PAY_PRICE as minPayPrice                       
+		    , x1.MAX_DIC_PRICE as maxDicPrice                      
+		    , x1.comp_id  as brandId                            
+    , ( select y.comp_name from mw_cm_company  y where y.COMP_ID = x1.comp_id) as brandName
+		    , x3.PAYCOMP_ID  as payCompId                    
+		    , x4.paycomp_name as payCompName             
+		from
+		    MW_CS_CPN_LIST x1 
+		    left outer join MW_CS_CPN_PAYCOMP    as x3 on  x1.cpn_id = x3.cpn_id
+		    left outer join MW_CM_PAYCOMPANY     as x4 on  x3.PAYCOMP_ID = x4.PAYCOMP_ID
+		    , mw_cm_company  x2
+		where
+		         x1.comp_id = x2.comp_id          
+		   and x1.cpn_id = #{cpnId}       
+  </select>
+  
+  <!-- 정산관리 > 정산DATA조회 > 쿠폰상세정보 > 쿠폰명 조회-->
+  <select id="selectCouponName" parameterType="java.lang.String" resultType="java.lang.String"  >
+   	select
+			      name			      
+		from 
+			     cpn_list a
+			    ,MW_CS_CPN_LIST b 
+		where
+		         a.cpn_id = b.CPN_ID
+		   and a.cpn_id = #{cpnId} 
+  </select>
+  
+  <!-- 정산관리 > 정산DATA조회 > 쿠폰결제금액내역-->
+  <select id="selectSettleDataCpnTotPop" parameterType="HashMap" resultMap="ResultSettleDataTot">
+  	select
+			       row_number() over (order by a.acpos_tid)  as seq
+			     , x1.APPR_NO as apprNo
+			     , a.REAL_TTL_PRICE as payTot
+			     , x1.REAL_DC_PRICE as dcAmt 
+		from
+			    mw_ps_trns_mst a
+			    left outer join mw_ps_trns_cpn      as x1 on  a.acpos_tid = x1.acpos_tid
+		where
+		        1= 1
+		   and a.tr_fg 				= '0'
+		   and a.CSTATUS 	= '0'    
+		   and a.PSTATUS 	= 'PS'
+		   
+		   and a.k_shop_id = #{shopId}
+		<![CDATA[ 		    
+		   and a.tr_date = #{date} 
+			]]>
+  </select>
+</mapper>

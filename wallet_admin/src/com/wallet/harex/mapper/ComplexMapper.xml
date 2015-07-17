@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wallet.harex.mapper.ComplexMapper">
+   
+	<resultMap id="ComplexList" type="com.wallet.harex.model.ComplexList"> 
+		<result column="SEQ" 										jdbcType="INTEGER"	property="seq"/>
+		<result column="COMP_NAME"							jdbcType="VARCHAR"	property="compName"/>
+		<result column="COMP_CODE"							jdbcType="VARCHAR"	property="compCode"/>
+		<result column="REGION_CODE"						jdbcType="VARCHAR"	property="regionCode"/>
+		<result column="REGION_NAME"						jdbcType="VARCHAR"	property="regionName"/>
+		<result column="SHOP_ID"								jdbcType="VARCHAR"	property="shopId"/>
+		<result column="SHOP_NAME"							jdbcType="VARCHAR"	property="shopName"/>
+		<result column="COMP_PAY_CPN_YN"				jdbcType="CHAR"			property="compPayCpnYn"/>
+		<result column="COMP_PAY_MEMB_DC"				jdbcType="CHAR"			property="compPayMembDc"/>
+		<result column="COMP_PAY_MEMB_USE"			jdbcType="CHAR"			property="compPayMembUse"/>
+		<result column="COMP_PAY_MEMB_SAVE"			jdbcType="CHAR"			property="compPayMembSave"/>
+		<result column="COMP_PAY_STAMP_SAVE_YN"	jdbcType="CHAR"			property="compPayStampSaveYn"/>
+		<result column="COMP_PAY_STAMP_YN"			jdbcType="CHAR"			property="compPayStampYn"/>
+		<result column="REG_DTM"								jdbcType="VARCHAR"	property="regDtm"/>
+		<result column="OFFER_TYPE"							jdbcType="CHAR"			property="offerType"/>
+		<result column="MAPPING_TYPE"						jdbcType="CHAR"			property="mappingType"/>
+	</resultMap>
+  
+	<resultMap id="ComplexUserList" type="com.wallet.harex.model.ComplexUserList"> 
+		<result column="SEQ"           jdbcType="INTEGER"  property="seq"/>        
+		<result column="TNUM"          jdbcType="VARCHAR"  property="tNum"/>        
+		<result column="PSTATUS"       jdbcType="CHAR"     property="pStatus"/>    
+		<result column="CMD"           jdbcType="VARCHAR"  property="cmd"/>        
+		<result column="VERSION"       jdbcType="VARCHAR"  property="version"/>      
+		<result column="CODE"          jdbcType="CHAR"     property="code"/>       
+		<result column="MSG"           jdbcType="VARCHAR"  property="msg"/>        
+		<result column="GUBUN"         jdbcType="CHAR"     property="gubun"/>             
+		<result column="SERVICE_ID"    jdbcType="VARCHAR"  property="serviceId"/>    
+		<result column="CUST_ID"       jdbcType="VARCHAR"  property="custId"/>         
+		<result column="PHONE_NO"      jdbcType="VARCHAR"  property="phoneNo"/>             
+		<result column="PERS_ID"       jdbcType="VARCHAR"  property="persId"/>             
+		<result column="IPIN"          jdbcType="VARCHAR"  property="iPin"/>           
+		<result column="NAME"          jdbcType="VARCHAR"  property="name"/>       
+		<result column="TCODE"         jdbcType="VARCHAR"  property="tCode"/>            
+		<result column="ZIPCODE"       jdbcType="VARCHAR"  property="zipCode"/>     
+		<result column="ADDRESS1"      jdbcType="VARCHAR"  property="address1"/>    
+		<result column="ADDRESS2"      jdbcType="VARCHAR"  property="address2"/>          
+		<result column="EMAIL"         jdbcType="VARCHAR"  property="email"/>        
+		<result column="RTN_CMD"       jdbcType="CHAR"     property="rtnCmd"/>         
+		<result column="RTN_VERSION"   jdbcType="VARCHAR"  property="rtnVersion"/>          
+		<result column="RTN_HTTP_CODE" jdbcType="CHAR"     property="rtnHttpCode"/>        
+		<result column="RTN_CODE"      jdbcType="CHAR"     property="rtnCode"/>        
+		<result column="RTN_MSG"       jdbcType="VARCHAR"  property="rtnMsg"/>     
+		<result column="RTN_TNUM"      jdbcType="VARCHAR"  property="rtnTnum"/>          
+		<result column="ORG_TNUM"      jdbcType="VARCHAR"  property="orgTnum"/>     
+		<result column="REG_DTTM"      jdbcType="VARCHAR"  property="regDttm"/>     
+		<result column="LAST_DTTM"     jdbcType="VARCHAR"  property="lastDttm"/>         
+		<result column="REG_CHANNEL"   jdbcType="VARCHAR"  property="regChannel"/>     
+	</resultMap>
+  
+	<resultMap id="ComplexInfo" type="com.wallet.harex.model.ComplexInfo"> 
+		<result column="ALLY_STAT"     			jdbcType="VARCHAR"  property="allyStat"/>
+		<result column="BUSINESS_NO"   			jdbcType="VARCHAR"  property="businessNo"/>        
+		<result column="MAIN_NUMBER"   			jdbcType="VARCHAR"  property="mainNumber"/>        
+		<result column="ADDR"          			jdbcType="VARCHAR"  property="addr"/>    
+		<result column="ADDR_DETAIL"   			jdbcType="VARCHAR"  property="addrDetail"/>        
+		<result column="MANAGER_NAME"  			jdbcType="VARCHAR"  property="managerName"/>      
+		<result column="MOBILE_PHONE"  			jdbcType="VARCHAR"  property="mobilePhone"/>       
+		<result column="EMAIL"         			jdbcType="VARCHAR"  property="email"/>
+		<result column="COMP_TYPE"     			jdbcType="VARCHAR"  property="compType"/>        
+		<result column="REG_DTM"       			jdbcType="VARCHAR"  property="regDtm"/>
+		<result column="COMPLEX_PAYMENT_YN" jdbcType="VARCHAR"  property="complexPaymentYn"/>
+		<result column="COMP_PAY_MEMB_SAVE" jdbcType="VARCHAR"  property="complexPayMembSave"/>
+		<result column="COMP_PAY_MEMB_USE"  jdbcType="VARCHAR"  property="complexPayMembUse"/>
+		<result column="COMP_PAY_MEMB_DC"   jdbcType="VARCHAR"  property="complexPayMembDc"/>
+		<result column="COMP_PAY_CPN_YN"    jdbcType="VARCHAR"  property="complexPayCpnYn"/>
+		<result column="COMP_PAY_STAMP_YN"  jdbcType="VARCHAR"  property="complexPayStampYn"/>          
+		<result column="COMP_NAME"  jdbcType="VARCHAR"  property="compName"/>          
+	</resultMap>
+  
+	<resultMap id="ComplexShopHid" type="com.wallet.harex.model.ComplexShopHid">
+		<result column="SEQ"						jdbcType="INTEGER"  property="seq"/>
+		<result column="K_SHOP_ID"			jdbcType="VARCHAR"  property="kShopId"/>
+		<result column="SHOP_NAME"			jdbcType="VARCHAR"  property="shopName"/>
+		<result column="PK_SHOP_ID"			jdbcType="VARCHAR"  property="pkShopId"/>
+		<result column="BRAND_NAME"			jdbcType="VARCHAR"  property="brandName"/>
+		<result column="REGION_NAME"		jdbcType="VARCHAR"  property="regionName"/>
+		<result column="H_SHOP_ID"			jdbcType="VARCHAR"  property="hShopId"/>
+		<result column="STATUS"					jdbcType="VARCHAR"  property="status"/>
+		<result column="ACPOS_YN"				jdbcType="VARCHAR"  property="acposYn"/>
+		<result column="CPN_YN"					jdbcType="VARCHAR"  property="cpnYn"/>
+		<result column="MEMB_DC_YN"			jdbcType="VARCHAR"  property="membDcYn"/>
+		<result column="MEMB_USE_YN"		jdbcType="VARCHAR"  property="membUseYn"/>
+		<result column="MEMB_SAVE_YN"		jdbcType="VARCHAR"  property="membSaveYn"/>
+		<result column="STAMP_SAVE_YN"	jdbcType="VARCHAR"  property="stampSaveYn"/>
+		<result column="STAMP_USE_YN"		jdbcType="VARCHAR"  property="stampUseYn"/>
+		<result column="SEND_DTTM"			jdbcType="VARCHAR"  property="sendDttm"/>
+		<result column="RECV_DTTM"			jdbcType="VARCHAR"  property="recvDttm"/>
+		<result column="REG_ID"					jdbcType="VARCHAR"  property="regId"/>
+		<result column="REG_DTTM"				jdbcType="VARCHAR"  property="regDttm"/>
+		
+		<result column="OLLEH_USE_YN"				jdbcType="VARCHAR"  property="ollehUseYn"/>
+		<result column="OLLEH_DC_YN"				jdbcType="VARCHAR"  property="ollehDcYn"/>
+		<result column="OLLEH_SAVE_YN"				jdbcType="VARCHAR"  property="ollehSaveYn"/>
+	</resultMap>
+  
+	<!-- 복합결제 이용 가맹점 조회 -->
+	<select id="selectComplexList" parameterType="HashMap" resultMap="ComplexList">
+		SELECT *
+		FROM (
+			SELECT <if test='top!=null and top!=""'> top ${top} </if>
+			      row_number() over (order by a.COMP_ID)						  as SEQ          
+			    , (select comp_name from mw_cm_company where comp_id = a.UPPER_COMP_ID) AS COMP_NAME
+			    , a.UPPER_COMP_ID																			as COMP_CODE
+			    , a.REGION_TYPE                            				 		as REGION_CODE 
+			    , dbo.GET_CODE_NM('0027',a.REGION_TYPE) 							as REGION_NAME
+			    , a.COMP_ID                                 					as SHOP_ID
+			    , a.COMP_NAME 																				as SHOP_NAME
+			    , isNULL(x3.CPN_YN,'N')       				    						as COMP_PAY_CPN_YN 
+			    , isNULL(x3.MEMB_DC_YN,'N') 			         						as COMP_PAY_MEMB_DC 
+			    , isNULL(x3.MEMB_USE_YN,'N')         									as COMP_PAY_MEMB_USE
+			    , isNULL(x3.MEMB_SAVE_YN,'N')       									as COMP_PAY_MEMB_SAVE
+			    , isNULL(x3.STAMP_SAVE_YN,'N') 												as COMP_PAY_STAMP_SAVE_YN  
+			    , isNULL(x3.STAMP_USE_YN,'N')         								as COMP_PAY_STAMP_YN  
+			    , convert(char(10), x3.REG_DTTM, 120)        					as REG_DTM 
+			    , case when x2.K_SHOP_ID is null then '설정필요' else 'OK' end	as OFFER_TYPE 
+			    , case when x3.K_SHOP_ID is null then '매핑필요' else 'OK' end	as MAPPING_TYPE
+			from 
+			    mw_cm_company a 
+			    left outer join MW_PS_RULE_MST       as x2 on  a.comp_id = x2.k_shop_id
+			    left outer join MW_PS_SHOP_MAPPING   as x3 on  a.comp_id = x3.k_shop_id
+			where 
+					1 = 1
+				AND a.complex_payment_yn = 'Y'
+				AND a.COMP_LEVEL_TYPE = '03'
+				AND a.UPPER_COMP_ID is not NULL
+				AND a.ALLY_STAT is not NULL
+			<if test="compId != ''">	      
+				and a.UPPER_COMP_ID IN ( select comp_id from mw_cm_company where COMP_LEVEL_TYPE = '02' and UPPER_COMP_ID =  #{compId})
+			</if>   
+			<if test="brandId != ''">	      
+				and a.UPPER_COMP_ID = #{brandId}                                                              
+			</if>   
+			<if test="regionType != ''">	      
+				and a.REGION_TYPE = #{regionType}                                                                       
+			</if>   
+			<if test="shopId != ''">	      
+				and a.comp_id = #{shopId}                                                                   
+			</if>   
+			<if test="shopName != ''">	      
+				and a.comp_name like '%' + #{shopName} +'%'            	 
+			</if>   
+		) AA
+		WHERE 1=1
+		<if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+				AND AA.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+	</select>
+  
+    <!-- 복합결제 이용 가맹점 조회 - 카운트 -->
+  <select id="selectComplexListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+	  	SELECT COUNT(*) AS CNT
+			from 
+				    mw_cm_company a 
+				    left outer join MW_PS_RULE_MST     as x2 on  a.comp_id = x2.k_shop_id
+				    left outer join MW_PS_SHOP_MAPPING as x3 on  a.comp_id = x3.k_shop_id
+		where 
+			1 = 1
+			AND a.complex_payment_yn = 'Y'
+			and a.COMP_LEVEL_TYPE = '03'
+		<if test="compId != ''">	      
+			and a.UPPER_COMP_ID IN ( select comp_id from mw_cm_company where COMP_LEVEL_TYPE = '02' and UPPER_COMP_ID =  #{compId})
+		</if>   
+		<if test="brandId != ''">	      
+			and a.UPPER_COMP_ID = #{brandId}                                                              
+		</if>   
+		<if test="regionType != ''">	      
+			and a.REGION_TYPE = #{regionType}                                                                       
+		</if>   
+		<if test="shopId != ''">	      
+			and a.comp_id = #{shopId}                                                                   
+		</if>   
+		<if test="shopName != ''">	      
+			and a.comp_name like '%' + #{shopName} +'%'            	 
+		</if>   
+  </select>
+  
+  <!-- 복합결제 사용자 조회 -->
+  <select id="selectComplexUserList" parameterType="HashMap" resultMap="ComplexUserList">
+	  	SELECT *
+		FROM (
+			SELECT <if test='top!=null and top!=""'> top ${top} </if>
+	      row_number() over (order by reg_dttm desc)  as SEQ
+		, TNUM         
+		, dbo.GET_CODE_NM('PS0031',PSTATUS) as PSTATUS   
+		, CMD          
+		, VERSION      
+		, CODE         
+		, MSG          
+		, GUBUN        
+		, SERVICE_ID   
+		, CUST_ID      
+		, PHONE_NO     
+		, PERS_ID      
+		, IPIN         
+		, NAME         
+		, TCODE        
+		, ZIPCODE      
+		, ADDRESS1     
+		, ADDRESS2     
+		, EMAIL        
+		, RTN_CMD      
+		, RTN_VERSION  
+		, RTN_HTTP_CODE
+		, RTN_CODE     
+		, RTN_MSG      
+		, RTN_TNUM     
+		, ORG_TNUM     
+		, convert(varchar, convert(datetime, REG_DTTM, 120), 120)  AS REG_DTTM     
+		, LAST_DTTM    
+	    , case when cmd = '9000' then '모카월렛'
+	            when cmd = '8000' then '모카페이'  end   as REG_CHANNEL
+	from 
+	      MW_PS_USERIF_REQ
+	where
+	        1 = 1
+		<if test="tCode == 'KTF'">
+			and (TCODE = #{tCode} OR TCODE = 'KT')                                                                    
+		</if> 	        
+		<if test="tCode == 'LGT'">
+			and (TCODE = #{tCode} OR TCODE = 'LGU')                                                                    
+		</if> 	        
+		<if test="tCode == 'SKT'">
+			and (TCODE = #{tCode})                                                                    
+		</if> 	        
+		<if test="phoneNo != ''">
+			and PHONE_NO like '%' + #{phoneNo} + '%'                                                                   
+		</if>
+	
+	) AA
+		WHERE 1=1
+		<if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+ 				AND AA.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+	
+  </select>  
+  
+  <!-- 복합결제 사용자 조회 > 카운트-->
+  <select id="selectComplexUserListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+	  	SELECT COUNT(*) AS CNT
+		FROM (
+			SELECT <if test='top!=null and top!=""'> top ${top} </if>
+	      row_number() over (order by tnum)  as SEQ
+		, TNUM         
+		, dbo.GET_CODE_NM('PS0031',PSTATUS) as PSTATUS   
+		, CMD          
+		, VERSION      
+		, CODE         
+		, MSG          
+		, GUBUN        
+		, SERVICE_ID   
+		, CUST_ID      
+		, PHONE_NO     
+		, PERS_ID      
+		, IPIN         
+		, NAME         
+		, TCODE        
+		, ZIPCODE      
+		, ADDRESS1     
+		, ADDRESS2     
+		, EMAIL        
+		, RTN_CMD      
+		, RTN_VERSION  
+		, RTN_HTTP_CODE
+		, RTN_CODE     
+		, RTN_MSG      
+		, RTN_TNUM     
+		, ORG_TNUM     
+		, REG_DTTM     
+		, LAST_DTTM    
+	    , case when cmd = '9000' then '모카월렛'
+	            when cmd = '8000' then '모카페이'  end   as REG_CHANNEL
+	from 
+	      MW_PS_USERIF_REQ
+	where
+	        1 = 1
+		<if test="tCode == 'KTF'">
+			and (TCODE = #{tCode} OR TCODE = 'KT')                                                                    
+		</if> 	        
+		<if test="tCode == 'LGT'">
+			and (TCODE = #{tCode} OR TCODE = 'LGU')                                                                    
+		</if> 	        
+		<if test="tCode == 'SKT'">
+			and (TCODE = #{tCode})                                                                    
+		</if> 		        
+		<if test="phoneNo != ''">
+			and PHONE_NO like '%' + #{phoneNo} + '%'                                                                   
+		</if>
+	) AA
+  </select>    
+  
+  <!-- 복합결제 이용 가맹점 - 제휴사 상세정보 -->
+  <select id="selectComplexInfo" parameterType="HashMap" resultMap="ComplexInfo">
+		SELECT 
+			  dbo.GET_CODE_NM('0001',a.ALLY_STAT) AS ALLY_STAT
+			, a.BUSINESS_NO 
+			, a.MAIN_NUMBER 
+			, a.ADDR 
+			, a.ADDR_DETAIL 
+			, a.MANAGER_NAME 
+			, a.MOBILE_PHONE 
+			, a.EMAIL
+			, dbo.GET_CODE_NM('0003',a.COMP_TYPE) AS COMP_TYPE
+			, a.COMPLEX_PAYMENT_YN
+			, b.COMP_PAY_MEMB_SAVE
+			, b.COMP_PAY_MEMB_USE
+			, b.COMP_PAY_MEMB_DC
+			, b.COMP_PAY_CPN_YN  
+			, b.COMP_PAY_STAMP_YN  	 			 
+			, convert(varchar, convert(datetime, a.REG_DTM, 120), 120)  AS REG_DTM
+			, (select c.COMP_NAME from MW_CM_COMPANY c where c.COMP_ID = a.COMP_ID and c.COMP_LEVEL_TYPE = '01')as COMP_NAME
+		FROM 
+			  MW_CM_COMPANY a
+			  left outer join  MW_MS_COMP_PAYMENT    	as b on  a.COMP_ID    	= B.COMP_ID
+		WHERE 
+				1 = 1
+			AND a.COMP_LEVEL_TYPE = '01'
+			AND a.COMP_ID = #{compId,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 결제사별 복합결제 가맹점 SHOP_ID 매핑관리 -->
+  <select id="selectComplexShopHidList" parameterType="HashMap" resultMap="ComplexShopHid">
+  	SELECT *
+		FROM (
+			SELECT <if test='top!=null and top!=""'> top ${top} </if>
+						 ROW_NUMBER() OVER (ORDER BY a.K_SHOP_ID) AS SEQ, 
+						 a.K_SHOP_ID AS K_SHOP_ID, 
+						 b.COMP_NAME AS SHOP_NAME, 
+						 a.PK_SHOP_ID AS PK_SHOP_ID, 
+						 c.COMP_NAME AS BRAND_NAME, 
+						 dbo.GET_CODE_NM('0027',b.REGION_TYPE) AS REGION_NAME, 
+						 a.H_SHOP_ID AS H_SHOP_ID, 
+						 a.STATUS AS STATUS, 
+						 a.ACPOS_YN AS ACPOS_YN, 
+						 a.CPN_YN AS CPN_YN, 
+						 a.MEMB_DC_YN AS MEMB_DC_YN, 
+						 a.MEMB_USE_YN AS MEMB_USE_YN, 
+						 a.MEMB_SAVE_YN AS MEMB_SAVE_YN, 
+						 a.STAMP_SAVE_YN AS STAMP_SAVE_YN, 
+						 a.STAMP_USE_YN AS STAMP_USE_YN, 
+						 a.SEND_DTTM AS SEND_DTTM, 
+						 a.RECV_DTTM AS RECV_DTTM, 
+						 a.REG_ID AS REG_ID, 
+						 convert(varchar, convert(datetime, a.REG_DTTM, 120), 120)   AS REG_DTTM,
+						 ISNULL(a.OLLEH_USE_YN,'N') AS OLLEH_USE_YN,
+						 ISNULL(a.OLLEH_DC_YN,'N') AS OLLEH_DC_YN,
+						 ISNULL(a.OLLEH_SAVE_YN,'N') AS OLLEH_SAVE_YN						 
+
+		  FROM MW_PS_SHOP_MAPPING a
+		  LEFT OUTER JOIN  MW_CM_COMPANY  b ON a.K_SHOP_ID = b.COMP_ID
+		  LEFT OUTER JOIN  MW_CM_COMPANY  c ON a.PK_SHOP_ID = c.COMP_ID
+		  
+		  WHERE 1=1 
+		  <if test="comp_id != ''">
+		  AND c.UPPER_COMP_ID = #{comp_id,jdbcType=VARCHAR}
+		  </if>
+		  <if test="brand_id != ''">
+			AND a.PK_SHOP_ID = #{brand_id,jdbcType=VARCHAR}
+			</if>
+			<if test="region_type != ''">
+			AND b.REGION_TYPE = #{region_type,jdbcType=VARCHAR}
+			</if>
+			<if test="service_id != ''">
+			AND a.SERVICE_ID = #{service_id,jdbcType=VARCHAR}
+			</if>
+			<if test="comp_name != ''">
+			AND b.COMP_NAME like '%' + #{comp_name,jdbcType=VARCHAR} +'%'
+			</if>
+  	) AA		
+		WHERE 1=1
+		<if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+ 				AND AA.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+  </select>
+  
+  <!-- 결제사별 복합결제 가맹점 SHOP_ID 매핑관리 count -->
+  <select id="selectComplexShopHidListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+
+	  FROM MW_PS_SHOP_MAPPING a
+	  LEFT OUTER JOIN  MW_CM_COMPANY  b ON a.K_SHOP_ID = b.COMP_ID
+	  LEFT OUTER JOIN  MW_CM_COMPANY  c ON a.PK_SHOP_ID = c.COMP_ID
+	  
+	  WHERE 1=1 
+	  <if test="comp_id != ''">
+	  AND c.UPPER_COMP_ID = #{comp_id,jdbcType=VARCHAR}
+	  </if>
+	  <if test="brand_id != ''">
+		AND a.PK_SHOP_ID = #{brand_id,jdbcType=VARCHAR}
+		</if>
+		<if test="region_type != ''">
+		AND b.REGION_TYPE = #{region_type,jdbcType=VARCHAR}
+		</if>
+		<if test="service_id != ''">
+		AND a.SERVICE_ID = #{service_id,jdbcType=VARCHAR}
+		</if>
+  			<if test="comp_name != ''">
+			AND b.COMP_NAME like '%' + #{comp_name,jdbcType=VARCHAR} +'%'
+			</if>
+  </select>
+  
+  <update id="updateComplexShopHid" parameterType="HashMap">
+		UPDATE MW_PS_SHOP_MAPPING 
+		SET
+				STATUS 			= 'Y',
+				H_SHOP_ID 	= #{h_shop_id}, 
+				UPDATE_ID 		= #{regUser}, 
+				UPDATE_DTTM = GETDATE()
+		WHERE K_SHOP_ID 	= #{k_shop_id}
+		AND PK_SHOP_ID 		= #{pk_shop_id}
+	</update>
+	
+	<!-- 결제사별 복합결제 가맹점 SHOP_ID 중복확인 -->
+  <select id="selectComplexShopHidRegisterCheck" parameterType="HashMap" resultType="java.lang.String">
+  	SELECT CASE WHEN COUNT(*)> 0 THEN 'Y' ELSE 'N' END AS CHK
+		  FROM MW_PS_SHOP_MAPPING
+		 WHERE H_SHOP_ID = #{h_shop_id,jdbcType=VARCHAR}
+  </select>
+  
+</mapper>

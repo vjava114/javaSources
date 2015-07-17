@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="push">
+    <typeAlias alias="sendlistvo" type="com.tims.domain.SendListVO" />
+    <resultMap class="sendlistvo" id="sendlist">
+        <result property="pushid" column="pushid" />
+        <result property="msg" column="msg" />
+        <result property="type" column="type" />
+    </resultMap>
+
+
+	<select id="getSendList" resultMap="sendlistvo">
+<![CDATA[
+		SELECT
+			pushid,
+			type,
+			(
+			select
+			msg
+			from
+			msg_list mtb
+			where
+			mtb.seq = msg_seq
+			)as msg
+	
+		FROM 
+			push_list
+	
+		LEFT JOIN
+			member
+		ON
+			push_list.member_seq = member.seq
+	
+		WHERE status = 'FAIL'
+			AND reserv_yn <= now()
+]]>
+	</select>
+	
+	
+	<select id="getSendList_android" resultMap="sendlistvo">
+		SELECT
+			pushid,
+			(
+			select
+			msg
+			from
+			msg_list mtb
+			where
+			mtb.seq = msg_seq
+			)as msg
+	
+		FROM 
+			push_list
+	
+		LEFT JOIN
+			member
+		ON
+			push_list.member_seq = member.seq
+	
+		WHERE status = 'FAIL'
+			AND reserv_yn <![CDATA[<=]]> now()
+			AND type = 'android';
+	</select>
+
+
+
+    
+</sqlMap>

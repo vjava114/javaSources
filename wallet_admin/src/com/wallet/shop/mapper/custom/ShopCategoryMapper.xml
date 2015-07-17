@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.shop.mapper.custom.ShopCategoryMapper" >
+	<resultMap id="BaseResultMap" type="com.wallet.shop.model.custom.ShopCategory" >
+		<result column="IDX" property="idx" jdbcType="VARCHAR" />
+		
+		<result column="CATE_ID" property="cateId" jdbcType="VARCHAR"/> 
+		<result column="CATE_NAME" property="cateName" jdbcType="VARCHAR"/> 
+		<result column="UPPER_CATE_ID" property="upperCateId" jdbcType="VARCHAR"/> 
+		<result column="UPPER_CATE_NAME" property="upperCateName" jdbcType="VARCHAR"/> 
+		<result column="SHOW_YN" property="showYN" jdbcType="VARCHAR"/> 
+		<result column="MARKET_INFO" property="marketInfo" jdbcType="VARCHAR"/> 
+		<result column="DISP_ORDER" property="dispOrder" jdbcType="VARCHAR"/> 
+		<result column="USE_MARKET_YN" property="useMarketYN" jdbcType="VARCHAR"/> 
+		<result column="LINK_URL" property="linkURL" jdbcType="VARCHAR"/> 
+		<result column="DEL_YN" property="delYN" jdbcType="VARCHAR"/> 
+		<result column="BIGO" property="bigo" jdbcType="VARCHAR"/> 
+		<result column="SECOND_CATE_CNT" property="secondCateCnt" jdbcType="VARCHAR" />
+		<result column="PROD_CNT" property="prodCnt" jdbcType="VARCHAR" />
+		
+		<result column="CATE_IMG_3GS" property="cateImg_i3GS" jdbcType="VARCHAR" />
+		<result column="CATE_IMG_4S" property="cateImg_i4S" jdbcType="VARCHAR" />
+		<result column="CATE_IMG_ANDROID" property="cateImg_android" jdbcType="VARCHAR" />
+		<result column="CATE_IMG_COMMOS" property="cateImg_commOs" jdbcType="VARCHAR" />
+		
+		<result column="REG_USER" property="regUser" jdbcType="VARCHAR" />
+		<result column="REG_USER_NM" property="regUserNm" jdbcType="VARCHAR" />
+		<result column="REG_DTM" property="regDtm" jdbcType="VARCHAR" />
+		<result column="CHG_USER" property="chgUser" jdbcType="VARCHAR" />
+		<result column="CHG_USER_NM" property="chgUserNm" jdbcType="VARCHAR" />
+		<result column="CHG_DTM" property="chgDtm" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 모카샵 대분류 카테고리 전체 수 -->
+	<select id="selectTotCategoryCnt" parameterType="HashMap" resultType="java.lang.Integer">
+			SELECT COUNT(*) AS TOT_CNT
+			FROM MS_CS_SHOP_CATEGORY
+			WHERE UPPER_CATE_ID='CAT000000000'
+	</select>
+	
+	<!-- 모카샵 중분류 카테고리 전체 수 -->
+	<select id="selectTotSecondCategoryCnt" parameterType="HashMap" resultType="java.lang.Integer">
+			SELECT COUNT(*) AS TOT_CNT
+			FROM MS_CS_SHOP_CATEGORY
+			WHERE UPPER_CATE_ID=#{upperCateId}
+	</select>
+	
+	<!-- 조회조건에 대한 모카샵 대분류_카테고리 목록 -->
+	<select id="selectShopCategoryList" parameterType="HashMap" resultMap="BaseResultMap" >
+		SELECT <if test='top != null and top != ""'> top ${top} </if>
+			ROW_NUMBER() OVER(ORDER BY C.DISP_ORDER, C.REG_DTM DESC) AS IDX
+			, C.UPPER_CATE_ID
+			, '' AS UPPER_CATE_ID 
+			, C.CATE_ID
+			, C.CATE_NAME
+			, C.SHOW_YN
+			, C.MARKET_INFO
+			, C.DISP_ORDER
+			, C.USE_MARKET_YN
+			, C.LINK_URL
+			, C.DEL_YN
+			, C.BIGO
+			, C.REG_USER
+			, CONVERT(VARCHAR(10), C.REG_DTM, 120) as REG_DTM
+			, C.CHG_USER
+			, CONVERT(VARCHAR(10), C.CHG_DTM, 120) as CHG_DTM
+			, D.SECOND_CATE_CNT
+			, P.PROD_CNT
+		FROM MS_CS_SHOP_CATEGORY C
+		LEFT OUTER JOIN
+		(
+			SELECT UPPER_CATE_ID, COUNT(*) AS SECOND_CATE_CNT
+			FROM MS_CS_SHOP_CATEGORY
+			GROUP BY UPPER_CATE_ID
+		) D
+		ON D.UPPER_CATE_ID = C.CATE_ID
+		LEFT OUTER JOIN
+		(
+			SELECT CATE_ID, COUNT(*) AS PROD_CNT
+			FROM MS_CS_SHOP_CATEGORY_PRD
+			GROUP BY CATE_ID
+		) P
+		ON P.CATE_ID = C.CATE_ID
+		
+		WHERE 1=1
+		<if test='cateId != null and cateId != ""'>
+			AND C.CATE_ID = #{cateId}
+		</if>
+		<if test='upperCateId != null and upperCateId != ""'>
+			AND C.UPPER_CATE_ID = #{upperCateId}
+		</if>
+		<if test='ra_searchTerm != null and ra_searchTerm != ""'>
+			<if test='sdate != null and sdate != ""'>
+				<if test='se_termOpt == "reg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), C.REG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+				<if test='se_termOpt == "chg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), C.CHG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+			</if>
+			<if test='edate != null and edate != ""'>
+				<if test='se_termOpt == "reg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), C.REG_DTM, 120) <=	#{edate}
+					]]>
+				</if>
+				<if test='se_termOpt == "chg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), C.CHG_DTM, 120) <=	#{edate}
+					]]>
+				</if>
+			</if>
+		</if>
+		<if test='se_termOpt == "chg_date"'>
+			AND C.CHG_DTM IS NOT NULL
+		</if>
+		<if test='cateName != null and cateName != ""'>
+			AND C.CATE_NAME LIKE '%${cateName}%'
+		</if>
+		<if test='showYN != null and showYN !="" and showYN != "all"'>
+			AND C.SHOW_YN = #{showYN}
+		</if>
+		<if test='ra_allyStat != null and ra_allyStat != "" and ra_allyStat != "all"'>
+			AND C.ALLY_STAT = #{ra_allyStat}
+		</if>
+	</select>
+	
+	<!-- 마지막에 등록된 카테고리 ID 조회 하기~!! -->
+	<select id="selectLastCateId" parameterType="HashMap" resultType="java.lang.String">
+		SELECT MAX(CATE_ID) AS CATE_ID
+		FROM MS_CS_SHOP_CATEGORY 
+		WHERE CATE_ID LIKE 'CAT%' 
+	</select>
+	
+	<!-- 조회조건에 대한 모카샵_카테고리 목록 -->
+	<select id="selectShopCategoryInfo" parameterType="HashMap" resultMap="BaseResultMap" >
+		SELECT C.CATE_ID
+			, C.CATE_NAME
+			, C.UPPER_CATE_ID
+			, (
+			<choose>
+				<when test="upperCateId == 'CAT000000000'">''</when>
+				<when test="upperCateId != null and upperCateId != ''">
+				SELECT CATE_NAME FROM MS_CS_SHOP_CATEGORY WHERE CATE_ID=#{upperCateId}
+				</when>
+				<otherwise>''</otherwise>
+			</choose> 
+			) AS UPPER_CATE_NAME
+			, C.SHOW_YN
+			, C.MARKET_INFO
+			, C.DISP_ORDER
+			, C.USE_MARKET_YN
+			, C.LINK_URL
+			, C.DEL_YN
+			, C.BIGO
+			, C.REG_USER
+			, CONVERT(VARCHAR(10), C.REG_DTM, 120) as REG_DTM
+			, C.CHG_USER
+			, CONVERT(VARCHAR(10), C.CHG_DTM, 120) as CHG_DTM
+			, D.SECOND_CATE_CNT
+			, P.PROD_CNT
+			, I.*
+		FROM MS_CS_SHOP_CATEGORY C
+		LEFT OUTER JOIN(
+			SELECT ID
+<!-- 			, MAX(CASE WHEN I.OS_TYPE='01' AND I.USE_TYPE='14' THEN I.IMAGE_URL END) AS CATE_IMG_3GS -->
+<!-- 			, MAX(CASE WHEN I.OS_TYPE='02' AND I.USE_TYPE='14' THEN I.IMAGE_URL END) AS CATE_IMG_4S -->
+<!-- 			, MAX(CASE WHEN I.OS_TYPE='11' AND I.USE_TYPE='14' THEN I.IMAGE_URL END) AS CATE_IMG_ANDROID -->
+			, MAX(CASE WHEN I.OS_TYPE='00' AND I.USE_TYPE='14' THEN I.IMAGE_URL END) AS CATE_IMG_COMMOS
+			FROM MW_CM_IMAGE I
+			GROUP BY ID
+		) I
+		ON I.ID = C.CATE_ID
+		LEFT OUTER JOIN
+		(
+			SELECT UPPER_CATE_ID, COUNT(*) AS SECOND_CATE_CNT
+			FROM MS_CS_SHOP_CATEGORY
+			GROUP BY UPPER_CATE_ID
+		) D
+		ON D.UPPER_CATE_ID = C.CATE_ID
+		LEFT OUTER JOIN
+		(
+			SELECT CATE_ID, COUNT(*) AS PROD_CNT
+			FROM MS_CS_SHOP_CATEGORY_PRD
+			GROUP BY CATE_ID
+		) P
+		ON P.CATE_ID = C.CATE_ID
+		
+		WHERE 1=1
+		<if test='cateId != null and cateId != ""'>
+			AND C.CATE_ID = #{cateId}
+		</if>
+		<if test='upperCateId != null and upperCateId != ""'>
+			AND C.UPPER_CATE_ID = #{upperCateId}
+		</if>
+	</select>
+	
+	<insert id="insertShopCategory" parameterType="HashMap">
+		INSERT INTO MS_CS_SHOP_CATEGORY
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			CATE_ID,
+			<if test='cateName != null and cateName != ""' >CATE_NAME,</if>
+			<if test='showYN != null and showYN != "" and showYN != "all"'>SHOW_YN,</if>
+			<if test='marketInfo != null and marketInfo != ""' >MARKET_INFO,</if>
+			<if test='dispOrder != null and dispOrder != ""' >DISP_ORDER,</if>
+			<if test='useMarketYN != null and useMarketYN != ""' >USE_MARKET_YN,</if>
+			<if test='linkURL != null and linkURL != ""' >LINK_URL,</if>
+			<if test='delYN != null and delYN != ""' >DEL_YN,</if>
+			<if test='bigo != null and bigo != ""' >BIGO,</if>
+			<if test='upperCateId != null and upperCateId != ""' >UPPER_CATE_ID,</if>
+			REG_USER,
+			REG_DTM,
+		</trim>
+		<trim prefix="" suffix="" suffixOverrides="," >
+			SELECT 'CAT'+SUBSTRING(REPLICATE('0',9),0,10-LEN(ISNULL(RIGHT(MAX(CATE_ID),9),0)+1))+LTRIM(STR((ISNULL(RIGHT(MAX(CATE_ID),9),0)+1))) AS CATE_ID, 
+			<if test='cateName != null and cateName != ""' >#{cateName},</if>
+			<if test='showYN != null and showYN != ""' >#{showYN},</if>
+			<if test='marketInfo != null and marketInfo != ""' >#{marketInfo},</if>
+			<if test='dispOrder != null and dispOrder != ""' >#{dispOrder},</if>
+			<if test='useMarketYN != null and useMarketYN != ""' >#{useMarketYN},</if>
+			<if test='linkURL != null and linkURL != ""' >#{linkURL},</if>
+			<if test='delYN != null and delYN != ""' >#{delYN},</if>
+			<if test='bigo != null and bigo != ""' >#{bigo},</if>
+			<if test='upperCateId != null and upperCateId != ""' >#{upperCateId},</if>
+				#{regUser},
+				GETDATE(),
+		</trim>
+		FROM MS_CS_SHOP_CATEGORY
+		<!-- WHERE UPPER_CATE_ID = #{upperCateId} -->
+	</insert>
+
+	<update id="updateShopCategory" parameterType="HashMap">
+		UPDATE MS_CS_SHOP_CATEGORY
+		<set>
+		<trim prefix="" suffix="" suffixOverrides="," >
+			<if test='cateName != null' >CATE_NAME = #{cateName},</if>
+			<if test='showYN != null' >SHOW_YN = #{showYN},</if>
+			<if test='marketInfo != null' >MARKET_INFO = #{marketInfo},</if>
+			<if test='dispOrder != null ' >DISP_ORDER = #{dispOrder},</if>
+			<if test='useMarketYN != null' >USE_MARKET_YN = #{useMarketYN},</if>
+			<if test='linkURL != null' >LINK_URL = #{linkURL},</if>
+			<if test='delYN != null' >DEL_YN = #{delYN},</if>
+			<if test='bigo != null' >BIGO = #{bigo},</if>
+				CHG_USER = #{chgUser},
+				CHG_DTM = GETDATE(),
+		</trim>
+		</set>
+		WHERE CATE_ID = #{cateId}
+	</update>
+	
+	<update id="updateShopCatogoryOrder" parameterType="HashMap">
+		UPDATE MS_CS_SHOP_CATEGORY
+		SET DISP_ORDER = ${toOrder}
+		WHERE CATE_ID = #{cateId}
+		AND UPPER_CATE_ID = #{upperCateId}
+		AND SHOW_YN='Y'
+	</update>
+	
+	<update id="updateShopCatogoryOrderOpt" parameterType="HashMap">
+		<choose>
+		<when test='calulateOpt == "DOWN"'>
+			UPDATE MS_CS_SHOP_CATEGORY
+			SET DISP_ORDER = DISP_ORDER -1
+			WHERE DISP_ORDER BETWEEN ${fromOrder}+1 AND ${toOrder} 
+			AND SHOW_YN = 'Y'
+			AND UPPER_CATE_ID = #{upperCateId}
+		</when>
+		<otherwise><!-- test='calulateOpt == "UP" -->
+			UPDATE MS_CS_SHOP_CATEGORY
+			SET DISP_ORDER = DISP_ORDER +1
+			WHERE DISP_ORDER BETWEEN ${toOrder} AND ${fromOrder}-1
+			AND SHOW_YN = 'Y'
+			AND UPPER_CATE_ID = #{upperCateId}
+		</otherwise>
+		</choose>
+	</update>
+	
+	<delete id="deleteShopCategory" parameterType="HashMap">
+		DELETE
+		FROM MS_CS_SHOP_CATEGORY
+		WHERE 1=1
+		<if test='cateId !=null and cateId !=""'>
+			AND CATE_ID = #{cateId}
+		</if>
+		<if test='upperCateId !=null and upperCateId!=""'>
+			AND UPPER_CATE_ID = #{upperCateId} 
+		</if>
+	</delete>
+	
+	<update id="updateDelCategoryInfo" parameterType="HashMap">
+		UPDATE MS_CS_SHOP_CATEGORY
+		SET DEL_YN = #{delYN} 
+		WHERE 1=1
+		<if test='upperCateId != null and upperCateId != ""'>
+			AND UPPER_CATE_ID = #{upperCateId}
+		</if>
+		<if test='cateId != null and cateId != ""'>
+			AND CATE_ID = #{cateId}
+		</if>
+	</update>
+	
+	<!-- 모카샵 중분류 조회 -->
+	<select id="selectShopSecondCategoryList" parameterType="HashMap" resultMap="BaseResultMap" >
+		SELECT <if test='top != null and top != ""'> top ${top} </if>
+			ROW_NUMBER() OVER(ORDER BY C.DISP_ORDER, C.REG_DTM DESC) AS IDX
+			, C.UPPER_CATE_ID
+			, (SELECT CATE_NAME FROM MS_CS_SHOP_CATEGORY WHERE CATE_ID=#{upperCateId}) AS UPPER_CATE_ID
+			, C.CATE_ID
+			, C.CATE_NAME
+			, C.SHOW_YN
+			, C.MARKET_INFO
+			, C.DISP_ORDER
+			, C.USE_MARKET_YN
+			, C.LINK_URL
+			, C.DEL_YN
+			, C.BIGO
+			, C.REG_USER
+			, CONVERT(VARCHAR(10), C.REG_DTM, 120) as REG_DTM
+			, C.CHG_USER
+			, CONVERT(VARCHAR(10), C.CHG_DTM, 120) as CHG_DTM
+		FROM MS_CS_SHOP_CATEGORY C
+		WHERE C.UPPER_CATE_ID = #{upperCateId}
+<!-- 		<if test='cateId != null and cateId != ""'> -->
+<!-- 			AND C.CATE_ID = #{cateId} -->
+<!-- 		</if> -->
+		<if test='ra_searchTerm != null and ra_searchTerm != ""'>
+			<if test='sdate != null and sdate != ""'>
+				<if test='se_termOpt == "reg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), C.REG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+				<if test='se_termOpt == "chg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), C.CHG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+			</if>
+			<if test='edate != null and edate != ""'>
+				<if test='se_termOpt == "reg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), C.REG_DTM, 120) <=	#{edate}
+					]]>
+				</if>
+				<if test='se_termOpt == "chg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), C.CHG_DTM, 120) <=	#{edate}
+					]]>
+				</if>
+			</if>
+		</if>
+		<if test='se_termOpt == "chg_date"'>
+			AND C.CHG_DTM IS NOT NULL
+		</if>
+		<if test='cateName != null and cateName != ""'>
+			AND CATE_NAME LIKE '%${cateName}%'
+		</if>
+		<if test='showYN != null and showYN !="" and showYN != "all"'>
+			AND C.SHOW_YN = #{showYN}
+		</if>
+		<if test='ra_allyStat != null and ra_allyStat != "" and ra_allyStat != "all"'>
+			AND C.ALLY_STAT = #{ra_allyStat}
+		</if>
+	</select>
+	
+	<!-- 조회조건에 대한 모카샵_카테고리 중분류 목록 -->
+	<select id="selectShopSecondCategoryInfo" parameterType="HashMap" resultMap="BaseResultMap" >
+		SELECT C.CATE_ID
+			, C.CATE_NAME
+			, C.UPPER_CATE_ID
+			, (
+			<choose>
+				<when test="upperCateId == 'CAT000000000'">''</when>
+				<when test="upperCateId != null and upperCateId != ''">
+				SELECT CATE_NAME FROM MS_CS_SHOP_CATEGORY WHERE CATE_ID=#{upperCateId}
+				</when>
+				<otherwise>''</otherwise>
+			</choose> 
+			) AS UPPER_CATE_NAME
+			, C.SHOW_YN
+			, C.MARKET_INFO
+			, C.DISP_ORDER
+			, C.USE_MARKET_YN
+			, C.LINK_URL
+			, C.DEL_YN
+			, C.BIGO
+			, C.REG_USER
+			, CONVERT(VARCHAR(10), C.REG_DTM, 120) as REG_DTM
+			, C.CHG_USER
+			, CONVERT(VARCHAR(10), C.CHG_DTM, 120) as CHG_DTM
+		FROM MS_CS_SHOP_CATEGORY C
+		WHERE 1=1
+		<if test='cateId != null and cateId != ""'>
+			AND C.CATE_ID = #{cateId}
+		</if>
+		<if test='upperCateId != null and upperCateId != ""'>
+			AND C.UPPER_CATE_ID = #{upperCateId}
+		</if>
+	</select>
+	
+	<!-- 노출정보가  노출인 카테고리의 수를 조회 -->
+	<select id="selectShowCategoryListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MS_CS_SHOP_CATEGORY
+		WHERE UPPER_CATE_ID = #{upperCateId}
+		AND SHOW_YN='Y'
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wallet.harex.mapper.CompareMapper">   
+  <resultMap id="ResultList" type="com.wallet.harex.model.Compare"> 
+  	 	<result column="SEQ"  jdbcType="VARCHAR" property="seq" /> 
+			<result column="TR_DATE"  jdbcType="VARCHAR" property="trDate" />  
+			<result column="COMP_ID"  jdbcType="VARCHAR" property="compId" />  
+			<result column="COMP_NAME"  jdbcType="VARCHAR" property="compName" />  
+			<result column="BRAND_ID"  jdbcType="VARCHAR" property="brandId" />  
+			<result column="BRAND_NAME"  jdbcType="VARCHAR" property="brandName" />  
+			<result column="SHOP_ID"  jdbcType="VARCHAR" property="shopId" />  
+			<result column="SHOP_NAME"  jdbcType="VARCHAR" property="shopName" />  
+			<result column="PHONE_NO"  jdbcType="VARCHAR" property="phoneNo" />  
+			<result column="PAY_TYPE"  jdbcType="VARCHAR" property="payType" />  
+			<result column="PSTATUS"  jdbcType="VARCHAR" property="pstatus" />  
+			<result column="ACPOS_TID"  jdbcType="VARCHAR" property="acposTid" />  
+			<result column="APPR_NO"  jdbcType="VARCHAR" property="apprNo" />  
+			<result column="APPR_DATE" jdbcType="VARCHAR" property="apprDate" />	
+			<result column="APPR_TIME" jdbcType="VARCHAR" property="apprTime" />	
+			<result column="REAL_DC_PRICE"  jdbcType="INTEGER" property="realDcPrice" /> 
+  </resultMap>
+  
+  <resultMap id="ResultListMem" type="com.wallet.harex.model.Compare"> 
+  	 	<result column="SEQ"  jdbcType="VARCHAR" property="seq" /> 
+			<result column="TR_DATE"  jdbcType="VARCHAR" property="trDate" />  
+			<result column="COMP_ID"  jdbcType="VARCHAR" property="compId" />  
+			<result column="COMP_NAME"  jdbcType="VARCHAR" property="compName" />  
+			<result column="BRAND_ID"  jdbcType="VARCHAR" property="brandId" />  
+			<result column="BRAND_NAME"  jdbcType="VARCHAR" property="brandName" />  
+			<result column="SHOP_ID"  jdbcType="VARCHAR" property="shopId" />  
+			<result column="SHOP_NAME"  jdbcType="VARCHAR" property="shopName" />  
+			<result column="PHONE_NO"  jdbcType="VARCHAR" property="phoneNo" />  
+			<result column="PAY_TYPE"  jdbcType="VARCHAR" property="payType" />  
+			<result column="PSTATUS"  jdbcType="VARCHAR" property="pstatus" />  
+			<result column="ACPOS_TID"  jdbcType="VARCHAR" property="acposTid" />  
+			<result column="APPR_NO"  jdbcType="VARCHAR" property="apprNo" />  
+			<result column="APPR_DATE" jdbcType="VARCHAR" property="apprDate" />	
+			<result column="APPR_TIME" jdbcType="VARCHAR" property="apprTime" />	
+			<result column="REAL_USE_POINT"  jdbcType="INTEGER" property="realUsePoint" /> 
+  </resultMap>
+  
+  <!-- 대사관리 복합결제수단 : 쿠폰 목록 조회-->
+  <select id="selectCompareList" parameterType="HashMap" resultMap="ResultList">
+  	select
+  					*
+  		from
+  		(
+			  	 	select 
+			  	 				 <if test='top!=null and top!=""'> top ${top} </if>
+										row_number() over (order by a.acpos_tid)  		as SEQ
+									, case when a.TR_DATE IS NULL  then '' 
+									       else (SUBSTRING(a.TR_DATE,1,4) + '-' + SUBSTRING(a.TR_DATE,5,2) + '-' + SUBSTRING(a.TR_DATE,7,2)) end			as TR_DATE 
+									, z.COMP_ID 								as COMP_ID 
+									, z.COMP_NAME						as COMP_NAME
+									, y.COMP_ID 								as BRAND_ID 
+									, y.COMP_NAME						as BRAND_NAME
+									, x.COMP_ID 								as SHOP_ID 
+									, x.COMP_NAME						as SHOP_NAME 
+									, a.PHONE_NO							as PHONE_NO  
+									, '쿠폰'												as PAY_TYPE 
+									<if test="pstatus == 'PS'">
+									, case when a.PSTATUS = 'PS' then '성공' else '실패' end	as PSTATUS 
+									</if>
+									<if test="pstatus == 'SC'">
+				 			 		, case when a.PSTATUS = 'SC' then '성공' else '실패' end	as PSTATUS 
+									</if>
+									, a.ACPOS_TID  AS ACPOS_TID			
+									, b.APPR_NO    AS APPR_NO		
+									, case when b.APPR_DATE IS NULL  then '' 
+									       else (SUBSTRING(b.APPR_DATE,1,4) + '-' + SUBSTRING(b.APPR_DATE,5,2) + '-' + SUBSTRING(b.APPR_DATE,7,2)) end as APPR_DATE
+									, case when b.APPR_TIME IS NULL  then '' 
+									       else (SUBSTRING(b.APPR_TIME,1,2) + ':' + SUBSTRING(b.APPR_TIME,3,2) + ':' + SUBSTRING(b.APPR_TIME,5,2)) end as APPR_TIME
+									, b.REAL_DC_PRICE AS REAL_DC_PRICE 
+						from
+									  MW_PS_TRNS_MST a
+									, MW_PS_TRNS_CPN b 
+									, MW_CM_COMPANY  x 
+									, MW_CM_COMPANY  y 
+									, MW_CM_COMPANY  z
+						where
+										1= 1
+								and a.ACPOS_TID = b.ACPOS_TID
+								and y.UPPER_COMP_ID = z.COMP_ID
+								and z.COMP_LEVEL_TYPE = '01'
+								and a.K_SHOP_ID = x.COMP_ID
+								and x.COMP_LEVEL_TYPE = '03'
+								and x.UPPER_COMP_ID = y.COMP_ID	
+								and y.COMP_LEVEL_TYPE = '02'
+								
+							<if test="region_type != 'none'">
+								and x.REGION_TYPE = #{region_type}
+							</if>
+							<if test="pstatus == 'PS'">
+								and a.TR_FG = '0'										
+								and a.CSTATUS = '0'        
+								and a.PSTATUS = 'PS'      
+							</if>
+							<if test="pstatus == 'SC'">
+								and a.TR_FG = '9'										
+								and a.CSTATUS = '0'				
+								and a.PSTATUS = 'SC'				
+							</if>
+							<if test="shopSel != 'none'">
+								and a.K_SHOP_ID = #{shopSel}
+							</if>
+							<if test="brandId != 'none'">
+									and y.COMP_ID = #{brandId}								
+							</if>
+							<if test="compId != 'none'">
+									and z.COMP_ID = #{compId}								
+							</if>
+						<![CDATA[ 
+								and a.TR_DATE >= #{sdate} and a.TR_DATE <= #{edate}
+						]]>		
+				) AA
+		where 1=1
+		<if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+ 				AND AA.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+  </select>
+  
+  <!-- 대사관리 복합결제수단 : 쿠폰 목록 조회 Excel-->
+  <select id="selectCompareListExcel" parameterType="HashMap" resultMap="ResultList">
+  	select
+  					*
+  		from
+  		(
+			  	 	select 
+			  	 				 
+										row_number() over (order by a.acpos_tid)  		as SEQ
+									, case when a.TR_DATE IS NULL  then '' 
+									       else (SUBSTRING(a.TR_DATE,1,4) + '-' + SUBSTRING(a.TR_DATE,5,2) + '-' + SUBSTRING(a.TR_DATE,7,2)) end			as TR_DATE 
+									, z.COMP_ID 								as COMP_ID 
+									, z.COMP_NAME						as COMP_NAME
+									, y.COMP_ID 								as BRAND_ID 
+									, y.COMP_NAME						as BRAND_NAME
+									, x.COMP_ID 								as SHOP_ID 
+									, x.COMP_NAME						as SHOP_NAME 
+									, a.PHONE_NO							as PHONE_NO  
+									, '쿠폰'												as PAY_TYPE 
+									<if test="pstatus == 'PS'">
+									, case when a.PSTATUS = 'PS' then '성공' else '실패' end	as PSTATUS 
+									</if>
+									<if test="pstatus == 'SC'">
+				 			 		, case when a.PSTATUS = 'SC' then '성공' else '실패' end	as PSTATUS 
+									</if>
+									, a.ACPOS_TID  AS ACPOS_TID			
+									, b.APPR_NO    AS APPR_NO		
+									, case when b.APPR_DATE IS NULL  then '' 
+									       else (SUBSTRING(b.APPR_DATE,1,4) + '-' + SUBSTRING(b.APPR_DATE,5,2) + '-' + SUBSTRING(b.APPR_DATE,7,2)) end as APPR_DATE
+									, case when b.APPR_TIME IS NULL  then '' 
+									       else (SUBSTRING(b.APPR_TIME,1,2) + ':' + SUBSTRING(b.APPR_TIME,3,2) + ':' + SUBSTRING(b.APPR_TIME,5,2)) end as APPR_TIME
+									, b.REAL_DC_PRICE AS REAL_DC_PRICE 
+						from
+									  MW_PS_TRNS_MST a
+									, MW_PS_TRNS_CPN b 
+									, MW_CM_COMPANY  x 
+									, MW_CM_COMPANY  y 
+									, MW_CM_COMPANY  z
+						where
+										1= 1
+								and a.ACPOS_TID = b.ACPOS_TID
+								and y.UPPER_COMP_ID = z.COMP_ID
+								and z.COMP_LEVEL_TYPE = '01'
+								and a.K_SHOP_ID = x.COMP_ID
+								and x.COMP_LEVEL_TYPE = '03'
+								and x.UPPER_COMP_ID = y.COMP_ID	
+								and y.COMP_LEVEL_TYPE = '02'
+								
+							<if test="region_type != 'none'">
+								and x.REGION_TYPE = #{region_type}
+							</if>
+							<if test="pstatus == 'PS'">
+								and a.TR_FG = '0'										
+								and a.CSTATUS = '0'      
+								and a.PSTATUS = 'PS'        
+							</if>
+							<if test="pstatus == 'SC'">
+								and a.TR_FG = '9'										
+								and a.CSTATUS = '0'				
+								and a.PSTATUS = 'SC'				
+							</if>
+							<if test="shopSel != 'none'">
+								and a.K_SHOP_ID = #{shopSel}
+							</if>
+							<if test="brandId != 'none'">
+									and y.COMP_ID = #{brandId}								
+							</if>
+							<if test="compId != 'none'">
+									and z.COMP_ID = #{compId}								
+							</if>
+						<![CDATA[ 
+								and a.TR_DATE >= #{sdate} and a.TR_DATE <= #{edate}
+						]]>		
+				) AA
+		
+  </select>
+  
+  <!-- 대사관리 복합결제수단 : 쿠폰 total count -->
+  <select id="selectCompareListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+  		 select
+  		 					count(*) AS CNT
+  		   from
+				(
+			  		 	select
+			  		 				 
+										row_number() over (order by a.acpos_tid)  		as SEQ
+									, a.TR_DATE								as TR_DATE 
+									, z.COMP_ID 								as COMP_ID 
+									, z.COMP_NAME						as COMP_NAME
+									, y.COMP_ID 								as BRAND_ID 
+									, y.COMP_NAME						as BRAND_NAME
+									, x.COMP_ID 								as SHOP_ID 
+									, x.COMP_NAME						as SHOP_NAME 
+									, a.PHONE_NO							as PHONE_NO  
+									, '쿠폰'												as PAY_TYPE 
+									<if test="pstatus == 'PS'">
+									, case when a.PSTATUS = 'PS' then '성공' else '실패' end	as PSTATUS 
+									</if>
+									<if test="pstatus == 'SC'">
+				 			 		, case when a.PSTATUS = 'SC' then '성공' else '실패' end	as PSTATUS 
+									</if>
+									, a.ACPOS_TID  AS ACPOS_TID			
+									, b.APPR_NO    AS APPR_NO			
+									, b.APPR_DATE  AS APPR_DATE	
+									, b.APPR_TIME  AS APPR_TIME	                   
+									, b.REAL_DC_PRICE AS REAL_DC_PRICE 
+						from
+									  MW_PS_TRNS_MST a
+									, MW_PS_TRNS_CPN b 
+									, MW_CM_COMPANY  x 
+									, MW_CM_COMPANY  y 
+									, MW_CM_COMPANY  z
+						where
+										1= 1
+							and a.ACPOS_TID = b.ACPOS_TID
+							and y.UPPER_COMP_ID = z.COMP_ID
+							and z.COMP_LEVEL_TYPE = '01'
+							and a.K_SHOP_ID = x.COMP_ID
+							and x.COMP_LEVEL_TYPE = '03'
+							and x.UPPER_COMP_ID = y.COMP_ID	
+							and y.COMP_LEVEL_TYPE = '02'
+							
+						<if test="region_type != 'none'">
+							and x.REGION_TYPE = #{region_type}
+						</if>
+						<if test="pstatus == 'PS'">
+							and a.TR_FG = '0'										
+							and a.CSTATUS = '0'      
+							and a.PSTATUS = 'PS'        
+						</if>
+						<if test="pstatus == 'SC'">
+							and a.TR_FG = '9'										
+							and a.CSTATUS = '0'				
+							and a.PSTATUS = 'SC'				
+						</if>
+						<if test="shopSel != 'none'">
+							and a.K_SHOP_ID = #{shopSel}
+						</if>
+						<if test="brandId != 'none'">
+								and y.COMP_ID = #{brandId}								
+						</if>
+						<if test="compId != 'none'">
+								and z.COMP_ID = #{compId}								
+						</if>
+						<![CDATA[ 
+								and a.TR_DATE >= #{sdate} and a.TR_DATE <= #{edate}
+						]]>		
+				)  AA 		
+	
+  </select>
+  
+  <!-- 대사관리 복합결제수단 : 멤버십 목록조회-->
+  <select id="selectCompareMemList" parameterType="HashMap" resultMap="ResultListMem">
+  	select
+  					*
+  		from
+  		(
+			  	 	select 
+			  	 				 <if test='top!=null and top!=""'> top ${top} </if>
+										row_number() over (order by a.acpos_tid)  		as SEQ
+									,  case when a.TR_DATE IS NULL  then '' 
+									       else (SUBSTRING(a.TR_DATE,1,4) + '-' + SUBSTRING(a.TR_DATE,5,2) + '-' + SUBSTRING(a.TR_DATE,7,2)) end			as TR_DATE 
+									, z.COMP_ID 								as COMP_ID 
+									, z.COMP_NAME						as COMP_NAME
+									, y.COMP_ID 								as BRAND_ID 
+									, y.COMP_NAME						as BRAND_NAME
+									, x.COMP_ID 								as SHOP_ID 
+									, x.COMP_NAME						as SHOP_NAME 
+									, a.PHONE_NO							as PHONE_NO  
+									, '멤버십'												as PAY_TYPE 
+									<if test="pstatus == 'PS'">
+									, case when a.PSTATUS = 'PS' then '성공' else '실패' end	as PSTATUS 
+									</if>
+									<if test="pstatus == 'SC'">
+				 			 		, case when a.PSTATUS = 'SC' then '성공' else '실패' end	as PSTATUS 
+									</if>
+									, a.ACPOS_TID  AS ACPOS_TID			
+									, b.APPR_NO    AS APPR_NO		
+									, case when b.APPR_DATE IS NULL  then '' 
+									       else (SUBSTRING(b.APPR_DATE,1,4) + '-' + SUBSTRING(b.APPR_DATE,5,2) + '-' + SUBSTRING(b.APPR_DATE,7,2)) end as APPR_DATE
+									, case when b.APPR_TIME IS NULL  then '' 
+									       else (SUBSTRING(b.APPR_TIME,1,2) + ':' + SUBSTRING(b.APPR_TIME,3,2) + ':' + SUBSTRING(b.APPR_TIME,5,2)) end as APPR_TIME
+									, b.REAL_USE_POINT 	AS REAL_USE_POINT 
+						from
+									  MW_PS_TRNS_MST a
+									, MW_PS_TRNS_MS_USE b 
+									, MW_CM_COMPANY  x 
+									, MW_CM_COMPANY  y 
+									, MW_CM_COMPANY  z
+						where
+										1= 1
+								and a.ACPOS_TID = b.ACPOS_TID
+								and y.UPPER_COMP_ID = z.COMP_ID
+								and z.COMP_LEVEL_TYPE = '01'
+								and a.K_SHOP_ID = x.COMP_ID
+								and x.COMP_LEVEL_TYPE = '03'
+								and x.UPPER_COMP_ID = y.COMP_ID	
+								and y.COMP_LEVEL_TYPE = '02'
+								
+							<if test="region_type != 'none'">
+								and x.REGION_TYPE = #{region_type}
+							</if>
+							<if test="pstatus == 'PS'">
+								and a.TR_FG = '0'										
+								and a.CSTATUS = '0'      
+								and a.PSTATUS = 'PS'        
+							</if>
+							<if test="pstatus == 'SC'">
+								and a.TR_FG = '9'										
+								and a.CSTATUS = '0'				
+								and a.PSTATUS = 'SC'				
+							</if>
+							<if test="shopSel != 'none'">
+								and a.K_SHOP_ID = #{shopSel}
+							</if>
+							<if test="brandId != 'none'">
+									and y.COMP_ID = #{brandId}								
+							</if>
+							<if test="compId != 'none'">
+									and z.COMP_ID = #{compId}								
+							</if>
+						<![CDATA[ 
+								and a.TR_DATE >= #{sdate} and a.TR_DATE <= #{edate}
+						]]>		
+				) AA
+		where 1=1
+		<if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+ 				AND AA.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+  </select>
+  
+  <!-- 대사관리 복합결제수단 : 멤버십 목록조회 Excel-->
+  <select id="selectCompareMemListExcel" parameterType="HashMap" resultMap="ResultListMem">
+  	select
+  					*
+  		from
+  		(
+			  	 	select 
+			  	 				 
+										row_number() over (order by a.acpos_tid)  		as SEQ
+									,  case when a.TR_DATE IS NULL  then '' 
+									       else (SUBSTRING(a.TR_DATE,1,4) + '-' + SUBSTRING(a.TR_DATE,5,2) + '-' + SUBSTRING(a.TR_DATE,7,2)) end			as TR_DATE 
+									, z.COMP_ID 								as COMP_ID 
+									, z.COMP_NAME						as COMP_NAME
+									, y.COMP_ID 								as BRAND_ID 
+									, y.COMP_NAME						as BRAND_NAME
+									, x.COMP_ID 								as SHOP_ID 
+									, x.COMP_NAME						as SHOP_NAME 
+									, a.PHONE_NO							as PHONE_NO  
+									, '멤버십'												as PAY_TYPE 
+									<if test="pstatus == 'PS'">
+									, case when a.PSTATUS = 'PS' then '성공' else '실패' end	as PSTATUS 
+									</if>
+									<if test="pstatus == 'SC'">
+				 			 		, case when a.PSTATUS = 'SC' then '성공' else '실패' end	as PSTATUS 
+									</if>
+									, a.ACPOS_TID  AS ACPOS_TID			
+									, b.APPR_NO    AS APPR_NO		
+									, case when b.APPR_DATE IS NULL  then '' 
+									       else (SUBSTRING(b.APPR_DATE,1,4) + '-' + SUBSTRING(b.APPR_DATE,5,2) + '-' + SUBSTRING(b.APPR_DATE,7,2)) end as APPR_DATE
+									, case when b.APPR_TIME IS NULL  then '' 
+									       else (SUBSTRING(b.APPR_TIME,1,2) + ':' + SUBSTRING(b.APPR_TIME,3,2) + ':' + SUBSTRING(b.APPR_TIME,5,2)) end as APPR_TIME
+									, b.REAL_USE_POINT 	AS REAL_USE_POINT 
+						from
+									  MW_PS_TRNS_MST a
+									, MW_PS_TRNS_MS_USE b 
+									, MW_CM_COMPANY  x 
+									, MW_CM_COMPANY  y 
+									, MW_CM_COMPANY  z
+						where
+										1= 1
+								and a.ACPOS_TID = b.ACPOS_TID
+								and y.UPPER_COMP_ID = z.COMP_ID
+								and z.COMP_LEVEL_TYPE = '01'
+								and a.K_SHOP_ID = x.COMP_ID
+								and x.COMP_LEVEL_TYPE = '03'
+								and x.UPPER_COMP_ID = y.COMP_ID	
+								and y.COMP_LEVEL_TYPE = '02'
+								
+							<if test="region_type != 'none'">
+								and x.REGION_TYPE = #{region_type}
+							</if>
+							<if test="pstatus == 'PS'">
+								and a.TR_FG = '0'										
+								and a.CSTATUS = '0'      
+								and a.PSTATUS = 'PS'        
+							</if>
+							<if test="pstatus == 'SC'">
+								and a.TR_FG = '9'										
+								and a.CSTATUS = '0'				
+								and a.PSTATUS = 'SC'				
+							</if>
+							<if test="shopSel != 'none'">
+								and a.K_SHOP_ID = #{shopSel}
+							</if>
+							<if test="brandId != 'none'">
+									and y.COMP_ID = #{brandId}								
+							</if>
+							<if test="compId != 'none'">
+									and z.COMP_ID = #{compId}								
+							</if>
+						<![CDATA[ 
+								and a.TR_DATE >= #{sdate} and a.TR_DATE <= #{edate}
+						]]>		
+				) AA
+		
+  </select>
+  
+  <!-- 대사관리 복합결제수단 : 멤버십 total Count -->
+  <select id="selectCompareMemListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+  		 select
+  		 					count(*) AS CNT
+  		   from
+				(
+			  		 	select
+			  		 				
+										row_number() over (order by a.acpos_tid)  		as SEQ
+									, a.TR_DATE								as TR_DATE 
+									, z.COMP_ID 								as COMP_ID 
+									, z.COMP_NAME						as COMP_NAME
+									, y.COMP_ID 								as BRAND_ID 
+									, y.COMP_NAME						as BRAND_NAME
+									, x.COMP_ID 								as SHOP_ID 
+									, x.COMP_NAME						as SHOP_NAME 
+									, a.PHONE_NO							as PHONE_NO  
+									, '멤버십'											as PAY_TYPE 
+									<if test="pstatus == 'PS'">
+									, case when a.PSTATUS = 'PS' then '성공' else '실패' end	as PSTATUS 
+									</if>
+									<if test="pstatus == 'SC'">
+				 			 		, case when a.PSTATUS = 'SC' then '성공' else '실패' end	as PSTATUS 
+									</if>
+									, a.ACPOS_TID  AS ACPOS_TID			
+									, b.APPR_NO    AS APPR_NO			
+									, b.APPR_DATE  AS APPR_DATE	
+									, b.APPR_TIME  AS APPR_TIME	                   
+									, b.REAL_USE_POINT 	AS REAL_USE_POINT 
+						from
+									  MW_PS_TRNS_MST a
+									, MW_PS_TRNS_MS_USE b 
+									, MW_CM_COMPANY  x 
+									, MW_CM_COMPANY  y 
+									, MW_CM_COMPANY  z
+						where
+										1= 1
+							and a.ACPOS_TID = b.ACPOS_TID
+							and y.UPPER_COMP_ID = z.COMP_ID
+							and z.COMP_LEVEL_TYPE = '01'
+							and a.K_SHOP_ID = x.COMP_ID
+							and x.COMP_LEVEL_TYPE = '03'
+							and x.UPPER_COMP_ID = y.COMP_ID	
+							and y.COMP_LEVEL_TYPE = '02'
+							
+						<if test="region_type != 'none'">
+							and x.REGION_TYPE = #{region_type}
+						</if>
+						<if test="pstatus == 'PS'">
+							and a.TR_FG = '0'										
+							and a.CSTATUS = '0'      
+							and a.PSTATUS = 'PS'        
+						</if>
+						<if test="pstatus == 'SC'">
+							and a.TR_FG = '9'										
+							and a.CSTATUS = '0'				
+							and a.PSTATUS = 'SC'				
+						</if>
+						<if test="shopSel != 'none'">
+							and a.K_SHOP_ID = #{shopSel}
+						</if>
+						<if test="brandId != 'none'">
+								and y.COMP_ID = #{brandId}								
+						</if>
+						<if test="compId != 'none'">
+								and z.COMP_ID = #{compId}								
+						</if>
+						<![CDATA[ 
+								and a.TR_DATE >= #{sdate} and a.TR_DATE <= #{edate}
+						]]>		
+				)  AA 		
+  </select>
+  
+</mapper>

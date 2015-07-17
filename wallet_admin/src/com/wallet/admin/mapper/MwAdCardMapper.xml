@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wallet.admin.mapper.MwAdCardMapper">
+	
+	<resultMap id="BaseResultMap" type="com.wallet.admin.model.MwAdCard">
+		<result column="cidx" property="cidx" jdbcType="VARCHAR" />
+    <result column="cname" property="cname" jdbcType="VARCHAR" />
+    <result column="os" property="os" jdbcType="VARCHAR" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+    <result column="app_pkg" property="appPkg" jdbcType="VARCHAR" />
+    <result column="app_class" property="appClass" jdbcType="VARCHAR" />
+    <result column="app_aid" property="appAid" jdbcType="VARCHAR" />
+    <result column="stat" property="stat" jdbcType="CHAR" />
+    <result column="chg_day" property="chgDay" jdbcType="VARCHAR" />
+    <result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
+    <result column="idx" property="idx" jdbcType="INTEGER" />
+    <result column="img_host" jdbcType="VARCHAR" property="imgHost" />
+    <result column="img_i3" jdbcType="VARCHAR" property="imgI3" />
+    <result column="img_i4" jdbcType="VARCHAR" property="imgI4" />
+    <result column="img_r4" jdbcType="VARCHAR" property="imgR4" />
+    <result column="img_r5" jdbcType="VARCHAR" property="imgR5" />
+    <result column="img_r6" jdbcType="VARCHAR" property="imgR6" />
+    <result column="img_r7" jdbcType="VARCHAR" property="imgR7" />
+    <result column="market" jdbcType="VARCHAR" property="market" />
+    <result column="app_url" jdbcType="VARCHAR" property="appUrl" />
+    <result column="reg_day" jdbcType="VARCHAR" property="regDay" />
+    <result column="info_url" property="infoUrl" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="g_idx" property="gIdx" jdbcType="VARCHAR" />
+    <result column="a_idx" property="aIdx" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 카드정보 TB 조회 -->
+	<select id="selectCardList" parameterType="HashMap" resultMap="BaseResultMap">
+		select
+			<if test="top != null and top != ''">
+					top ${top}
+			</if> 
+		      cidx
+					,cname
+					,os
+					,app_id
+					,app_pkg
+					,app_class
+					,app_aid
+					,stat
+					,img_url
+					,idx
+					,img_host
+					,img_i3
+					,img_i4
+					,img_r4
+					,img_r5
+					,img_r6
+					,img_r7
+					,market
+					,app_url
+					,LEFT(CONVERT(VARCHAR, CONVERT(datetime, reg_day, 120), 120), 10) reg_day
+					,info_url
+					,phone
+		from usim_card
+		where  1=1
+		and cidx not in (80,81)
+		<if test="os != null and os != ''">
+			and os = #{os,jdbcType=VARCHAR}
+		</if>
+		<choose>
+			<when test="view.equals('dtl')">
+			 	and cidx = #{cidx,jdbcType=VARCHAR}
+			</when>
+		</choose>
+		order by idx
+	</select>
+	
+	<!-- 카드정보 TB 순위 조정 UPDATE -->
+  <update id="updateCardIdx" parameterType="HashMap">
+	  update usim_card
+	   <set>
+	   		<choose>
+	   			<when test="idxGb.equals('update')">
+	   				<if test="cidx != null and cidx != ''">
+			        cidx = #{cidx,jdbcType=VARCHAR},
+			      </if>
+			      <if test="os != null and os != ''">
+			        os = #{os,jdbcType=VARCHAR},
+			      </if>
+			      <if test="idx != null and idx != ''">
+			        idx = #{idx,jdbcType=VARCHAR},
+			      </if>
+			       <if test="thisIdx !=null and thisIdx != '' and targetIdx != null and targetIdx != ''">
+			       		<if test="thisIdx &gt; targetIdx">
+					      	idx = idx + 1
+					      </if>
+					      <if test="thisIdx &lt; targetIdx">
+					      	idx = idx - 1
+					      </if>
+			       </if>
+	   			</when>
+	   			<otherwise>
+	   				idx = idx - 1
+	   			</otherwise>
+	   		</choose>
+	    </set>
+	    <where>
+	    	and cidx not in (80,81)
+	    	and os = #{os,jdbcType=VARCHAR}
+	    	<choose>
+	   			<when test="idxGb.equals('update')">
+	   				<if test="cidx != null and cidx != ''">
+				       and cidx = #{cidx,jdbcType=VARCHAR}
+			      </if>
+			      <if test="thisIdx != null and thisIdx != '' and targetIdx != null and targetIdx != ''">
+			      	<if test="thisIdx &lt; targetIdx">
+								and idx between ${thisIdx} and ${targetIdx}
+							</if>
+					    <if test="thisIdx &gt; targetIdx">
+								and idx between ${targetIdx} and ${thisIdx}
+							</if>
+			      </if>
+	   			</when>
+	   			<otherwise>
+	   				and idx > #{idx,jdbcType=INTEGER}
+	   			</otherwise>
+	   		</choose>
+	    </where>
+  </update>
+  
+	<!-- 카드정보 TB UPDATE -->
+	<update id="updateCardDtl" parameterType="HashMap">
+    update usim_card
+    <set>
+    	  chg_day = replace(replace(replace(convert(varchar,getdate(),120),'-',''),':',''),' ','')
+      <if test="cidx != null and cidx != ''">
+        ,cidx = #{cidx,jdbcType=VARCHAR}
+      </if>
+      <if test="cname != null and cname != ''">
+        ,cname = #{cname,jdbcType=VARCHAR}
+      </if>
+      <if test="os != null and os != ''">
+        ,os = #{os,jdbcType=VARCHAR}
+      </if>
+       <if test="market != null and market != ''">
+        ,market = #{market,jdbcType=VARCHAR}
+        <if test="market == 'olleh'">
+        	,app_id = #{app_id,jdbcType=VARCHAR}
+      	</if>
+        <if test="market == 'android'">
+        	,app_id = ''
+      	</if>
+      </if>
+      <if test="app_pkg != null and app_pkg != ''">
+        ,app_pkg = #{app_pkg,jdbcType=VARCHAR}
+      </if>
+      <if test="app_class != null and app_class != ''">
+        ,app_class = #{app_class,jdbcType=VARCHAR}
+      </if>
+      <if test="app_aid != null and app_aid != ''">
+        ,app_aid = #{app_aid,jdbcType=VARCHAR}
+      </if>
+      <if test="stat != null and stat != ''">
+        ,stat = #{stat,jdbcType=VARCHAR}
+      </if>
+      <if test="img_url != null and img_url != ''">
+        ,img_url = #{img_url,jdbcType=VARCHAR}
+      </if>
+      <if test="idx != null and idx != ''">
+        ,idx = #{idx,jdbcType=VARCHAR}
+      </if>
+      <if test="img_host != null and img_host != ''">
+        ,img_host = #{img_host,jdbcType=VARCHAR}
+      </if>
+      <if test="img_i3 != null and img_i3 != ''">
+        ,img_i3 = #{img_i3,jdbcType=VARCHAR}
+      </if>
+      <if test="img_i4 != null and img_i4 != ''">
+        ,img_i4 = #{img_i4,jdbcType=VARCHAR}
+      </if>
+      <if test="img_r4 != null and img_r4 != ''">
+        ,img_r4 = #{img_r4,jdbcType=VARCHAR}
+      </if>
+      <if test="img_r5 != null and img_r5 != ''">
+        ,img_r5 = #{img_r5,jdbcType=VARCHAR}
+      </if>
+      <if test="img_r6 != null and img_r6 != ''">
+        ,img_r6 = #{img_r6,jdbcType=VARCHAR}
+      </if>
+       <if test="img_r7 != null and img_r7 != ''">
+        ,img_r7 = #{img_r7,jdbcType=VARCHAR}
+      </if>
+       <if test="app_url != null and app_url != ''">
+        ,app_url = #{app_url,jdbcType=VARCHAR}
+      </if>
+       <if test="reg_day != null and reg_day != ''">
+        ,reg_day = #{reg_day,jdbcType=VARCHAR}
+      </if>
+      <if test="info_url != null and info_url != ''">
+        ,info_url = #{info_url,jdbcType=VARCHAR}
+      </if>
+       <if test="phone != null and phone != ''">
+        ,phone = #{phone,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where 1=1
+    and cidx not in (80,81)
+    and os = #{os,jdbcType=VARCHAR}
+    and cidx = #{cidx_org,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 카드정보 max+1 idx 조회 -->
+	<select id="selectCardIdx" parameterType="HashMap" resultMap="BaseResultMap">
+		select (
+							select isnull(cast(max(idx) as int),0) + 1 from usim_card where os = 'G' and cidx not in (80,81)
+						) g_idx
+						,
+						(
+							select isnull(cast(max(idx) as int),0) + 1 from usim_card where os = 'A' and cidx not in (80,81)
+						) a_idx
+	</select>
+	
+  <!-- 신규 카드사 등록 INSERT -->
+  <insert id="insertCardReg" parameterType="HashMap">
+  	insert into usim_card (
+			<if test="cidx != null and cidx != ''">
+        cidx
+      </if>
+      <if test="cname != null and cname != ''">
+        ,cname
+      </if>
+      <if test="os != null and os != ''">
+        ,os
+      </if>
+      <if test="app_id != null and app_id != ''">
+        ,app_id
+      </if>
+      <if test="app_pkg != null and app_pkg != ''">
+        ,app_pkg
+      </if>
+      <if test="app_class != null and app_class != ''">
+        ,app_class
+      </if>
+      <if test="app_aid != null and app_aid != ''">
+        ,app_aid
+      </if>
+      <if test="stat != null and stat != ''">
+        ,stat
+      </if>
+      <if test="img_url != null and img_url != ''">
+        ,img_url
+      </if>
+       <if test="img_host != null and img_host != ''">
+        ,img_host
+      </if>
+      <if test="img_i3 != null and img_i3 != ''">
+        ,img_i3
+      </if>
+      <if test="img_i4 != null and img_i4 != ''">
+        ,img_i4
+      </if>
+      <if test="img_r4 != null and img_r4 != ''">
+        ,img_r4
+      </if>
+      <if test="img_r5 != null and img_r5 != ''">
+        ,img_r5
+      </if>
+      <if test="img_r6 != null and img_r6 != ''">
+        ,img_r6
+      </if>
+      <if test="img_r7 != null and img_r7 != ''">
+        ,img_r7
+      </if>
+      <if test="market != null and market != ''">
+        ,market
+      </if>
+      <if test="app_url != null and app_url != ''">
+        ,app_url
+      </if>
+      <if test="info_url != null and info_url != ''">
+        ,info_url
+      </if>
+      <if test="phone != null and phone != ''">
+        ,phone
+      </if>
+      <if test="idx != null and idx != ''">
+        ,idx
+      </if>
+       	,reg_day
+        ,chg_day
+		)  values (
+			<if test="cidx != null and cidx != ''">
+        #{cidx,jdbcType=VARCHAR}
+      </if>
+      <if test="cname != null and cname != ''">
+        ,#{cname,jdbcType=VARCHAR}
+      </if>
+      <if test="os != null and os != ''">
+        ,#{os,jdbcType=VARCHAR}
+      </if>
+      <if test="app_id != null and app_id != ''">
+        ,#{app_id,jdbcType=VARCHAR}
+      </if>
+      <if test="app_pkg != null and app_pkg != ''">
+        ,#{app_pkg,jdbcType=VARCHAR}
+      </if>
+      <if test="app_class != null and app_class != ''">
+        ,#{app_class,jdbcType=VARCHAR}
+      </if>
+      <if test="app_aid != null and app_aid != ''">
+        ,#{app_aid,jdbcType=VARCHAR}
+      </if>
+      <if test="stat != null and stat != ''">
+        ,#{stat,jdbcType=VARCHAR}
+      </if>
+      <if test="img_url != null and img_url != ''">
+        ,#{img_url,jdbcType=VARCHAR}
+      </if>
+      <if test="img_host != null and img_host != ''">
+        ,#{img_host,jdbcType=VARCHAR}
+      </if>
+      <if test="img_i3 != null and img_i3 != ''">
+        ,#{img_i3,jdbcType=VARCHAR}
+      </if>
+      <if test="img_i4 != null and img_i4 != ''">
+        ,#{img_i4,jdbcType=VARCHAR}
+      </if>
+      <if test="img_r4 != null and img_r4 != ''">
+        ,#{img_r4,jdbcType=VARCHAR}
+      </if>
+      <if test="img_r5 != null and img_r5 != ''">
+        ,#{img_r5,jdbcType=VARCHAR}
+      </if>
+      <if test="img_r6 != null and img_r6 != ''">
+        ,#{img_r6,jdbcType=VARCHAR}
+      </if>
+      <if test="img_r7 != null and img_r7 != ''">
+        ,#{img_r7,jdbcType=VARCHAR}
+      </if>
+      <if test="market != null and market != ''">
+        ,#{market,jdbcType=VARCHAR}
+      </if>
+      <if test="app_url != null and app_url != ''">
+        ,#{app_url,jdbcType=VARCHAR}
+      </if>
+      <if test="info_url != null and info_url != ''">
+        ,#{info_url,jdbcType=VARCHAR}
+      </if>
+      <if test="phone != null and phone != ''">
+        ,#{phone,jdbcType=VARCHAR}
+      </if>
+      <if test="idx != null and idx != ''">
+        ,#{idx,jdbcType=INTEGER}
+      </if>
+			 ,convert(varchar(20), getdate(), 112)
+       ,replace(replace(replace(convert(varchar,getdate(),120),'-',''),':',''),' ','')
+		)
+  </insert>
+  
+  <!-- 카드정보 TB DELETE -->
+	<delete id="deleteCardDtl" parameterType="HashMap">
+    delete from usim_card
+    <where>
+      cidx = #{cidx,jdbcType=VARCHAR}
+     <if test="os != null and os != ''">
+       and os = #{os,jdbcType=VARCHAR}
+     </if>
+    </where>
+  </delete>
+
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.board.dao.BoardMapper">
+
+    <select id="getAllBoardByPage" parameterType="map" resultType="Board">
+        select no, title, wdate, read_count, indent_in_group, ref_no, id
+        from member_board_v3
+        order by group_no desc, sequence_in_group asc limit #{begin}, #{size}
+    </select>
+    <select id="getBoardByNo" parameterType="int" resultType="Board">
+        select * from member_board_v3 where no=#{no}
+    </select>
+    <select id="getBoardTotal" resultType="int">
+        select count(no) from member_board_v3
+    </select>
+    <insert id="addBoard" parameterType="Board" useGeneratedKeys="true" keyProperty="no">
+        insert into member_board_v3(title, content, wdate, read_count, group_no, sequence_in_group, indent_in_group, ref_no, id)
+        values( #{title}, #{content}, now(), #{read_count}, #{group_no}, #{sequence_in_group}, #{indent_in_group}, #{ref_no}, #{id})
+    </insert>
+    <update id="modifyGroupNo" parameterType="map">
+    	update member_board_v3 set group_no=#{group_no}
+    	where no=#{no}
+    </update>
+    <update id="modifyBoard" parameterType="Board">
+        update member_board_v3 set title=#{title}, content=#{content}
+        where no=#{no}
+    </update>
+    <delete id="removeBoard" parameterType="int">
+        delete from member_board_v3 where no=#{no}
+    </delete>
+    <update id="raiseLookup" parameterType="int">
+        update member_board_v3 set read_count=read_count+1 where no=#{no}
+    </update>
+    <update id="modifyNoParentBoard" parameterType="int">
+        update member_board_v3 set ref_no=-1 where ref_no=#{no}
+    </update>
+    <update id="reorderBoard" parameterType="hashmap">
+        update member_board_v3 set sequence_in_group=sequence_in_group+1 
+        where group_no=#{parent_group_no} and sequence_in_group > #{parent_sequence_in_group}
+    </update>
+    <select id="checkId" parameterType="string" resultType="int">
+        select count(id) from member where id=#{id}
+    </select>
+    <insert id="addMember" parameterType="Member">
+    	insert into member(id, password, email, authority) values(#{id}, #{password}, #{email}, 'ROLE_USER')
+    </insert>
+</mapper>

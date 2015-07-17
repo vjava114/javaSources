@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.stat.mapper.MwStCmCodeMapper" >
+<resultMap id="BaseResultMap" type="com.wallet.stat.model.MwStCmCode" >
+    <id column="grp_code" property="grpCode" jdbcType="VARCHAR" />
+    <id column="com_cd" property="comCd" jdbcType="VARCHAR" />
+    <result column="com_cd_val" property="comCdVal" jdbcType="VARCHAR" />
+    <result column="com_cd_desc" property="comCdDesc" jdbcType="VARCHAR" />
+    <result column="seq_no" property="seqNo" jdbcType="INTEGER" />
+    <result column="use_yn" property="useYn" jdbcType="CHAR" />
+    <result column="remark1" property="remark1" jdbcType="VARCHAR" />
+    <result column="remark2" property="remark2" jdbcType="VARCHAR" />
+    <result column="remark3" property="remark3" jdbcType="VARCHAR" />
+    <result column="remark4" property="remark4" jdbcType="VARCHAR" />
+    <result column="reg_user" property="regUser" jdbcType="VARCHAR" />
+    <result column="reg_dtm" property="regDtm" jdbcType="TIMESTAMP" />
+    <result column="chg_user" property="chgUser" jdbcType="VARCHAR" />
+    <result column="chg_dtm" property="chgDtm" jdbcType="TIMESTAMP" />
+  </resultMap>
+	
+	<!-- MARKET CODE SEARCH -->
+	<select id="selectCmCodeList" parameterType="HashMap" resultMap="BaseResultMap">
+		select grp_code
+					,com_cd
+					,com_cd_val
+					,com_cd_desc
+		from mw_cm_code
+		where grp_code = #{grp_code,jdbcType=VARCHAR}
+		and use_yn = 'Y'
+		order by seq_no
+	</select>
+	
+	<!-- SEQ NO  -->
+	<select id="selectCmCodeSeqNo" parameterType="HashMap" resultType="java.lang.Integer">
+		select isnull(cast(max(seq_no) as int),0) + 1 seq_no
+		from mw_cm_code 
+		where grp_code = #{grp_code,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 코드값 정의 등록 INSERT -->
+  <insert id="insertCmCodeReg" parameterType="HashMap">
+  	insert into mw_cm_code (
+  			reg_dtm
+  			,chg_dtm
+  			,grp_code
+				,com_cd
+      <if test="com_cd_val != null and com_cd_val != ''">
+        ,com_cd_val
+      </if>
+      <if test="com_cd_desc != null and com_cd_desc != ''">
+        ,com_cd_desc
+      </if>
+      <if test="seq_no != null and seq_no != ''">
+        ,seq_no
+      </if>
+      <if test="use_yn != null and use_yn != ''">
+        ,use_yn
+      </if>
+      <if test="reg_user != null and reg_user != ''">
+        ,reg_user
+      </if>
+		)  values (
+				GETDATE()
+			 ,GETDATE()
+			 ,#{grp_code,jdbcType=VARCHAR}
+			 ,#{com_cd,jdbcType=VARCHAR}
+      <if test="com_cd_val != null and com_cd_val != ''">
+        ,#{com_cd_val,jdbcType=VARCHAR}
+      </if>
+      <if test="com_cd_desc != null and com_cd_desc != ''">
+        ,#{com_cd_desc,jdbcType=VARCHAR}
+      </if>
+      <if test="seq_no != null and seq_no != ''">
+        ,#{seq_no,jdbcType=INTEGER}
+      </if>
+      <if test="use_yn != null and use_yn != ''">
+        ,#{use_yn,jdbcType=VARCHAR}
+      </if>
+      <if test="reg_user != null and reg_user != ''">
+        ,#{reg_user,jdbcType=VARCHAR}
+      </if>
+		)
+  </insert>
+  
+  <!-- 코드값 DELTE -->
+  <insert id="deleteCmCode" parameterType="HashMap">
+  	delete mw_cm_code
+		where grp_code = #{grp_code,jdbcType=VARCHAR}
+		and com_cd =  #{com_cd,jdbcType=VARCHAR}
+  </insert>
+	
+</mapper>

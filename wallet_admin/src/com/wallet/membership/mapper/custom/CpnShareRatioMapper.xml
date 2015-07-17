@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.membership.mapper.custom.CpnShareRatioMapper" >
+	
+	<resultMap id="BaseResultMap" type="com.wallet.membership.model.custom.CpnShareRatio" >
+		<result column="TERM" property="term" jdbcType="VARCHAR" />
+		<result column="CPN_NAME" property="cpnName" jdbcType="VARCHAR" />
+		<result column="SHARE_COMP_TYPE" property="shareCompType" jdbcType="VARCHAR" />
+		<result column="SHARE_COMP_NAME" property="shareCompName" jdbcType="VARCHAR" />
+		<result column="SHARE_RATE" property="shareRate" jdbcType="VARCHAR" />
+		<result column="SHARE_AMOUNT" property="shareAmount" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="selectCouponAccumulationDetail" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT '${sdate} ~ ${edate}' AS TERM
+			, C.NAME  AS CPN_NAME
+			, dbo.GET_CODE_NM('0026',S.COMP_TYPE) AS SHARE_COMP_TYPE
+			, dbo.GET_COMP_NM(S.COMP_ID) AS SHARE_COMP_NAME
+			, COMP_SHARE_RATIO AS SHARE_RATE
+			, (ISNULL(F.ACTUAL_DC_PRICE,0) * (S.COMP_SHARE_RATIO/100.0)) AS SHARE_AMOUNT
+		FROM MW_CS_CPN_SHARERATIO S, CPN_LIST C, MW_CS_CPN_CONF F
+		WHERE C.CPN_ID = #{cpnId}
+		AND C.CPN_ID = F.CPN_ID
+		AND C.CPN_ID = S.CPN_ID
+		AND F.ACTUAL_DC_PRICE IS NOT NULL /*망취소 시, 값이 NULL이 들어가서 제회시켜둠*/
+		GROUP BY  C.name, S.COMP_TYPE, S.COMP_ID, S.COMP_SHARE_RATIO, F.ACTUAL_DC_PRICE
+		ORDER BY COMP_TYPE
+	</select>
+</mapper>

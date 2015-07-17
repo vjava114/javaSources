@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.stat.mapper.MwStCpaStatsMapper" >
+
+	 <resultMap id="BaseResultMap" type="com.wallet.stat.model.MwStCpaStats" >
+    <id column="code" property="code" jdbcType="CHAR" />
+    <id column="cday" property="cday" jdbcType="CHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="val1" property="val1" jdbcType="INTEGER" />
+    <result column="val2" property="val2" jdbcType="INTEGER" />
+    <result column="val3" property="val3" jdbcType="INTEGER" />
+    <result column="val4" property="val4" jdbcType="INTEGER" />
+    <result column="val5" property="val5" jdbcType="INTEGER" />
+    <result column="val6" property="val6" jdbcType="INTEGER" />
+    <result column="val7" property="val7" jdbcType="INTEGER" />
+    <result column="val8" property="val8" jdbcType="INTEGER" />
+    <result column="val9" property="val9" jdbcType="INTEGER" />
+    <result column="val10" property="val10" jdbcType="INTEGER" />
+    <result column="val_fail" property="valFail" jdbcType="INTEGER" />
+    <result column="com_cd" property="comCd" jdbcType="VARCHAR" />
+    
+    <result column="array_val1" property="arrayVal1" jdbcType="VARCHAR" />
+    <result column="array_val2" property="arrayVal2" jdbcType="VARCHAR" />
+    <result column="array_val3" property="arrayVal3" jdbcType="VARCHAR" />
+    
+  </resultMap>
+ 
+
+	<!-- CPA 가입통계 title 조회 -->
+	<select id="selectCpaStatsTitle" parameterType="HashMap" resultMap="BaseResultMap">
+		select com_cd code
+		from mw_cm_code
+		where grp_code = 'RCM_CPA'
+		and use_yn = 'Y'
+		order by seq_no
+	</select>
+	
+	<!-- CPA 가입통계 조회 -->
+	<select id="selectCpaStatsList" parameterType="HashMap" resultType="java.util.HashMap">
+			select 
+					<if test="period.equals('day')">
+		       case when cday = 'TOTAL' then 'TOTAL'
+		       			when cday = 'UACC' then 'UACC'
+					 else SUBSTRING(cday,1,4) + '-' + SUBSTRING(cday,5,2) + '-' + SUBSTRING(cday,7,2)
+					 end CDAY
+					</if>
+					<if test="period.equals('month')">
+		       case when cday = 'TOTAL' then 'TOTAL'
+		       			when cday = 'UACC' then 'UACC'
+					 else SUBSTRING(cday,1,4) + '-' + SUBSTRING(cday,5,2) + '-' + '01'
+					 end CDAY
+					</if>
+					<if test="period.equals('year')">
+		       case when cday = 'TOTAL' then 'TOTAL'
+		       			when cday = 'UACC' then 'UACC'
+					 else SUBSTRING(cday,1,4) + '-' + '01' + '-' +'01'
+					 end CDAY
+					</if>
+					<foreach collection="title_list" item="title_list"   open="" close="" separator="">
+			     ,sum(isnull(case when upper(code) = '${title_list}' then a.val1 end,0)) ${title_list}_VAL1
+					 ,sum(isnull(case when upper(code) = '${title_list}' 	then a.val2 end,0)) ${title_list}_VAL2
+					 ,sum(isnull(case when upper(code) = '${title_list}' then a.val1 end,0))
+					  - sum(isnull(case when upper(code) = '${title_list}' 	then a.val2 end,0))  ${title_list}_VAL3
+				 </foreach>
+				  ,sum(a.val1)		           SUM_VAL1
+          ,sum(a.val2)		 					 SUM_VAL2
+          ,sum(a.val1) - sum(a.val2) SUM_VAL3	 
+			from (
+					select
+								<if test="period.equals('day')">
+					       cpa.cday cday
+								</if>
+								<if test="period.equals('month')">
+					       left(cpa.cday, 6) cday
+								</if>
+								<if test="period.equals('year')">
+					       left(cpa.cday, 4) cday
+								</if>
+					 		 ,RTRIM(cpa.code) code
+						   ,isnull(cpa.val1,0) val1
+						   ,isnull(cpa.val2,0) val2
+						   ,isnull(cpa.val2,0) - isnull(cpa.val1,0) val_fail
+					from stat_evt_cpa cpa
+					<where>
+				  	<if test="sday != null and sday != ''">
+					  	<![CDATA[
+				        and cpa.cday >=  #{sday,jdbcType=VARCHAR}
+				        ]]>	
+			    	</if>
+			    	<if test="eday != null and eday != ''">
+			        <![CDATA[
+			        	and cpa.cday <=  #{eday,jdbcType=VARCHAR}
+			        ]]>	
+		    		</if>
+				  </where>
+					union all
+					select 'TOTAL' cday
+							,cpa.code
+						   ,sum(isnull(cpa.val1,0)) val1
+						   ,sum(isnull(cpa.val2,0)) val2
+						   ,sum(isnull(cpa.val2,0)) - sum(isnull(cpa.val1,0)) val_fail
+					from stat_evt_cpa cpa
+					<where>
+				  	<if test="sday != null and sday != ''">
+					  	<![CDATA[
+				        and cpa.cday >=  #{sday,jdbcType=VARCHAR}
+				        ]]>	
+			    	</if>
+			    	<if test="eday != null and eday != ''">
+			        <![CDATA[
+			        	and cpa.cday <=  #{eday,jdbcType=VARCHAR}
+			        ]]>	
+		    		</if>
+				  </where>
+					GROUP BY cpa.code
+					union all
+					select 'UACC' cday
+							,cpa.code
+						   ,sum(isnull(cpa.val1,0)) val1
+						   ,sum(isnull(cpa.val2,0)) val2
+						   ,sum(isnull(cpa.val2,0)) - sum(isnull(cpa.val1,0)) val_fail
+					from stat_evt_cpa cpa
+					GROUP BY cpa.code
+					) a
+			group by cday
+			order by cday
+	</select>
+	
+</mapper>

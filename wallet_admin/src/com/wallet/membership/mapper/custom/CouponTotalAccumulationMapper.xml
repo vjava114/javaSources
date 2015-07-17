@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.membership.mapper.custom.CouponTotalAccumulationMapper" >
+
+	<resultMap type="hashMap" id="dataMap">
+		<result property="contents" column="contents" jdbcType="CLOB" javaType="java.lang.String" />
+	</resultMap>
+	
+	<resultMap id="BaseResultMap" type="com.wallet.membership.model.custom.CouponTotalAccumulation" >
+		<result column="TERM" property="term" jdbcType="VARCHAR" />
+		<result column="ISSUE_CPN_CNT" property="issueCpnCnt" jdbcType="VARCHAR" />
+		<result column="ACCUM_CNT" property="accumCnt" jdbcType="VARCHAR" />
+		<result column="AMOUNT" property="amount" jdbcType="VARCHAR" />
+		<result column="CPN_DISC_AMOUNT" property="cpnDiscAmount" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="selectCouponTotalAccumulationList" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT '${sdate} ~ ${edate}' AS TERM
+			, COUNT(AA.CPN_ID) AS ISSUE_CPN_CNT
+			, SUM(AA.CNT) AS ACCUM_CNT
+			, SUM(AA.SUM_PAY_AMOUNT)  AMOUNT
+			, SUM(AA.SUM_DC_PRICE) AS CPN_DISC_AMOUNT
+		FROM (
+			SELECT CPN_ID
+			, COUNT(CPN_ID) AS CNT
+			, SUM(TOT_PAY_AMOUNT) AS SUM_PAY_AMOUNT
+			, SUM(ACTUAL_DC_PRICE) AS SUM_DC_PRICE
+			FROM MW_CS_CPN_CONF
+			WHERE REQ_TYPE = 'A' AND CANCEL_YN = 'N'
+			AND CONF_DT BETWEEN REPLACE(#{sdate}, '-', '') AND REPLACE(#{edate}, '-', '') 
+			GROUP BY CPN_ID
+		) AA
+	</select>
+</mapper>

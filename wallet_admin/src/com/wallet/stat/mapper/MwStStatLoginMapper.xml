@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.stat.mapper.MwStStatLoginMapper" >
+  <resultMap id="BaseResultMap" type="com.wallet.stat.model.MwStStatLogin" >
+    <result column="mgr_id" property="mgrId" jdbcType="VARCHAR" />
+    <result column="passwd" property="passwd" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="part" property="part" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="RG_DAY" property="rgDay" jdbcType="NVARCHAR" />
+    <result column="CH_USID" property="chUsid" jdbcType="VARCHAR" />
+    <result column="CH_DAY" property="chDay" jdbcType="NVARCHAR" />
+    <result column="stat" property="stat" jdbcType="VARCHAR" />
+    <result column="retry_cnt" property="retryCnt" jdbcType="INTEGER" />
+    <result column="sms" property="sms" jdbcType="VARCHAR" />
+  </resultMap>
+  
+	
+	<!-- 로그인  TB 조회 -->
+	<select id="selectLoginIdCheck" parameterType="HashMap" resultMap="BaseResultMap">
+		select <if test="top != null and top != ''">
+							top ${top}
+					</if>
+					 mgr_id
+		      ,passwd
+		      ,name
+		      ,part
+		      ,phone
+		      ,email
+		      ,rg_day
+		      ,ch_usid
+		      ,ch_day
+		      ,stat
+		      ,case when retry_cnt IS null then 0 
+			     else retry_cnt
+			     end retry_cnt
+		from mw_ad_user_mgr
+		<where>
+		and mgr_id = #{mgr_id,jdbcType=VARCHAR}
+		</where> 
+	</select>
+	
+	 <!-- 비빌번호 오류 update -->
+	<update id="updateRetryCnt" parameterType="HashMap">
+		update mw_ad_user_mgr
+		<set>
+		 retry_cnt = #{retry_cnt,jdbcType=INTEGER}
+		</set>
+		<where>
+			mgr_id = #{mgr_id,jdbcType=VARCHAR}
+		</where> 
+	</update>
+	
+	<!-- SMS 인증번호 조회 -->
+	<select id="selectSmsCheck" parameterType="HashMap" resultMap="BaseResultMap">
+		select <if test="top != null and top != ''">
+							top ${top}
+					</if>
+					phone
+				 ,sms
+		from mw_ws_sms
+		<where>
+			and phone = #{phone,jdbcType=VARCHAR}
+			and sms = #{sms,jdbcType=VARCHAR}
+		</where> 
+	</select>
+	
+	<!-- SMS 인증번호 DELETE -->
+	<delete id="deleteSms" parameterType="HashMap">
+    delete from mw_ws_sms
+    <where>
+			and phone = #{phone,jdbcType=VARCHAR}
+			and sms = #{sms,jdbcType=VARCHAR}
+		</where> 
+  </delete>
+	
+</mapper>

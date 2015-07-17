@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+    <!-- Where절 밑에 검색조건을 위한 쿼리문입니다. -->
+  
+    <sql  id="condition">
+	    <dynamic prepend="WHERE">
+	        <!-- 여기는 검색 LIST컴포넌트?? 부분.. -->
+	        <isNotEmpty property="sword">
+	            <isEqual prepend="AND" property="s_name" compareValue="name" >
+	                name like CONCAT('%',#sword#,'%')
+	            </isEqual>
+	            <isEqual prepend="AND" property="s_name" compareValue="phone">
+	               <isNotEmpty property="brand">
+	                $brand$.phone like CONCAT('%',#sword#,'%')
+	               </isNotEmpty>
+	            </isEqual>
+	            <isEqual prepend="AND" property="s_name" compareValue="shop_code">
+	                userno like CONCAT('%',#sword#,'%')
+	            </isEqual>
+	            <isEqual prepend="AND" property="s_name" compareValue="shop_name">
+	                shop_name like CONCAT('%',#sword#,'%')
+	            </isEqual>
+	            <isEqual prepend="AND" property="s_name" compareValue="userno">
+	                userno like CONCAT('%',#sword#,'%')
+	            </isEqual>
+	        </isNotEmpty>
+	
+	        <!-- 여기는 이벤트날짜, BRAND, 검색일자 부분. -->
+	        <isNotEmpty prepend="AND" property="evt_code">
+	            evt_code = #evt_code#
+	        </isNotEmpty>
+	        <isNotEmpty prepend="AND" property="brand">
+	            brand = #brand#
+	        </isNotEmpty>
+
+            
+            <isNotEmpty prepend="AND" property="sdate">
+                rdate between #sdate#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="edate">
+                #edate# +1
+            </isNotEmpty>
+
+	               
+	        <!-- 컴포넌트 조건절 끝. -->
+	    </dynamic>
+        
+    </sql>
+    
+    <sql id="getSelboxDataQuery">
+        SELECT
+           evt_code
+        FROM
+           hera_event
+        WHERE
+           brand = #brand#
+        GROUP by evt_code
+        ORDER BY evt_code  DESC    
+    </sql>
+    
+</sqlMap>

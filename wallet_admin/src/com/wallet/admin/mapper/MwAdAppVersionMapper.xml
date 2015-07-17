@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.admin.mapper.MwAdAppVersionMapper" >
+  <resultMap id="BaseResultMap" type="com.wallet.admin.model.MwAdAppVersion" >
+    <result column="idx" jdbcType="INTEGER" property="idx" />
+    <result column="market" jdbcType="VARCHAR" property="market" />
+    <result column="ver" property="ver" jdbcType="VARCHAR" />
+    <result column="upload_dt" property="uploadDt" jdbcType="VARCHAR" />
+    <result column="mode" property="mode" jdbcType="VARCHAR" />
+    <result column="msg" property="msg" jdbcType="VARCHAR" />
+    <result column="reg_tm" property="regTm" jdbcType="VARCHAR" />
+    <result column="reg_tm_dtl" property="regTmDtl" jdbcType="VARCHAR" />
+    <result column="chg_tm" property="chgTm" jdbcType="VARCHAR" />
+    <result column="ver_str" property="verStr" jdbcType="VARCHAR" />
+ 	</resultMap>
+  
+	
+	<!-- 앱 버전정보  TB 조회 -->
+	<select id="selectAppVersionList" parameterType="HashMap" resultMap="BaseResultMap">
+		select a.idx
+					,a.market
+		      ,a.ver
+		      ,a.upload_dt
+		      ,a.mode
+		      ,a.msg
+		      ,left(convert(varchar, convert(datetime, a.reg_tm, 120), 120), 10) reg_tm
+		      ,left(convert(varchar, convert(datetime, a.reg_tm, 120), 120), 19) reg_tm_dtl
+		      ,left(convert(varchar, convert(datetime, a.reg_tm, 120), 120), 19) chg_tm
+		      ,case when a.ver = b.ver then '최신'
+		       else '이전'
+		       end ver_str
+		from mw_ws_version a,
+		     (
+			     select top 1
+			            idx
+			            ,ver
+			            ,market
+					from mw_ws_version
+					where 1=1
+					<if test="market != null and market != ''">
+	       		and market = #{market,jdbcType=VARCHAR}
+					</if>
+					order by ver desc, reg_tm desc
+		     ) b
+		where 1=1
+		and a.market = b.market
+		<if test="market != null and market != ''">
+       and a.market = #{market,jdbcType=VARCHAR}
+		</if>
+		<choose>
+			<when test="view.equals('dtl')">
+			 	and a.idx = #{idx,jdbcType=VARCHAR}
+			</when>
+		</choose>
+		order by a.ver desc, a.reg_tm desc
+	</select>
+
+	 <!-- 앱 버전정보 등록 INSERT -->
+  <insert id="insertAppVersionReg" parameterType="HashMap">
+  	insert into mw_ws_version (
+  			<if test="market != null and market != ''">
+	        market
+				</if>
+				<if test="ver != null and ver != ''">
+	        ,ver
+				</if>
+				<if test="upload_dt != null and upload_dt != ''">
+	        ,upload_dt
+				</if>
+				<if test="mode != null and mode != ''">
+	        ,mode
+				</if>
+				<if test="msg != null and msg != ''">
+	        ,msg
+				</if>
+				,reg_tm
+				,chg_tm
+		)	VALUES  (
+				<if test="market != null and market != ''">
+	        #{market,jdbcType=VARCHAR}
+				</if>
+				<if test="ver != null and ver != ''">
+	        ,#{ver,jdbcType=VARCHAR}
+				</if>
+				<if test="upload_dt != null and upload_dt != ''">
+	        ,#{upload_dt,jdbcType=VARCHAR}
+				</if>
+				<if test="mode != null and mode != ''">
+	        ,#{mode,jdbcType=VARCHAR}
+				</if>
+				<if test="msg != null and msg != ''">
+	        ,#{msg,jdbcType=VARCHAR}
+				</if>
+				,GETDATE()
+				,GETDATE()
+		)
+  </insert>
+  
+  <!-- 앱 버전정보 TB UPDATE -->
+	<update id="updateAppVersionDtl" parameterType="HashMap">
+		update mw_ws_version
+	    <set>
+	    	chg_tm = GETDATE()
+	    	<if test="market != null and market != ''">
+	        ,market = #{market,jdbcType=VARCHAR}
+				</if>
+				<if test="ver != null and ver != ''">
+	        ,ver = #{ver,jdbcType=VARCHAR}
+				</if>
+				<if test="upload_dt != null and upload_dt != ''">
+	        ,upload_dt = #{upload_dt,jdbcType=VARCHAR}
+				</if>
+				<if test="mode != null and mode != ''">
+	        ,mode = #{mode,jdbcType=VARCHAR}
+				</if>
+				<if test="msg != null and msg != ''">
+	        ,msg = #{msg,jdbcType=VARCHAR}
+				</if>
+	    </set>
+	    <where>
+	        idx = #{idx,jdbcType=VARCHAR}
+	    </where>
+  </update>
+  
+	<!-- 앱 버전정보 TB DELETE -->
+	<delete id="deleteAppVersionDtl" parameterType="HashMap">
+    delete from mw_ws_version
+     <where>
+	      idx = #{idx,jdbcType=VARCHAR}
+	   </where>
+  </delete>
+
+	
+</mapper>

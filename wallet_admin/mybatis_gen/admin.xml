@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+	<classPathEntry location="C:/apache-tomcat-7.0.29/lib/sqljdbc4.jar" /> <!-- 원하는 경로에 해당 파일을 만들어 참조시키면 됨  -->
+	
+	<context id="DB2Tables" targetRuntime="MyBatis3">
+	<!-- PLUGINs -->
+		<plugin type="com.rocomo.mybatis.plugins.AddMssqlTopPlugin"></plugin>
+		
+		<jdbcConnection driverClass="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+				connectionURL="jdbc:sqlserver://20.20.20.12:1433;databaseName=wallet" userId="mwallet" password="wallet">
+		</jdbcConnection>  
+		
+		<javaTypeResolver >
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+		
+		<javaModelGenerator targetPackage="com.wallet.admin.model" targetProject="wallet_admin/src">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+			<property name="rootClass" value="com.rocomo.common.model.Common" />
+		</javaModelGenerator>
+		<sqlMapGenerator targetPackage="com.wallet.admin.mapper" targetProject="wallet_admin/src/src">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator> 
+		<javaClientGenerator type="MIXEDMAPPER" targetPackage="com.wallet.admin.mapper"  targetProject="wallet_admin/src/src">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+		
+		<table tableName="mw_ad_menu" domainObjectName="MwAdMenu">
+			<property name="useActualColumnNames" value="false" />
+			<property name="createDynamicSQL" value="true"/>
+<!-- 
+			<ignoreColumn column="ID"/>
+-->
+		</table> 
+		<table tableName="mw_ad_menu_right" domainObjectName="MwAdMenuRight">
+			<property name="useActualColumnNames" value="false" />
+			<property name="createDynamicSQL" value="true"/>
+		</table> 
+		<table tableName="mw_ad_user_mgr" domainObjectName="MwAdUserMgr">
+			<property name="useActualColumnNames" value="false" />
+			<property name="createDynamicSQL" value="true"/>
+		</table> 
+		
+	</context>
+</generatorConfiguration>

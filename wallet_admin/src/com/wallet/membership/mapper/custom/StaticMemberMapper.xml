@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.membership.mapper.custom.StaticMemberMapper" >
+	<resultMap id="BaseResultMap" type="com.wallet.membership.model.custom.StaticMember" >
+		<result column="IDX" property="idx" jdbcType="VARCHAR" />
+		<result column="MEMB_ID" property="membId" jdbcType="VARCHAR" />
+		<result column="AUTH_NAME" property="authName" jdbcType="VARCHAR" />
+		<result column="ISSUE_DT" property="issueDt" jdbcType="VARCHAR" />
+		<result column="PHONE" property="phone" jdbcType="VARCHAR" />
+		<result column="MO" property="mo" jdbcType="VARCHAR" />
+		<result column="ADDR" property="addr" jdbcType="VARCHAR" />
+		<result column="ADDR1" property="addr1" jdbcType="VARCHAR" />
+		<result column="ZIP_CODE" property="zipCode" jdbcType="VARCHAR" />
+		<result column="EMAIL" property="email" jdbcType="VARCHAR" />
+		<result column="BIRTH" property="birth" jdbcType="VARCHAR" />
+		<result column="MAN" property="man" jdbcType="VARCHAR" />	
+	</resultMap>
+
+	<!-- 조회조건에 대한 멤버십 목록 -->
+	<select id="selectMemberList" parameterType="HashMap" resultMap="BaseResultMap" >
+		SELECT ROW_NUMBER() OVER(ORDER BY C.AUTH_NAME) AS IDX
+			, /*C.AUTH_NAME -- 인증이름 ( 확인필요 )
+			, */A.ISSUE_DT
+			, B.PHONE
+			, B.MO -- 통신사구분
+			, C.ADDR
+			, C.ADDR1
+			, C.ZIPCODE AS ZIP_CODE
+			, C.EMAIL
+			, C.BIRTH
+			, C.MAN
+		FROM MW_MS_MEMB_ISSUE_LOG A, USER_INFO B, USER_DESC C
+		WHERE A.ISSUE_TYPE = #{menuOpt} /*발급구분 ( 01:발급, 02:발급취소 )*/ 
+		AND A.USER_ID = B.USER_ID
+		AND A.USER_ID = C.USER_ID
+		AND MEMB_ID = #{membId} /*멤버십 선택*/
+		<if test='se_termOpt == "dayDate"'>
+		AND ISSUE_DT BETWEEN #{sdate} AND #{edate} /*기간설정 : yyyymmdd*/
+		</if>
+		<if test='se_termOpt == "monthDate"'>
+		AND ISSUE_DT BETWEEN LEFT(#{sdate}, 6) AND LEFT(#{edate}, 6) /*기간설정 : yyyymm*/
+		</if>
+	</select>
+</mapper>
+	

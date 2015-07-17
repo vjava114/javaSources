@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="push">
+
+
+	<!-- 최종쿼리 -->
+	<select id="select" resultClass="HashMap" parameterClass="HashMap">
+  	<![CDATA[ 
+		SELECT * 
+		FROM   ( SELECT 
+					  pl.reserv_date,
+					  ml.retry_count as ml_retry, 
+					  pl.retry_count as pl_retry, 
+					  ml.msg, 
+					  ml.mtitle , 
+					  mi.type , 
+					  pl.member_seq , 
+					  pl.msg_seq, 
+					  pl.seq, 
+					  pl.status, 
+					  ml.push_type, 
+					  ml.push_url, 
+					  ml.push_number, 
+					  pl.reserv_yn,
+					  ml.retry_yn,
+					  mi.pushid , 
+					  mi.phone,
+					  ml.lms_title,
+					  ml.lms_msg,
+					  ml.replace_yn
+					  
+			  FROM    push_list pl 
+					  LEFT JOIN member mi 
+					  ON      pl.member_seq = mi.seq 
+					  LEFT JOIN msg_list ml 
+					  ON      pl.msg_seq = ml.seq 
+			  WHERE   
+							( 
+								   ( pl.reserv_yn ='Y' AND pl.reserv_date <= now() AND pl.retry_count = 0)
+								OR (pl.reserv_yn ='N' AND pl.status IN ('READY') AND pl.retry_count = 0)
+							) 
+						OR (
+							ml.retry_yn = 'Y'
+							AND pl.retry_count <= ml.retry_count
+							AND pl.status NOT IN ('RSUCC','RFAIL','READY')
+							AND DATE_ADD(pl.send_date, interval ml.retry_minute minute) < NOW()
+		
+							)
+		
+			  ) 
+			  AS a 
+		WHERE  a.type IS NOT NULL 
+		AND    a.type          <> '' 
+		AND    msg    IS NOT NULL 
+		AND    pushid IS NOT NULL 
+		AND    a.retry_yn is not null
+		ORDER BY a.seq 
+
+	 	]]>	
+	
+	</select> 
+
+	<!-- 테스트 쿼리 -->
+	<select id="selectDDDDD" resultClass="HashMap" parameterClass="HashMap"> 
+  	<![CDATA[ 
+	   SELECT * 
+FROM   ( SELECT 
+			  pl.reserv_date,
+			  ml.retry_count as ml_retry, 
+			  pl.retry_count as pl_retry, 
+			  ml.msg, 
+			  ml.mtitle , 
+			  mi.type , 
+			  pl.member_seq , 
+			  pl.msg_seq, 
+			  pl.seq, 
+			  pl.status, 
+			  ml.push_type, 
+			  ml.push_url, 
+			  ml.push_number, 
+			  pl.reserv_yn,
+			  ml.retry_yn,
+			  mi.pushid , 
+			  mi.phone
+			  
+	  FROM    push_list pl 
+			  LEFT JOIN member mi 
+			  ON      pl.member_seq = mi.seq 
+			  LEFT JOIN msg_list ml 
+			  ON      pl.msg_seq = ml.seq 
+	  WHERE   
+					( 
+						   ( pl.reserv_yn ='Y' AND pl.reserv_date <= now() AND pl.retry_count = 0)
+						OR (pl.reserv_yn ='N' AND pl.status IN ('READY') AND pl.retry_count = 0)
+					) 
+				OR (
+					ml.retry_yn = 'Y'
+					AND pl.retry_count < ml.retry_count
+					AND pl.status NOT IN ('RSUCC','RFAIL','READY')
+					AND DATE_ADD(pl.send_date, interval ml.retry_minute minute) < NOW()
+
+					)
+
+	  ) 
+	  AS a 
+WHERE  a.type IS NOT NULL 
+AND    a.type          <> '' 
+AND    msg    IS NOT NULL 
+AND    pushid IS NOT NULL 
+AND    a.retry_yn is not null
+ 	   
+limit 1
+ 	 	]]>  
+	</select>
+
+	<!--  2차 쿼리 -->
+ 	<select id="selectZZZ" resultClass="HashMap" parameterClass="HashMap"> 
+<!-- pl.send_Date, -->
+<!-- DATE_ADD(pl.send_Date, INTERVAL ml.retry_minute minute ) as plusdate, -->
+<!-- ml.retry_minute, -->
+ 	<![CDATA[ 
+ 	   SELECT * 
+ 	   FROM   ( SELECT ml.retry_count as ml_retry, 
+ 	                  pl.retry_count as pl_retry, 
+ 	                  ml.msg, 
+ 	                  ml.mtitle , 
+ 	                  mi.pushid , 
+ 	                  mi.type , 
+ 	                  pl.member_seq , 
+ 	                  pl.msg_seq, 
+ 	                  pl.seq, 
+ 	                  pl.status, 
+ 	                  ml.push_type, 
+ 	                  ml.push_url, 
+ 	                  ml.push_number, 
+ 	                  mi.phone,
+ 	                  pl.reserv_date
+ 	          FROM    push_list pl 
+ 	                  LEFT JOIN member mi 
+ 	                  ON      pl.member_seq = mi.seq 
+ 	                  LEFT JOIN msg_list ml 
+ 	                  ON      pl.msg_seq = ml.seq 
+ 	          WHERE   pl.status IN('READY', 
+ 	                               'SUCC', 
+ 	                               'FAIL') 
+						and ml.retry_count >= pl.retry_count
+						and COALESCE(DATE_ADD(pl.send_Date, INTERVAL ml.retry_minute minute ),0) <= now()
+						
+ 	          ) 
+ 	          AS a 
+ 	   WHERE  a.type IS NOT NULL 
+ 	   AND    a.type          <> '' 
+ 	   AND    msg    IS NOT NULL 
+ 	   AND    pushid IS NOT NULL 
+ 	   limit 1
+ 	 	]]>  
+ 	</select> 
+ 	
+ 	
+ 	
+ 		<!--  노주임님 테스트 전용 쿼리 -->
+ 	<select id="select12345" resultClass="HashMap" parameterClass="HashMap">
+ 	 	<![CDATA[ 
+ 	 SELECT * 
+ 	   FROM   ( SELECT ml.retry_count as ml_retry, 
+ 	                  pl.retry_count as pl_retry, 
+ 	                  ml.msg, 
+ 	                  ml.mtitle , 
+ 	                  mi.pushid , 
+ 	                  mi.type , 
+ 	                  pl.member_seq , 
+ 	                  pl.msg_seq, 
+ 	                  pl.seq, 
+ 	                  pl.status, 
+ 	                  ml.push_type, 
+ 	                  ml.push_url, 
+ 	                  ml.push_number 
+ 	          FROM    push_list pl 
+ 	                  LEFT JOIN member mi 
+ 	                  ON      pl.member_seq = mi.seq 
+ 	                  LEFT JOIN msg_list ml 
+ 	                  ON      pl.msg_seq = ml.seq 
+ 	          
+ 	          ) 
+ 	          AS a 
+ 	   WHERE  a.type IS NOT NULL 
+ 	   AND    a.type          <> '' 
+ 	   AND    msg    IS NOT NULL 
+ 	   AND    pushid IS NOT NULL
+ 	   and pushid = 'APA91bGd8bvQi7mO29H2ULcPPDWKF3ayAp8u_sGRx3snlG1R93XTDS9H6XCD47ktBcyUwU0_oB-AXed-H9gfGVo1Lqlu-i1SWrdqjegrXNCzgwmWsQ5a2ee9jOGgdASM60bcNxLyqC_y' 
+ 	 	]]>  
+ 	</select>
+
+	
+	<update id="pushListUpdate" parameterClass="HashMap">
+	UPDATE 
+		push_list
+	SET
+		<isNotEmpty property="message_id">
+			message_id = #message_id#,
+			error_msg = #error_msg#,
+		</isNotEmpty>
+		status = 'SUCC',
+		SEND_DATE = now(),
+		retry_count = retry_count+1
+	WHERE 
+		seq = #seq#
+	</update>
+	
+	
+	<update id="updatePushList_fail" parameterClass="HashMap">
+	UPDATE 
+		push_list
+	SET
+		<isNotEmpty property="message_id">
+			message_id = #message_id#,
+		</isNotEmpty>
+		retry_count = retry_count+1,
+		error_msg = #error_msg#,
+		status = 'FAIL',
+		SEND_DATE = now()
+		
+	WHERE 
+		seq = #seq#
+	</update>
+	
+	<update id="updatePushList_LMS" parameterClass="int">
+	UPDATE 
+		push_list
+	SET
+		status = 'SUCC',
+		retry_count = retry_count+1
+	WHERE 
+		seq = #seq#
+	</update>
+	
+	<update id="no_updatePushList_LMS" parameterClass="int">
+	UPDATE 
+		push_list
+	SET
+		retry_count = retry_count+1
+	WHERE 
+		seq = #seq#
+	</update>
+	
+	
+	
+	
+	<!-- msg_list의 stats를 'process' 로 변경 -->
+	<update id="statusUpdate" parameterClass="int">
+		UPDATE msg_list
+	   	SET status = 'PROCESS'
+	  	WHERE seq = #seq#
+	</update>
+	
+	<!-- 팀장님 쿼리 -->
+	<update id="statusUpdate2" parameterClass="int">
+		UPDATE msg_list mlist,
+				( select msg_seq, if ( status = 'READY' ,'PROCESS','COMPLETED') status
+				from push_list 
+				group by msg_seq) pl
+		SET mlist.status =  pl.status
+		where mlist.seq = pl.msg_seq
+		and mlist.seq = #msg_seq# 
+	</update>
+	
+	
+</sqlMap>

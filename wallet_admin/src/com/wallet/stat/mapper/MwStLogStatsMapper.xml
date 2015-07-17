@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.stat.mapper.MwStLogStatsMapper" >
+
+	<resultMap id="appStats" type="com.wallet.stat.model.MwStLogStats" >
+		<id column="day" property="day" jdbcType="VARCHAR" />
+		<result column="a_k_m" property="a_k_m" jdbcType="INTEGER" />
+		<result column="a_k_c" property="a_k_c" jdbcType="INTEGER" />
+		<result column="a_k_b" property="a_k_b" jdbcType="INTEGER" />
+		<result column="a_k_p" property="a_k_p" jdbcType="INTEGER" />
+		<result column="a_s_m" property="a_s_m" jdbcType="INTEGER" />
+		<result column="a_s_c" property="a_s_c" jdbcType="INTEGER" />
+		<result column="a_s_b" property="a_s_b" jdbcType="INTEGER" />
+		<result column="a_s_p" property="a_s_p" jdbcType="INTEGER" />
+		<result column="a_l_m" property="a_l_m" jdbcType="INTEGER" />
+		<result column="a_l_c" property="a_l_c" jdbcType="INTEGER" />
+		<result column="a_l_b" property="a_l_b" jdbcType="INTEGER" />
+		<result column="a_l_p" property="a_l_p" jdbcType="INTEGER" />
+		<result column="i_k_m" property="i_k_m" jdbcType="INTEGER" />
+		<result column="i_k_c" property="i_k_c" jdbcType="INTEGER" />
+		<result column="i_k_b" property="i_k_b" jdbcType="INTEGER" />
+		<result column="i_k_p" property="i_k_p" jdbcType="INTEGER" />
+		<result column="i_s_m" property="i_s_m" jdbcType="INTEGER" />
+		<result column="i_s_c" property="i_s_c" jdbcType="INTEGER" />
+		<result column="i_s_b" property="i_s_b" jdbcType="INTEGER" />
+		<result column="i_s_p" property="i_s_p" jdbcType="INTEGER" />
+		<result column="i_l_m" property="i_l_m" jdbcType="INTEGER" />
+		<result column="i_l_c" property="i_l_c" jdbcType="INTEGER" />
+		<result column="i_l_b" property="i_l_b" jdbcType="INTEGER" />
+		<result column="i_l_p" property="i_l_p" jdbcType="INTEGER" />
+		<result column="a_s" property="a_s" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<!-- 사용자접속현황 : 통신사기준  일별 -->
+	<select id="selectAppLogStatsList" parameterType="HashMap" resultMap="appStats">
+		SELECT <if test="period.equals('day')">
+						case when a.day = 'TOTAL' then 'TOTAL'
+						else SUBSTRING(a.day,1,4) + '-' + SUBSTRING(a.day,5,2) + '-' + SUBSTRING(a.day,7,2)
+						end day
+					</if>
+					<if test="period.equals('month')">
+						case when a.day = 'TOTAL' then 'TOTAL'
+						else SUBSTRING(a.day,1,4) + '-' + SUBSTRING(a.day,5,2) + '-' + '01'
+						end day
+					</if>
+					<if test="period.equals('year')">
+						case when a.day = 'TOTAL' then 'TOTAL'
+						else SUBSTRING(a.day,1,4) + '-' + '01' + '-' + '01'
+						end day
+					</if>
+					,sum(isnull(a.a_k_m,0)) a_k_m
+					,sum(isnull(a.a_k_c,0)) a_k_c
+					,sum(isnull(a.a_k_b,0)) a_k_b
+					,sum(isnull(a.a_k_p,0)) a_k_p
+					,sum(isnull(a.a_s_m,0)) a_s_m
+					,sum(isnull(a.a_s_c,0)) a_s_c
+					,sum(isnull(a.a_s_b,0)) a_s_b
+					,sum(isnull(a.a_s_p,0)) a_s_p
+					,sum(isnull(a.a_l_m,0)) a_l_m
+					,sum(isnull(a.a_l_c,0)) a_l_c
+					,sum(isnull(a.a_l_b,0)) a_l_b
+					,sum(isnull(a.a_l_p,0)) a_l_p
+					,sum(isnull(a.i_k_m,0)) i_k_m
+					,sum(isnull(a.i_k_c,0)) i_k_c
+					,sum(isnull(a.i_k_b,0)) i_k_b
+					,sum(isnull(a.i_k_p,0)) i_k_p
+					,sum(isnull(a.i_s_m,0)) i_s_m
+					,sum(isnull(a.i_s_c,0)) i_s_c
+					,sum(isnull(a.i_s_b,0)) i_s_b
+					,sum(isnull(a.i_s_p,0)) i_s_p
+					,sum(isnull(a.i_l_m,0)) i_l_m
+					,sum(isnull(a.i_l_c,0)) i_l_c
+					,sum(isnull(a.i_l_b,0)) i_l_b
+					,sum(isnull(a.i_l_p,0)) i_l_p
+					,sum(isnull(a.a_s,0)) a_s
+		from (
+				SELECT <if test="period.equals('day')">
+								left(log.day, 8) day
+								</if>
+								<if test="period.equals('month')">
+								left(log.day, 6) day
+								</if>
+								<if test="period.equals('year')">
+								left(log.day, 4) day
+								</if>
+								,isnull(log.a_k_m,0) a_k_m
+								,isnull(log.a_k_c,0) a_k_c
+								,isnull(log.a_k_b,0) a_k_b
+								,isnull(log.a_k_p,0) a_k_p
+								,isnull(log.a_s_m,0) a_s_m
+								,isnull(log.a_s_c,0) a_s_c
+								,isnull(log.a_s_b,0) a_s_b
+								,isnull(log.a_s_p,0) a_s_p
+								,isnull(log.a_l_m,0) a_l_m
+								,isnull(log.a_l_c,0) a_l_c
+								,isnull(log.a_l_b,0) a_l_b
+								,isnull(log.a_l_p,0) a_l_p
+								,isnull(log.i_k_m,0) i_k_m
+								,isnull(log.i_k_c,0) i_k_c
+								,isnull(log.i_k_b,0) i_k_b
+								,isnull(log.i_k_p,0) i_k_p
+								,isnull(log.i_s_m,0) i_s_m
+								,isnull(log.i_s_c,0) i_s_c
+								,isnull(log.i_s_b,0) i_s_b
+								,isnull(log.i_s_p,0) i_s_p
+								,isnull(log.i_l_m,0) i_l_m
+								,isnull(log.i_l_c,0) i_l_c
+								,isnull(log.i_l_b,0) i_l_b
+								,isnull(log.i_l_p,0) i_l_p
+								,isnull(log.a_s,0) a_s
+				FROM user_app_log_info log
+				<where>
+					<if test="sday != null and sday != ''">
+						<![CDATA[
+							and log.day >=  #{sday,jdbcType=VARCHAR}
+						]]>	
+					</if>
+					<if test="eday != null and eday != ''">
+						<![CDATA[
+							and log.day <=  #{eday,jdbcType=VARCHAR}
+						]]>	
+					</if>
+				</where>
+				union all
+				SELECT   'TOTAL' day
+								,isnull(log.a_k_m,0) a_k_m
+								,isnull(log.a_k_c,0) a_k_c
+								,isnull(log.a_k_b,0) a_k_b
+								,isnull(log.a_k_p,0) a_k_p
+								,isnull(log.a_s_m,0) a_s_m
+								,isnull(log.a_s_c,0) a_s_c
+								,isnull(log.a_s_b,0) a_s_b
+								,isnull(log.a_s_p,0) a_s_p
+								,isnull(log.a_l_m,0) a_l_m
+								,isnull(log.a_l_c,0) a_l_c
+								,isnull(log.a_l_b,0) a_l_b
+								,isnull(log.a_l_p,0) a_l_p
+								,isnull(log.i_k_m,0) i_k_m
+								,isnull(log.i_k_c,0) i_k_c
+								,isnull(log.i_k_b,0) i_k_b
+								,isnull(log.i_k_p,0) i_k_p
+								,isnull(log.i_s_m,0) i_s_m
+								,isnull(log.i_s_c,0) i_s_c
+								,isnull(log.i_s_b,0) i_s_b
+								,isnull(log.i_s_p,0) i_s_p
+								,isnull(log.i_l_m,0) i_l_m
+								,isnull(log.i_l_c,0) i_l_c
+								,isnull(log.i_l_b,0) i_l_b
+								,isnull(log.i_l_p,0) i_l_p
+								,0 a_s
+				FROM user_app_log_info log
+				<where>
+					<if test="sday != null and sday != ''">
+						<![CDATA[
+							and log.day >=  #{sday,jdbcType=VARCHAR}
+						]]>	
+					</if>
+					<if test="eday != null and eday != ''">
+						<![CDATA[
+							and log.day <=  #{eday,jdbcType=VARCHAR}
+						]]>	
+					</if>
+				</where>
+		) a
+		group by a.day
+		order by a.day asc
+		</select>
+		
+</mapper>

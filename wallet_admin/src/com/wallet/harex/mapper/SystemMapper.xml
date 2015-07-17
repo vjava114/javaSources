@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wallet.harex.mapper.SystemMapper">   
+
+	<resultMap id="ResultSystemStatusList" type="com.wallet.harex.model.SystemStatusList">
+  	<result column="PROCESS_ID" jdbcType="INTEGER" property="processId"/>
+		<result column="PROCESS_NAME" jdbcType="VARCHAR" property="processName"/>
+		<result column="HOST_NAME" jdbcType="VARCHAR" property="hostName"/>
+		<result column="LAST_TIME" jdbcType="VARCHAR" property="lastTime"/>
+		<result column="PSTATUS" jdbcType="VARCHAR" property="pStatus"/>
+		<result column="MSG" jdbcType="VARCHAR" property="msg"/>
+	</resultMap>
+
+	<resultMap id="ResulStatustList" type="com.wallet.harex.model.SystemM"> 
+		<result column="SEQ" jdbcType="INTEGER" property="seq"/>					
+		<result column="PROCESS_ID" jdbcType="VARCHAR" property="processId"/>					
+		<result column="HOST_NAME" jdbcType="VARCHAR" property="hostName"/>            
+		<result column="PROCESS_NAME" jdbcType="VARCHAR" property="processName"/>      
+		<result column="IF_METHOD" jdbcType="VARCHAR" property="ifMethod"/>            
+		<result column="SSL_YN" jdbcType="VARCHAR" property="sslYn"/>                  
+		<result column="IP" jdbcType="VARCHAR" property="ip"/>                         
+		<result column="PORT" jdbcType="VARCHAR" property="port"/>                     
+		<result column="HTTP_URL" jdbcType="VARCHAR" property="httpUrl"/>              
+		<result column="MON_INTERVAL" jdbcType="VARCHAR" property="monInterval"/>      
+		<result column="REG_DTTM"  jdbcType="VARCHAR" property="regDttm"/>             
+		<result column="LAST_DTTM" jdbcType="VARCHAR" property="lastDttm"/>            
+	</resultMap> 
+	
+	<resultMap id="ResulStatustView" type="com.wallet.harex.model.SystemM"> 
+  	<result column="PROCESS_ID" jdbcType="VARCHAR" property="processId"/>
+		<result column="HOST_NAME" jdbcType="VARCHAR" property="hostName"/>
+		<result column="PROCESS_NAME" jdbcType="VARCHAR" property="processName"/>
+		<result column="IF_METHOD" jdbcType="VARCHAR" property="ifMethod"/>
+		<result column="SSL_YN" jdbcType="VARCHAR" property="sslYn"/>
+		<result column="SSL_YN_NM" jdbcType="VARCHAR" property="sslYnNm"/>
+		<result column="IP" jdbcType="VARCHAR" property="ip"/>
+		<result column="PORT" jdbcType="VARCHAR" property="port"/>
+		<result column="HTTP_URL" jdbcType="VARCHAR" property="httpUrl"/>
+		<result column="MON_INTERVAL" jdbcType="VARCHAR" property="monInterval"/>
+		
+		<result column="OPER_COMP_OPER" jdbcType="VARCHAR" property="operCompOper"/>
+		<result column="CHARGE_DEPT_OPER" jdbcType="VARCHAR" property="chargeDeptOper"/>
+		<result column="CHARGE_NAME_OPER" jdbcType="VARCHAR" property="chargeNameOper"/>
+		<result column="PHONE_NO_OPER" jdbcType="VARCHAR" property="phoneNoOper"/>
+		<result column="COMP_TEL_OPER" jdbcType="VARCHAR" property="compTelOper"/>
+		<result column="MSG_OPER" jdbcType="VARCHAR" property="msgOper"/>
+		<result column="SMS_YN_OPER" jdbcType="VARCHAR" property="smsYnOper"/>
+		<result column="SMS_YN_OPER_NM" jdbcType="VARCHAR" property="smsYnOperNm"/>
+		<result column="RCV_PHONE_NO_OPER" jdbcType="VARCHAR" property="rcvPhoneNoOper"/>
+		<result column="EMAIL_YN_OPER" jdbcType="VARCHAR" property="emailYnOper"/>
+		<result column="EMAIL_YN_OPER_NM" jdbcType="VARCHAR" property="emailYnOperNm"/>
+		<result column="RCV_EMAIL_OPER" jdbcType="VARCHAR" property="rcvEmailOper"/>
+		
+		<result column="SEQ_IF" jdbcType="VARCHAR" property="seqIf"/>
+		<result column="IF_MODULE_NAME_IF" jdbcType="VARCHAR" property="ifModuleNameIf"/>
+		<result column="TARGET_HOST_NAME_IF" jdbcType="VARCHAR" property="target_hostNameIf"/>
+		<result column="TARGET_IP_IF" jdbcType="VARCHAR" property="targetIpIf"/>
+		<result column="TARGET_PORT_IF" jdbcType="VARCHAR" property="targetPortIf"/>
+		<result column="IF_METHOD_IF" jdbcType="VARCHAR" property="ifMethodIf"/>
+		<result column="SSL_YN_IF" jdbcType="VARCHAR" property="sslYnIf"/>
+		<result column="SSL_YN_IF_NM" jdbcType="VARCHAR" property="sslYnIfNm"/>
+		<result column="REG_DTTM_IF" jdbcType="VARCHAR" property="regDttmIf"/>
+		<result column="LAST_DTTM_IF" jdbcType="VARCHAR" property="lastDttmIf"/> 
+	</resultMap>
+  
+	<!-- 시스템모니터링 > 시스템 모니터링 현황-->
+	<select id="selectSystemStatusList" parameterType="HashMap" resultMap="ResultSystemStatusList">
+	<![CDATA[
+		select
+			  A.PROCESS_ID
+			, A.PROCESS_NAME
+			, A.HOST_NAME
+			, isNull(A.LAST_TIME, 'No Data') AS LAST_TIME
+			, isNull(A.PSTATUS, 'No Data') AS PSTATUS
+			, isNull(A.MSG, 'No Data') AS MSG
+		from
+		(
+			 select
+			      a.process_id      		as PROCESS_ID
+			    , a.process_name     as PROCESS_NAME
+			    , a.host_name       	as HOST_NAME
+			    , x2.yyyymmdd + ' ' + x2.HHMMSS as LAST_TIME
+			    , case when x2.process_status = null   then '비정상(데이터없음)' 
+			             when x2.process_status = '0000'  then '정상' +'('+ x2.process_status +')' 
+			             when x2.process_status <> '0000' then '비정상'+'('+ x2.process_status +')' 
+			             else   x2.process_status
+			      end as PSTATUS
+			    , x2.MSG      as MSG
+			from
+			    mw_ps_mon_svr a
+			    left outer join  (
+			        SELECT  process_id, host_name, max(hhmmss) as hhmmss FROM  mw_ps_mon_log  WHERE  yyyymmdd = CONVERT(NVARCHAR(10), GETDATE(), 111) 
+			        group by process_id, host_name ) as x1 on  a.process_id = x1.process_id and a.host_name = x1.host_name
+			    left outer join mw_ps_mon_log as x2 on  a.process_id = x2.process_id and a.host_name = x2.host_name and x2.yyyymmdd = CONVERT(NVARCHAR(10), GETDATE(), 111) and x2.HHMMSS=x1.HHMMSS
+		) A
+	]]>		    
+	</select>
+	
+  <!-- 시스템모니터링 > 시스템 모니터링 환경설정-->
+  <select id="selectSystemSettingList" parameterType="HashMap" resultMap="ResulStatustList">
+		SELECT
+			 					*
+			 FROM
+			 			(
+					  	 SELECT
+					  	 						 <if test='top!=null and top!=""'> top ${top} </if> 
+					  	 						 row_number() over (order by A.PROCESS_ID) AS SEQ 
+											    ,A.PROCESS_ID 					AS PROCESS_ID 
+										      ,A.HOST_NAME 					AS HOST_NAME
+										      ,A.PROCESS_NAME 		AS PROCESS_NAME
+										      ,A.IF_METHOD 					AS IF_METHOD
+										      ,CASE A.SSL_YN WHEN 'Y' THEN '적용' 
+										                             WHEN 'N' THEN '미적용'  END	AS SSL_YN
+										      ,A.IP 												AS IP	
+										      ,A.PORT 										AS PORT
+										      ,A.HTTP_URL 						AS HTTP_URL
+										      ,A.MON_INTERVAL 			AS MON_INTERVAL
+										      ,A.REG_DTTM 						AS REG_DTTM
+										      ,A.LAST_DTTM 					AS LAST_DTTM
+								  FROM MW_PS_MON_SVR A
+			 				) A 	 
+			  	 
+			 	WHERE 1=1
+			 <if test='startRow!=null and startRow!=""'>
+				<if test='rowsPerPage!=null and rowsPerPage!=""'>
+	 				AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+				</if>
+				</if>
+  </select>
+  
+  <!-- 시스템모니터링 > 시스템 모니터링 환경설정 > 상세조회-->
+  <select id="selectSystemSettingView" parameterType="HashMap" resultMap="ResulStatustView">
+	  	SELECT 
+					  		 A.PROCESS_ID    			AS PROCESS_ID           
+					      ,A.HOST_NAME    			AS HOST_NAME     
+					      ,A.PROCESS_NAME 		AS PROCESS_NAME  
+					      ,A.IF_METHOD    				AS IF_METHOD     
+					      ,CASE A.SSL_YN WHEN 'Y' THEN '적용'
+					                             WHEN 'N' THEN '미적용' END			AS SSL_YN_NM
+					      ,A.SSL_YN        				AS SSL_YN
+					      ,A.IP           							AS IP            
+					      ,A.PORT         						AS PORT          
+					      ,A.HTTP_URL     				AS HTTP_URL      
+					      ,A.MON_INTERVAL 			AS MON_INTERVAL        
+					      ,B.OPER_COMP     			AS OPER_COMP_OPER     
+					      ,B.CHARGE_DEPT   			AS CHARGE_DEPT_OPER   
+					      ,B.CHARGE_NAME   		AS CHARGE_NAME_OPER   
+					      ,B.PHONE_NO      				AS PHONE_NO_OPER      
+					      ,B.COMP_TEL      				AS COMP_TEL_OPER      
+					      ,B.MSG           					AS MSG_OPER           
+					      ,CASE B.SMS_YN WHEN 'Y' THEN '전송'
+					                              WHEN 'N' THEN '미전송' END  AS SMS_YN_OPER_NM
+					       ,B.SMS_YN 							AS SMS_YN_OPER
+					      ,B.RCV_PHONE_NO  		AS RCV_PHONE_NO_OPER  
+					      ,CASE B.EMAIL_YN WHEN 'Y' THEN '전송'
+					                                WHEN 'N' THEN '미전송' END  AS EMAIL_YN_OPER_NM 
+					      ,B.EMAIL_YN 							AS EMAIL_YN_OPER
+					      ,B.RCV_EMAIL     				AS RCV_EMAIL_OPER     
+					      ,C.SEQ              				AS SEQ_IF              
+					      ,C.IF_MODULE_NAME  AS IF_MODULE_NAME_IF   
+					      ,C.TARGET_HOST_NAME AS TARGET_HOST_NAME_IF 
+					      ,C.TARGET_IP        		AS TARGET_IP_IF        
+					      ,C.TARGET_PORT      	AS TARGET_PORT_IF      
+					      ,C.IF_METHOD        		AS IF_METHOD_IF        
+					      ,CASE C.SSL_YN   WHEN 'Y' THEN '적용'
+					                               WHEN 'N' THEN '미적용' END  AS SSL_YN_IF_NM
+					      ,C.SSL_YN                AS SSL_YN_IF
+					      ,C.REG_DTTM         		AS REG_DTTM_IF         
+					      ,C.LAST_DTTM        		AS LAST_DTTM_IF       
+	  FROM 		MW_PS_MON_SVR A  
+  	left outer join MW_PS_MON_OPER B on A.PROCESS_ID 	= B.PROCESS_ID
+  	left outer join MW_PS_MON_IF C on A.PROCESS_ID 			= C.PROCESS_ID 
+	 WHERE 	 	A.PROCESS_ID = #{process_id}     
+  </select>
+  
+  <!-- 시스템모니터링 > 시스템 모니터링 환경설정 > 수정화면 상세조회-->
+  <select id="selectSystemSettingModifyView" parameterType="HashMap" resultMap="ResulStatustView">
+	  	SELECT 
+					  		 A.PROCESS_ID    			AS PROCESS_ID           
+					      ,A.HOST_NAME    			AS HOST_NAME     
+					      ,A.PROCESS_NAME 		AS PROCESS_NAME  
+					      ,A.IF_METHOD    				AS IF_METHOD     
+					      ,CASE A.SSL_YN WHEN 'Y' THEN '적용'
+					                             WHEN 'N' THEN '미적용' END			AS SSL_YN_NM
+					      ,A.SSL_YN        				AS SSL_YN
+					      ,A.IP           							AS IP            
+					      ,A.PORT         						AS PORT          
+					      ,A.HTTP_URL     				AS HTTP_URL      
+					      ,A.MON_INTERVAL 			AS MON_INTERVAL        
+					      ,B.OPER_COMP     			AS OPER_COMP_OPER     
+					      ,B.CHARGE_DEPT   			AS CHARGE_DEPT_OPER   
+					      ,B.CHARGE_NAME   		AS CHARGE_NAME_OPER   
+					      ,B.PHONE_NO      				AS PHONE_NO_OPER      
+					      ,B.COMP_TEL      				AS COMP_TEL_OPER      
+					      ,B.MSG           					AS MSG_OPER           
+					      ,CASE B.SMS_YN WHEN 'Y' THEN '전송'
+					                              WHEN 'N' THEN '미전송' END  AS SMS_YN_OPER_NM
+					       ,B.SMS_YN 							AS SMS_YN_OPER
+					      ,B.RCV_PHONE_NO  		AS RCV_PHONE_NO_OPER  
+					      ,CASE B.EMAIL_YN WHEN 'Y' THEN '전송'
+					                                WHEN 'N' THEN '미전송' END  AS EMAIL_YN_OPER_NM 
+					      ,B.EMAIL_YN 							AS EMAIL_YN_OPER
+					      ,B.RCV_EMAIL     				AS RCV_EMAIL_OPER     
+					      ,C.SEQ              				AS SEQ_IF              
+					      ,C.IF_MODULE_NAME  AS IF_MODULE_NAME_IF   
+					      ,C.TARGET_HOST_NAME AS TARGET_HOST_NAME_IF 
+					      ,C.TARGET_IP        		AS TARGET_IP_IF        
+					      ,C.TARGET_PORT      	AS TARGET_PORT_IF      
+					      ,C.IF_METHOD        		AS IF_METHOD_IF        
+					      ,CASE C.SSL_YN   WHEN 'Y' THEN '적용'
+					                               WHEN 'N' THEN '미적용' END  AS SSL_YN_IF_NM
+					      ,C.SSL_YN                AS SSL_YN_IF
+					      ,C.REG_DTTM         		AS REG_DTTM_IF         
+					      ,C.LAST_DTTM        		AS LAST_DTTM_IF       
+	  FROM 		MW_PS_MON_SVR A  
+  	left outer join MW_PS_MON_OPER B on A.PROCESS_ID 	= B.PROCESS_ID
+  	left outer join MW_PS_MON_IF C on A.PROCESS_ID 			= C.PROCESS_ID 
+	 WHERE 	 	A.PROCESS_ID = #{process_id}     
+  </select>
+  
+  <!-- 시스템모니터링 > 시스템 모니터링 환경설정 row count-->
+  <select id="selectSystemSettingListCnt" resultType="java.lang.Integer">
+  	SELECT COUNT(*) AS CNT  FROM MW_PS_MON_SVR 
+  </select>
+  
+  <!--  시스템모니터링 > 시스템 모니터링 환경설정 수정 처리 MW_PS_MON_SVR-->
+  <update id="updateSystemSettingSvr" parameterType="HashMap">
+  	UPDATE  MW_PS_MON_SVR
+			   SET PROCESS_NAME  	= #{process_name}
+				       ,IF_METHOD     		= #{if_method}
+				       ,SSL_YN        			= #{ssl_yn}
+				       ,IP            					= #{ip}
+				       ,PORT          				= #{port}
+				       ,HTTP_URL      			= #{http_url}
+				       ,MON_INTERVAL  	= #{mon_interval}
+				       ,LAST_DTTM	  		= GETDATE()
+		 WHERE  PROCESS_ID	  		= #{process_id}  
+  </update>
+  
+  <!--  시스템모니터링 > 시스템 모니터링 환경설정 수정 처리 MW_PS_MON_OPER-->
+  <update id="updateSystemSettingOper" parameterType="HashMap">
+  	UPDATE  MW_PS_MON_OPER
+			   SET	 OPER_COMP     	= #{oper_comp_oper   }
+								,CHARGE_DEPT   	= #{charge_dept_oper }
+								,CHARGE_NAME   	= #{charge_name_oper }
+								,PHONE_NO      		= #{phone_no_oper    }
+								,COMP_TEL      		= #{comp_tel_oper    }
+								,MSG           				= #{msg_oper         }
+								,SMS_YN        		= #{sms_yn_oper      }
+								,RCV_PHONE_NO  = #{rcv_phone_no_oper}
+								,EMAIL_YN      		= #{email_yn_oper    }
+								,RCV_EMAIL     		= #{rcv_email_oper   }
+								,LAST_DTTM	  		= GETDATE()
+		WHERE   PROCESS_ID	  		= #{process_id}  
+  </update>
+
+  <!--  시스템모니터링 > 시스템 모니터링 환경설정 수정 처리 MW_PS_MON_IF-->
+  <update id="updateSystemSettingIf" parameterType="HashMap">
+  	UPDATE  MW_PS_MON_IF
+			   SET	 IF_MODULE_NAME   		= #{if_module_name_if}
+								,TARGET_HOST_NAME 	= #{target_host_name_if}
+								,TARGET_IP        					= #{target_ip_if}
+								,TARGET_PORT      			= #{target_port_if}
+								,IF_METHOD        				= #{if_method_if}
+								,SSL_YN           					= #{ssl_yn_if}
+								,LAST_DTTM	  						= GETDATE()
+		WHERE   PROCESS_ID	  						= #{process_id}  
+		    AND   SEQ														= #{seq_if}
+  </update>
+  
+  <insert id="insertSystemSettingSvr" parameterType="HashMap">
+  	INSERT INTO MW_PS_MON_SVR
+			(
+						 PROCESS_ID
+						,HOST_NAME
+						,PROCESS_NAME  	
+						,IF_METHOD     	
+						,SSL_YN        	
+						,IP            	
+						,PORT          	
+						,HTTP_URL      	
+						,MON_INTERVAL  	
+						,REG_DTTM	  	
+			) VALUES(
+						 #{process_id}
+						,#{host_name} 
+						,#{process_name}
+						,#{if_method}
+						,#{ssl_yn}
+						,#{ip}
+						,#{port}
+						,#{http_url}
+						,#{mon_interval}
+						,GETDATE()
+			)
+  </insert>
+  
+  <insert id="insertSystemSettingOper" parameterType="HashMap">
+  	INSERT INTO MW_PS_MON_OPER
+			(
+						 PROCESS_ID
+						,HOST_NAME
+						,OPER_COMP 
+						,CHARGE_DEPT 
+						,CHARGE_NAME 
+						,PHONE_NO    
+						,COMP_TEL    
+						,MSG         
+						,SMS_YN      
+						,RCV_PHONE_NO 
+						,EMAIL_YN     
+						,RCV_EMAIL    
+						,REG_DTTM
+			)VALUES(
+						 #{process_id}
+						,#{host_name} 
+						,#{oper_comp_oper   }
+						,#{charge_dept_oper }
+						,#{charge_name_oper }
+						,#{phone_no_oper    }
+						,#{comp_tel_oper    }
+						,#{msg_oper         }
+						,#{sms_yn_oper      }
+						,#{rcv_phone_no_oper}
+						,#{email_yn_oper    }
+						,#{rcv_email_oper   }
+						,GETDATE()
+			)
+  </insert>
+  
+  
+  <insert id="insertSystemSettingIf" parameterType="HashMap">
+  	INSERT INTO MW_PS_MON_IF
+			(
+						 PROCESS_ID
+						,HOST_NAME
+						,SEQ
+						,IF_MODULE_NAME
+						,TARGET_HOST_NAME
+						,TARGET_IP       
+						,TARGET_PORT     
+						,IF_METHOD       
+						,SSL_YN          
+						,REG_DTTM	  	
+			)VALUES (
+						 #{process_id}
+						,#{host_name} 
+						,#{seq_if}
+						,#{if_module_name_if}
+						,#{target_host_name_if}
+						,#{target_ip_if}
+						,#{target_port_if}
+						,#{if_method_if}
+						,#{ssl_yn_if}
+						,GETDATE()
+			)
+  </insert>
+  
+  <!-- 시스템 모니터링 환경설정 프로세스ID 중복확인 -->
+  <select id="selectCheckProcessIdYn" parameterType="HashMap" resultType="java.lang.String">
+  	SELECT CASE WHEN COUNT(*)> 0 THEN 'Y' ELSE 'N' END AS CHK
+		  FROM MW_PS_MON_SVR
+		 WHERE PROCESS_ID = #{process_id,jdbcType=VARCHAR}
+  </select>
+</mapper>

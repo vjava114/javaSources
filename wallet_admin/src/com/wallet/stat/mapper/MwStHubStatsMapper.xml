@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.stat.mapper.MwStHubStatsMapper" >
+
+	
+	<!-- 허브페이지 유입 통계 조회 -->
+	<select id="selectHubStatsList" parameterType="HashMap" resultType="java.util.HashMap">
+		select 
+					<if test="period.equals('day')">
+		       case when cday = 'TOTAL' then 'TOTAL'
+		       			when cday = 'UACC' then 'UACC'
+					 else SUBSTRING(cday,1,4) + '-' + SUBSTRING(cday,5,2) + '-' + SUBSTRING(cday,7,2)
+					 end CDAY
+					</if>
+					<if test="period.equals('month')">
+		       case when cday = 'TOTAL' then 'TOTAL'
+		       			when cday = 'UACC' then 'UACC'
+					 else SUBSTRING(cday,1,4) + '-' + SUBSTRING(cday,5,2) + '-' + '01'
+					 end CDAY
+					</if>
+					<if test="period.equals('year')">
+		       case when cday = 'TOTAL' then 'TOTAL'
+		       			when cday = 'UACC' then 'UACC'
+					 else SUBSTRING(cday,1,4) + '-' + '01' + '-' +'01'
+					 end CDAY
+					</if>
+				<foreach collection="title_list" item="title_list"   open="" close="" separator="">
+			    ,sum(isnull(case when upper(code) = '${title_list}' then a.val6 end,0)) ${title_list}_VAL6
+				 </foreach>
+				 ,0
+				 <foreach collection="title_list2" item="title_list2"   open="" close="" separator="">
+			    + sum(isnull(case when upper(code) = '${title_list2}' then a.val6 end,0))
+				 </foreach>
+				 SUM
+		from (
+		select <if test="period.equals('day')">
+		        wat.cday cday
+					 </if>
+					 <if test="period.equals('month')">
+		        left(wat.cday, 6) cday
+					 </if>
+					 <if test="period.equals('year')">
+		        left(wat.cday, 4) cday
+					 </if>
+				 ,RTRIM(wat.code) code
+			   ,isnull(wat.val6,0) val6
+		from stat_wat wat
+		<where>
+			and grp_code = 'RCM_MARKET'
+	  	<if test="sday != null and sday != ''">
+		  	<![CDATA[
+	        and wat.cday >=  #{sday,jdbcType=VARCHAR}
+	        ]]>	
+    	</if>
+    	<if test="eday != null and eday != ''">
+        <![CDATA[
+        	and wat.cday <=  #{eday,jdbcType=VARCHAR}
+        ]]>	
+   		</if>
+	  </where>
+		union all
+		select 'TOTAL' day
+			   ,RTRIM(wat.code) code
+			   ,sum(isnull(wat.val6,0)) val6
+		from stat_wat wat
+		<where>
+			and grp_code = 'RCM_MARKET'
+	  	<if test="sday != null and sday != ''">
+		  	<![CDATA[
+	        and wat.cday >=  #{sday,jdbcType=VARCHAR}
+	        ]]>	
+    	</if>
+    	<if test="eday != null and eday != ''">
+        <![CDATA[
+        	and wat.cday <=  #{eday,jdbcType=VARCHAR}
+        ]]>	
+   		</if>
+	  </where>
+		GROUP BY wat.code
+		union all
+		select 'UACC' day
+			   ,RTRIM(wat.code) code
+			   ,sum(isnull(wat.val6,0)) val6
+		from stat_wat wat
+		where grp_code = 'RCM_MARKET'
+		GROUP BY wat.code
+		) a
+		group by CDAY
+		order by cday
+	</select>
+	
+	
+</mapper>

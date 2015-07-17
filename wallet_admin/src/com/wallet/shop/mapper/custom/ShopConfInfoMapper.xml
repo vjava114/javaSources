@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.shop.mapper.custom.ShopConfInfoMapper" >
+	<resultMap id="BaseResultMap" type="com.wallet.shop.model.custom.ShopConfInfo" >
+		<result column="IDX" property="idx" jdbcType="VARCHAR" />
+		<result column="CONF_ID" property="confId" jdbcType="VARCHAR"/> 
+		<result column="CONF_KEY" property="confKey" jdbcType="VARCHAR"/> 
+		<result column="CONF_VALUE" property="confValue" jdbcType="VARCHAR"/> 
+		<result column="UPPER_CONF_ID" property="upperConfId" jdbcType="VARCHAR"/> 
+		<result column="BIGO" property="bigo" jdbcType="VARCHAR"/> 
+		<result column="REG_USER" property="regUser" jdbcType="VARCHAR" />
+		<result column="REG_USER_NM" property="regUserNm" jdbcType="VARCHAR" />
+		<result column="REG_DTM" property="regDtm" jdbcType="VARCHAR" />
+		<result column="CHG_USER" property="chgUser" jdbcType="VARCHAR" />
+		<result column="CHG_USER_NM" property="chgUserNm" jdbcType="VARCHAR" />
+		<result column="CHG_DTM" property="chgDtm" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 조회조건에 대한 모카샵_카테고리 목록 -->
+	<select id="selectShopConfInfoList" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT CONF_ID
+			, CONF_KEY
+			, CONF_VALUE
+			, UPPER_CONF_ID
+			, BIGO
+			, REG_USER
+			, REG_DTM
+			, CHG_USER
+			, CHG_DTM
+		FROM MW_CS_SHOP_CONF_INFO
+		WHERE 1=1
+		<if test='confId != null and confId != ""'>
+			AND CONF_ID = #{confId}
+		</if>
+		<if test='confKey != null and confKey != ""'>
+			AND CONF_KEY LIKE '%${confKey}%'
+		</if>
+		<if test='confValue != null and confValue != ""'>
+			AND CONF_VALUE LIKE '%${confValue}%'
+		</if>
+		<if test='upperConfId != null and upperConfId != ""'>
+			AND UPPER_CONF_ID LIKE '%${upperConfId}%'
+		</if>
+		ORDER BY UPPER_CONF_ID, CONF_KEY, CONF_VALUE, CONF_ID
+	</select>
+	
+	<insert id="insertShopConfInfo" parameterType="HashMap">
+		INSERT INTO MW_CS_SHOP_CONF_INFO
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			CONF_KEY,
+			<if test='confValue != null and confValue != ""'>CONF_VALUE,</if>
+			<if test='upperConfId != null and upperConfId != ""'>UPPER_CONF_ID,</if>
+			<if test='bigo != null and bigo != ""'>BIGO,</if>
+			REG_USER,
+			REG_DTM,
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			#{confKey},
+			<if test='confValue != null and confValue != ""'>#{confValue},</if>
+			<if test='upperConfId != null and upperConfId != ""'>#{upperConfId},</if>
+			<if test='bigo != null and bigo != ""'>#{bigo},</if>
+			#{regUser},
+			GETDATE(),
+		</trim>
+	</insert>
+	
+	
+	
+	<update id="updateShopConfInfo" parameterType="HashMap">
+		UPDATE MW_CS_SHOP_CONF_INFO
+		<set>
+		<trim prefix="" suffix="" suffixOverrides="," >
+			<if test='confKey != null and confKey != ""'>CONF_KEY = #{confKey},</if>
+			<if test='confValue != null and confValue != ""'>CONF_VALUE =  #{confValue},</if>
+			<if test='upperConfId != null and upperConfId != ""'>UPPER_CONF_ID = #{upperConfId},</if>
+			<if test='bigo != null and bigo != null'>BIGO = #{bigo},</if>
+			CHG_USER = #{chgUser},
+			CHG_DTM = GETDATE(),
+		</trim>
+		</set>
+		WHERE CONF_ID = #{confId}
+	</update>
+	
+	
+	<delete id="deleteShopConfInfo" parameterType="HashMap">
+		DELETE
+		FROM MW_CS_SHOP_CONF_INFO
+		WHERE CONF_ID = #{confId}
+	</delete>
+	
+	<select id="selectUpperConfIdList" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT UPPER_CONF_ID
+		FROM MW_CS_SHOP_CONF_INFO
+		WHERE 1=1
+		GROUP BY UPPER_CONF_ID
+		ORDER BY UPPER_CONF_ID
+	</select>
+</mapper>

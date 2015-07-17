@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.membership.mapper.custom.MemberAgreeMapper">
+	<resultMap id="BaseResultMap" type="com.wallet.membership.model.custom.MemberAgree" >
+	
+		<result column="MEMB_ID" property="membId" jdbcType="VARCHAR" />
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="SEQ_NO" property="seqNo" jdbcType="VARCHAR" />
+		<result column="AGREE_DP_SEQ" property="agreeDpSeq" jdbcType="VARCHAR" />
+
+		<result column="AGREE_CODE" property="agreeCode" jdbcType="VARCHAR" />
+		<result column="AGREE_VER" property="agreeVer" jdbcType="VARCHAR" />
+		<result column="AGREE_TITLE" property="agreeTitle" jdbcType="VARCHAR" />
+		<result column="AGREE_CONTENT" property="agreeContent" jdbcType="VARCHAR" />
+
+		<result column="AGREE_COMPULSORY_YN" property="agreeCompulsoryYN" jdbcType="VARCHAR" />
+		<result column="USE_YN" property="useYN" jdbcType="VARCHAR" />
+		<result column="AGREE_DISP_DTM" property="agreeDispDtm" jdbcType="VARCHAR" />
+		
+		<result column="REG_USER" property="regUser" jdbcType="VARCHAR" />
+		<result column="REG_DTM" property="regDtm" jdbcType="VARCHAR" />
+		<result column="CHG_USER" property="chgUser" jdbcType="VARCHAR" />
+		<result column="CHG_DTM" property="chgDtm" jdbcType="VARCHAR" />
+		<result column="REG_USER_NM" property="regUserNm" jdbcType="VARCHAR" />
+		<result column="CHG_USER_NM" property="chgUserNm" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="selectMemberAgreeList" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT
+			S.MEMB_ID
+			, M.NAME
+			, S.SEQ_NO
+			, S.AGREE_DP_SEQ
+			, S.AGREE_CODE
+			, S.AGREE_VER
+			, S.AGREE_TITLE
+			, S.AGREE_CONTENT
+			, S.AGREE_COMPULSORY_YN
+			, S.USE_YN
+			, CONVERT(VARCHAR(10), S.AGREE_DISP_DTM, 120) as AGREE_DISP_DTM
+			, S.REG_USER
+			, CONVERT(VARCHAR(10), S.REG_DTM, 120) as REG_DTM
+			, S.CHG_USER
+			, CONVERT(VARCHAR(10), S.CHG_DTM, 120) as CHG_DTM
+			/*, U1.AUTH_NAME AS REG_USER_NM*/
+			/*, U2.AUTH_NAME AS CHG_USER_NM*/
+		FROM MW_MS_MEMB_AGREE S, MEMB_CARDLIST M/*, USER_DESC U1, USER_DESC U2*/
+		WHERE 1=1
+		AND S.MEMB_ID = M.MEMB_ID
+		/*
+		AND U1.USER_ID = S.REG_USER
+		AND U2.USER_ID = S.CHG_USER
+		*/
+		<if test='membId != null and membId !=""'>
+			AND S.MEMB_ID = #{membId}
+		</if>
+	</select>
+	
+	<select id="selectMemberAgreeInfo" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT
+			S.MEMB_ID
+			, M.NAME
+			, S.SEQ_NO
+			, S.AGREE_DP_SEQ
+			, S.AGREE_CODE
+			, S.AGREE_VER
+			, S.AGREE_TITLE
+			, S.AGREE_CONTENT
+			, S.AGREE_COMPULSORY_YN
+			, S.USE_YN
+			, CONVERT(VARCHAR(10), S.AGREE_DISP_DTM, 120) as AGREE_DISP_DTM
+			, S.REG_USER
+			, CONVERT(VARCHAR(10), S.REG_DTM, 120) as REG_DTM
+			, S.CHG_USER
+			, CONVERT(VARCHAR(10), S.CHG_DTM, 120) as CHG_DTM
+			/*, U1.AUTH_NAME AS REG_USER_NM*/
+			/*, U2.AUTH_NAME AS CHG_USER_NM*/
+		FROM MW_MS_MEMB_AGREE S, MEMB_CARDLIST M/*, USER_DESC U1, USER_DESC U2*/
+		WHERE 1=1
+		AND S.MEMB_ID = M.MEMB_ID
+		/*
+		AND U1.USER_ID = S.REG_USER
+		AND U2.USER_ID = S.CHG_USER
+		*/
+		AND S.MEMB_ID = #{membId}
+	</select>
+	
+	<update id="updateMemberAgree" parameterType="HashMap">
+		UPDATE MW_MS_MEMB_AGREE
+		<set>
+		<trim prefix="" suffix="" suffixOverrides="," >
+			<if test='agreeDpSeq != null and agreeDpSeq != ""' >
+				AGREE_DP_SEQ = #{agreeDpSeq}, 
+			</if>
+			<if test='agreeCode != null and agreeCode != ""' >
+				AGREE_CODE= #{agreeCode}, 
+			</if>
+			<if test='agreeVer != null and agreeVer != ""' >
+				AGREE_VER= #{agreeVer}, 
+			</if>
+			<if test='agreeTitle != null and agreeTitle != ""' >
+				AGREE_TITLE= #{agreeTitle}, 
+			</if>
+			<if test='agreeContent != null and agreeContent != ""' >
+				AGREE_CONTENT= #{agreeContent}, 
+			</if>
+			<if test='agreeCompulsoryYN != null and agreeCompulsoryYN != ""' >
+				AGREE_COMPULSORY_YN= #{agreeCompulsoryYN}, 
+			</if>
+			<if test='useYN != null and useYN != ""' >
+ 				USE_YN= #{useYN}, 
+			</if>
+			<if test='agreeDispDtm != null and agreeDispDtm != ""' >
+				AGREE_DISP_DTM = CONVERT(VARCHAR, CONVERT(DATETIME, REPLACE(#{agreeDispDtm}, '-', ''),112), 112),
+			</if>
+			CHG_USER= #{chgUser},
+			CHG_DTM = GETDATE(),
+		</trim>
+		</set>
+		WHERE 1=1
+		AND MEMB_ID = #{membId}
+		AND SEQ_NO = #{seqNo}
+	</update>
+	
+	<delete id="deleteMemberAgree" parameterType="HashMap">
+		DELETE
+		FROM MW_MS_MEMB_AGREE
+		WHERE 1=1
+		AND MEMB_ID = #{membId}
+		<if test='seqNo != null and seqNo !=""'>
+			AND SEQ_NO = #{seqNo}
+		</if>
+		<if test='seqNo != null and seqNo !=""'>
+			/*AND SEQ_NO = #{seqNo}*/
+		</if>
+		<if test='seqNo != null and seqNo !=""'>
+			/*AND SEQ_NO = #{seqNo}*/
+		</if>
+	</delete>
+	
+	<insert id="insertMemberAgree" parameterType="HashMap">
+		INSERT INTO MW_MS_MEMB_AGREE
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			MEMB_ID,
+			SEQ_NO,
+			<if test='agreeDpSeq != null and agreeDpSeq != ""' >
+				AGREE_DP_SEQ,
+			</if>
+			<if test='agreeCode != null and agreeCode != ""' >
+				AGREE_CODE,
+			</if>
+			<if test='agreeVer != null and agreeVer != ""' >
+				AGREE_VER,
+			</if>
+			<if test='agreeTitle != null and agreeTitle != ""' >
+				AGREE_TITLE,
+			</if>
+			<if test='agreeContent != null and agreeContent != ""' >
+				AGREE_CONTENT,
+			</if>
+			<if test='agreeCompulsoryYN != null and agreeCompulsoryYN != ""' >
+				AGREE_COMPULSORY_YN,
+			</if>
+			<if test='useYN != null and useYN != ""' >
+				USE_YN,
+			</if>
+			<if test='agreeDispDtm != null and agreeDispDtm != ""' >
+				AGREE_DISP_DTM, 
+			</if>
+			
+			REG_USER,
+			REG_DTM,
+		</trim>
+		SELECT #{membId}, 
+			CASE WHEN MAX(SEQ_NO) IS NULL THEN 1 ELSE MAX(SEQ_NO)+1 END ,
+		<trim  prefix="" suffix="" suffixOverrides=",">
+			<if test='agreeDpSeq != null and agreeDpSeq != ""' >
+				#{agreeDpSeq},
+			</if>
+			<if test='agreeCode != null and agreeCode != ""' >
+				#{agreeCode},
+			</if>
+			<if test='agreeVer != null and agreeVer != ""' >
+				#{agreeVer},
+			</if>
+			<if test='agreeTitle != null and agreeTitle != ""' >
+				#{agreeTitle},
+			</if>
+			<if test='agreeContent != null and agreeContent != ""' >
+				#{agreeContent},
+			</if>
+			<if test='agreeCompulsoryYN != null and agreeCompulsoryYN != ""' >
+				#{agreeCompulsoryYN},
+			</if>
+			<if test='useYN != null and useYN != ""' >
+				#{useYN},
+			</if>
+			<if test='agreeDispDtm != null and agreeDispDtm != ""' >
+				CONVERT(VARCHAR(10), #{agreeDispDtm}, 120),
+			</if>
+			#{regUser},
+			GETDATE(),
+		</trim>
+		FROM MW_MS_MEMB_AGREE
+		WHERE MEMB_ID = #{membId}
+	</insert>
+	
+</mapper>

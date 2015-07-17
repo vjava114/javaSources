@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<!-- Configure a built-in transaction manager. If you're using an app server, 
+		you probably want to use its transaction manager and a managed datasource -->
+	<settings cacheModelsEnabled="false" enhancementEnabled="true"
+		lazyLoadingEnabled="true" useStatementNamespaces="true" />
+	<transactionManager type="JDBC">
+		<property name="DefaultAutoCommit" value="false" />
+		<dataSource type="SIMPLE">
+			<property name="JDBC.Driver" value="org.gjt.mm.mysql.Driver" />
+ 
+ <!-- 로컬 -->
+		<property name="JDBC.ConnectionURL"	value="jdbc:mysql://220.85.13.250:3306/push" />
+  
+ 
+			<property name="JDBC.DefaultAutoCommit" value="true" />
+			<property name="JDBC.Username" value="rcs" />
+			<property name="JDBC.Password" value="rcs123" />
+			<property name="Pool.MaximumIdleConnections" value="10" />
+			<property name="Pool.MaximumCheckoutTime" value="120000" />
+			<property name="Pool.TimeToWait" value="800" />
+		</dataSource>
+	</transactionManager>
+	<!-- List the SQL Map XML files. They can be loaded from the classpath, 
+		as they are here (com.domain.data...) -->
+	<sqlMap resource="Data/storage/sqldata/push.xml" />
+ 
+</sqlMapConfig>

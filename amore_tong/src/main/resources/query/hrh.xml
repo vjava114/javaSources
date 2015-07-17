@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="hrhQuery">
+
+<!-- select 뒤에 evt_code 안붙은건 New버전이다... hrh는 웬만하면 new버전으로 다 해결할것이다. -->
+
+	<sql id="select">
+	SELECT event.*,
+	       hrh.$userCol$ user_no,
+	       hrh.phone uphone,
+	       hrh.name,
+	       shop_name,
+	       shop_phone,
+	       '-' angel_code,
+	       '-' angel_name,
+	       ( SELECT COUNT(*)
+	       FROM   $couponTb$
+	       WHERE   event.evt_code = #evt_code#
+	       AND     event.brand    = #brand#
+	       AND     event.userno   = userno
+	       )
+	       coupon_cnt,
+	       date_format(rdate,'%y-%m-%d %H:%i') fdate
+	</sql>
+	
+	
+	<sql id="from">
+	FROM   hera_event event
+	       LEFT JOIN $userTb$ as hrh
+	       ON     event.userno = hrh.user_no
+	</sql>
+
+</sqlMap>

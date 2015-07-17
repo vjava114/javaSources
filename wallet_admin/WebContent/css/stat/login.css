@@ -1,0 +1,19 @@
+@charset "euc-kr";
+
+/******************************************************************************************************************************
+	LOGING
+******************************************************************************************************************************/
+#wrap2 {width:100%;}
+div.login {position:relative;width:698px;height:425px;margin:70px auto;background:url(/img/stat/login_bg.png);}
+.login table {position:absolute;top:230px;left:150px;}
+.login table td {height:40px;}
+.login table td .login_img {cursor:pointer;margin-left:5px;}
+.login table td .login_btn {cursor:pointer;vertical-align:middle;padding-bottom:3px;}
+.login .advice1 {padding-left:26px;font-size:11px;color:#888;}
+.login .advice2 {position:absolute;top:380px;left:110px;font-size:11px;color:#888;}
+.login .login_input {padding-left:5px;}
+.login .login_num {vertical-align:middle;width:90px;}
+.login .login_img2 {vertical-align:middle;margin-right:5px;cursor:pointer;}
+.login .input_style {width:150px;height:15px;}
+.align_right {text-align:right !important;}
+.bold {font-weight:bold;color:#353535;}

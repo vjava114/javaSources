@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.membership.mapper.custom.ComplexCouponMapper">
+
+	<resultMap id="BaseResultMap" type="com.wallet.membership.model.custom.ComplexCoupon" >
+		<result column="IDX" property="idx" jdbcType="VARCHAR" />
+		<result column="CPN_ID" property="cpnId" jdbcType="VARCHAR" />
+		<result column="CPN_NAME" property="cpnName" jdbcType="VARCHAR"/>
+		<result column="MEMB_ID" property="membId" jdbcType="VARCHAR"/>
+		<result column="MEMB_NM" property="membNm" jdbcType="VARCHAR"/>
+		<result column="PART_V" property="partV" jdbcType="VARCHAR"/>
+		<result column="PART_V_NM" property="partVNm" jdbcType="VARCHAR"/>
+		
+		<result column="POINT_DUP_USABLE_YN" property="pointDupUsableYN" jdbcType="VARCHAR" />
+		<result column="COMP_PAY_YN" property="compPayYN" jdbcType="VARCHAR" />
+		<result column="REG_DTM" property="regDtm" jdbcType="VARCHAR" />
+		<result column="CHG_DTM" property="chgDtm" jdbcType="VARCHAR" />
+
+		<result column="MEMB_COMPULSORY_YN" property="membCompulsoryYN" jdbcType="VARCHAR" />
+		<result column="CPN_DISC_TYPE" property="cpnDiscType" jdbcType="VARCHAR" />
+		<result column="CPN_DISC_AMOUNT" property="cpnDiscAmount" jdbcType="VARCHAR" />
+		<result column="ROUND_TYPE" property="roundType" jdbcType="VARCHAR" />
+		<result column="DC_UNIT" property="dcUnit" jdbcType="VARCHAR" />
+		<result column="DC_NOTICE" property="dcNotice" jdbcType="VARCHAR" />
+		<result column="MIN_PAY_PRICE" property="minPayPrice" jdbcType="VARCHAR" />
+		<result column="MAX_DIC_PRICE" property="maxDicPrice" jdbcType="VARCHAR" />
+		<result column="CPN_DUP_USABLE_YN" property="cpnDupUsableYN" jdbcType="VARCHAR" />
+
+		<result column="COMP_ID" property="compId" jdbcType="VARCHAR"/>
+		<result column="COMP_NAME" property="compName" jdbcType="VARCHAR"/>
+		
+		<result column="BRAN_ID" property="branId" jdbcType="VARCHAR"/>
+		<result column="BRAN_NAME" property="branName" jdbcType="VARCHAR"/>
+		
+		<result column="BANK_ID" property="bankId" jdbcType="VARCHAR"/>
+		<result column="BANK_NAME" property="bankName" jdbcType="VARCHAR"/>
+		
+		<result column="PAYCOMP_ID" property="payCompId" jdbcType="VARCHAR"/>
+		<result column="PAYCOMP_NAME" property="payCompName" jdbcType="VARCHAR"/>
+		
+		<result column="SHOP_SVC_LIST" property="shopSvcList" jdbcType="VARCHAR"/>
+		<result column="BANK_SVC_LIST" property="bankSvcList" jdbcType="VARCHAR"/>
+		<result column="PAYCOM_SVC_LIST" property="paycomSvcList" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+	<select id="selectComplexCouponList" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT <if test='top!=null and top!=""'> top ${top} </if> K.*
+		FROM(
+			SELECT  
+				ROW_NUMBER() OVER(ORDER BY C.REG_DTM DESC ) AS IDX
+				, C.CPN_ID
+				, O.NAME AS CPN_NAME
+				, O.MEMB_ID
+				, (SELECT NAME FROM MEMB_CARDLIST WHERE MEMB_ID = O.MEMB_ID) AS MEMB_NM 
+				, O.PART_V
+				, dbo.GET_CODE_NM('0030', O.PART_V) AS PART_V_NM
+	
+				, C.POINT_DUP_USABLE_YN
+				/*, O.COMP_PAY_YN*/
+				, CONVERT(VARCHAR(10), C.REG_DTM, 120) AS REG_DTM
+				, CONVERT(VARCHAR(10), C.CHG_DTM, 120) AS CHG_DTM
+				
+				, C.MEMB_COMPULSORY_YN
+				, C.CPN_DISC_TYPE
+				, C.CPN_DISC_AMOUNT
+				, C.ROUND_TYPE
+				, C.DC_UNIT
+				, C.DC_NOTICE
+				, C.MIN_PAY_PRICE
+				, C.MAX_DIC_PRICE
+				, CPN_DUP_USABLE_YN
+				
+				, C.COMP_ID
+				, dbo.GET_COMP_NM(C.COMP_ID) AS COMP_NAME
+				, C.BRAN_ID
+				, dbo.GET_COMP_NM(C.BRAN_ID) AS BRAN_NAME
+				, L.COMP_PAY_YN
+				, C.SHOP_SVC_LIST
+				, C.BANK_SVC_LIST
+				, C.PAYCOM_SVC_LIST
+	
+			FROM MW_CS_CPN_LIST C
+			INNER JOIN CPN_LIST O 
+				ON C.CPN_ID = O.CPN_ID 
+			INNER JOIN CPN_LIST L
+				ON C.CPN_ID = L.CPN_ID
+			LEFT OUTER JOIN MW_CM_COMPANY P 
+				ON C.COMP_ID = P.COMP_ID
+			WHERE 1=1
+			
+			<![CDATA[
+				AND L.COMP_PAY_YN <> 'N'
+			]]>
+			<if test='partV != null and partV != ""'>
+				AND O.PART_V LIKE #{partV}
+			</if>
+			<if test='compName != null and compName != ""'>
+				AND P.COMP_NAME LIKE '%${compName}%'
+			</if>
+			<if test='cpnName != null and cpnName != ""'>
+				AND O.NAME LIKE '%${cpnName}%'
+			</if>
+			<if test='ra_searchTerm != null and ra_searchTerm != "" and ra_searchTerm != "all"'>
+				<if test='se_termOpt == "reg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), C.REG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+				<if test='se_termOpt == "chg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), C.CHG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+				
+				<if test='edate != null and edate != ""'>
+					<if test='se_termOpt == "reg_date"'>
+						<![CDATA[
+							AND CONVERT(VARCHAR(10), C.REG_DTM, 120) <=	#{edate}
+						]]>
+					</if>
+					<if test='se_termOpt == "chg_date"'>
+						<![CDATA[
+							AND CONVERT(VARCHAR(10), C.CHG_DTM, 120) <=	#{edate}
+						]]>
+					</if>
+				</if>
+			</if>
+		) K
+		WHERE 1=1
+		<if test='startRow != null and startRow != ""'>
+			<if test='rowsPerPage != null and rowsPerPage != ""'>
+				AND K.IDX BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+	</select>
+	
+	<select id="selectComplexCouponListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(C.CPN_ID) AS CNT
+		FROM MW_CS_CPN_LIST C
+		INNER JOIN CPN_LIST O 
+			ON C.CPN_ID = O.CPN_ID 
+		INNER JOIN CPN_LIST L
+			ON C.CPN_ID = L.CPN_ID
+		LEFT OUTER JOIN MW_CM_COMPANY P 
+			ON C.COMP_ID = P.COMP_ID
+		WHERE 1=1
+			
+		<![CDATA[
+			AND L.COMP_PAY_YN <> 'N'
+		]]>
+		<if test='partV != null and partV != ""'>
+			AND O.PART_V LIKE #{partV}
+		</if>
+		<if test='compName != null and compName != ""'>
+			AND P.COMP_NAME LIKE '%${compName}%'
+		</if>
+		<if test='cpnName != null and cpnName != ""'>
+			AND O.NAME LIKE '%${cpnName}%'
+		</if>
+		<if test='ra_searchTerm != null and ra_searchTerm != "" and ra_searchTerm != "all"'>
+				<if test='se_termOpt == "reg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), C.REG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+				<if test='se_termOpt == "chg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), C.CHG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+				
+				<if test='edate != null and edate != ""'>
+					<if test='se_termOpt == "reg_date"'>
+						<![CDATA[
+							AND CONVERT(VARCHAR(10), C.REG_DTM, 120) <=	#{edate}
+						]]>
+					</if>
+					<if test='se_termOpt == "chg_date"'>
+						<![CDATA[
+							AND CONVERT(VARCHAR(10), C.CHG_DTM, 120) <=	#{edate}
+						]]>
+					</if>
+				</if>
+			</if>
+	</select>
+	
+	<select id="selectComplexCouponInfo" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT C.CPN_ID
+			, O.NAME AS CPN_NAME
+			, O.MEMB_ID
+			, (SELECT NAME FROM MEMB_CARDLIST WHERE MEMB_ID = O.MEMB_ID) AS MEMB_NM 
+			, O.PART_V
+			, dbo.GET_CODE_NM('0030', O.PART_V) AS PART_V_NM
+
+			, C.POINT_DUP_USABLE_YN
+			/*, O.COMP_PAY_YN*/
+			, CONVERT(VARCHAR(10), C.REG_DTM, 120) AS REG_DTM
+			, CONVERT(VARCHAR(10), C.CHG_DTM, 120) AS CHG_DTM
+			
+			, C.MEMB_COMPULSORY_YN
+			, C.CPN_DISC_TYPE
+			, C.CPN_DISC_AMOUNT
+			, C.ROUND_TYPE
+			, C.DC_UNIT
+			, C.DC_NOTICE
+			, C.MIN_PAY_PRICE
+			, C.MAX_DIC_PRICE
+			, CPN_DUP_USABLE_YN
+			
+			, C.COMP_ID
+			, dbo.GET_COMP_NM(C.COMP_ID) AS COMP_NAME
+			, C.BRAN_ID
+			, dbo.GET_COMP_NM(C.BRAN_ID) AS BRAN_NAME
+			, L.COMP_PAY_YN
+			
+			, C.SHOP_SVC_LIST
+			, C.BANK_SVC_LIST
+			, C.PAYCOM_SVC_LIST
+
+		FROM MW_CS_CPN_LIST C
+		INNER JOIN CPN_LIST O 
+			ON C.CPN_ID = O.CPN_ID 
+		INNER JOIN CPN_LIST L
+			ON C.CPN_ID = L.CPN_ID
+		LEFT OUTER JOIN MW_CM_COMPANY P 
+			ON C.COMP_ID = P.COMP_ID
+		WHERE 1=1
+		AND C.CPN_ID = #{cpnId}
+		<if test='partV != null and partV != ""'>
+			AND O.PART_V LIKE #{partV}
+		</if>
+		<if test='compName != null and compName != ""'>
+			AND P.COMP_NAME LIKE '%${compName}%'
+		</if>
+		<if test='cpnName != null and cpnName != ""'>
+			AND O.NAME LIKE '%${cpnName}%'
+		</if>
+		<if test='ra_searchTerm != null and ra_searchTerm != "" and ra_searchTerm != "all"'>
+			<if test='sdate != null and sdate != ""'>
+				<if test='se_termOpt == "reg_date"'>
+					<![CDATA[
+						AND C.REG_DTM >=  left(REPLACE(#{sdate}, '-', ''), 8)
+					]]>
+				</if>
+				<if test='se_termOpt == "chg_date"'>
+					<![CDATA[
+						AND C.CHG_DTM >=  left(REPLACE(#{sdate}, '-', ''), 8)
+					]]>
+				</if>
+			</if>
+				
+			<if test='edate != null and edate != ""'>
+				<if test='se_termOpt == "reg_date"'>
+					<![CDATA[
+						AND C.REG_DTM <= left(REPLACE(#{edate}, '-', ''), 8)
+					]]>
+				</if>
+				<if test='se_termOpt == "chg_date"'>
+					<![CDATA[
+						AND C.CHG_DTM <= left(REPLACE(#{edate}, '-', ''), 8)
+					]]>
+				</if>
+			</if>
+		</if>
+	</select>
+	
+	<update id="updateComplexCoupon" parameterType="HashMap">
+		UPDATE MW_CS_CPN_LIST
+		<set>
+		<trim prefix="" suffix="" suffixOverrides="," >
+		<if test='shopSvcList != null'>
+			SHOP_SVC_LIST = #{shopSvcList}, 
+		</if>
+		<if test='bankSvcList != null'>
+			BANK_SVC_LIST = #{bankSvcList}, 
+		</if>
+		<if test='paycomSvcList != null'>
+			PAYCOM_SVC_LIST = #{paycomSvcList}, 
+		</if>
+		<if test='pointDupUsableYN != null'>
+			POINT_DUP_USABLE_YN = #{pointDupUsableYN}, 
+		</if>
+		<if test='cpnDupUsableYN != null'>
+			CPN_DUP_USABLE_YN = #{cpnDupUsableYN}, 
+		</if>
+		<if test='cpnDiscAmount != null'>
+			CPN_DISC_AMOUNT = #{cpnDiscAmount}, 
+		</if>
+		<if test='cpnDiscType != null'>
+			CPN_DISC_TYPE = #{cpnDiscType},
+		</if>
+<!-- 		<if test='cpnDiscRate != null'> -->
+<!-- 			CPN_DISC_RATE = #{cpnDiscAmount},  -->
+<!-- 		</if> -->
+		<if test='maxDicPrice != null'>
+			MAX_DIC_PRICE = #{maxDicPrice}, 
+		</if>
+		<if test='roundType != null'>
+			ROUND_TYPE = #{roundType}, 
+		</if>
+		<if test='dcUnit != null'>
+			DC_UNIT = #{dcUnit}, 
+		</if>
+		<if test='minPayPrice != null'>
+			MIN_PAY_PRICE = #{minPayPrice}, 
+		</if>
+		<if test='dcNotice != null'>
+			DC_NOTICE = #{dcNotice}, 
+		</if>
+		</trim>
+		</set>
+		WHERE CPN_ID = #{cpnId}
+		<if test='compId != null'>
+			AND COMP_ID = #{compId}
+		</if>
+		<if test='branId != null'>
+			AND BRAN_ID = #{branId}
+		</if>
+	</update>
+	
+	<update id="updateCouponList" parameterType="HashMap">
+		UPDATE CPN_LIST
+		<set>
+			<trim prefix="" suffix="" suffixOverrides="," >
+				<if test='partV != null'>
+					PART_V = #{partV}, 
+				</if>
+			</trim>
+		</set>
+		
+		WHERE CPN_ID = #{cpnId}
+		<if test='membId != null'>
+			AND MEMB_ID = #{membId}
+		</if>
+	</update>
+	
+	<select id="selectComplexStore" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT S.CPN_ID, S.COMP_ID, C.COMP_NAME
+		FROM MW_CS_CPN_SHOP S, MW_CM_COMPANY C
+		WHERE S.CPN_ID = #{cpnId}
+		AND S.COMP_ID = C.COMP_ID
+		<if test='compId != null and compId != ""'>
+			AND S.COMP_ID = #{compId}
+		</if>
+	</select>
+	
+	
+	<select id="selectComplexBank" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT S.CPN_ID, S.BANK_ID, B.NAME AS BANK_NAME
+		FROM MW_CS_CPN_BANK S, CPN_BANK_INFO B
+		WHERE S.CPN_ID = #{cpnId}
+		AND S.BANK_ID = B.BANK_ID
+		<if test='bankId != null and bankId != ""'>
+			AND S.BANK_ID = #{bankId}
+		</if>
+	</select>
+	
+	<select id="selectComplexPayComp" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT S.CPN_ID, S.PAYCOMP_ID, P.PAYCOMP_NAME
+		FROM MW_CS_CPN_PAYCOMP S, MW_CM_PAYCOMPANY P
+		WHERE S.CPN_ID = #{cpnId}
+		AND S.PAYCOMP_ID = P.PAYCOMP_ID
+		<if test='payCompId != null and payCompId != ""'>
+			AND S.PAYCOMP_ID = #{payCompId}
+		</if>
+	</select>
+	
+	
+	<insert id="insertComplexStore" parameterType="HashMap">
+		INSERT INTO MW_CS_CPN_SHOP(CPN_ID, COMP_ID, REG_USER, REG_DTM )
+		VALUES(#{cpnId}, #{compId}, #{regUser}, GETDATE())
+	</insert>
+	
+	<insert id="insertComplexBank" parameterType="HashMap">
+		INSERT INTO MW_CS_CPN_BANK(CPN_ID, BANK_ID, REG_USER, REG_DTM )
+		VALUES(#{cpnId}, #{bankId}, #{regUser}, GETDATE())
+	</insert>
+	
+	<insert id="insertComplexPayComp" parameterType="HashMap">
+		INSERT INTO MW_CS_CPN_PAYCOMP(CPN_ID, PAYCOMP_ID, REG_USER, REG_DTM )
+		VALUES(#{cpnId}, #{payCompId}, #{regUser}, GETDATE())
+	</insert>
+	
+	
+	<delete id="deleteComplexStore" parameterType="HashMap">
+		DELETE FROM MW_CS_CPN_SHOP
+		WHERE CPN_ID = #{cpnId}
+		<if test='compId != null and compId != ""'>
+			AND COMP_ID = #{compId}
+		</if>
+	</delete>
+	
+	<delete id="deleteComplexBank" parameterType="HashMap">
+		DELETE FROM MW_CS_CPN_BANK
+		WHERE CPN_ID = #{cpnId}
+		<if test='bankId != null and bankId != ""'>
+			AND BANK_ID = #{bankId}
+		</if>
+	</delete>
+	
+	<delete id="deleteComplexPayComp" parameterType="HashMap">
+		DELETE FROM MW_CS_CPN_PAYCOMP
+		WHERE CPN_ID = #{cpnId}
+		<if test='payCompId != null and payCompId != ""'>
+			AND PAYCOMP_ID = #{payCompId}
+		</if>
+	</delete>
+</mapper>

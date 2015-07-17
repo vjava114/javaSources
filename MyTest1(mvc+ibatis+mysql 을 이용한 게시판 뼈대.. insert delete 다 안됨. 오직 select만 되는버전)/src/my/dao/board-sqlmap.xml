@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<typeAlias alias="Board" type="my.dao.BoardVO" />
+
+	<resultMap class="Board" id="BoardList">
+		<result property="no" column="no" />
+		<result property="name" column="name" />
+		<result property="email" column="email" />
+		<result property="subject" column="subject" />
+		<result property="content" column="content" />
+		<result property="readnum" column="readnum" />
+	</resultMap>
+
+	<!-- resultMap(여러개의 레코드) 과 resultClass (한개의 레코드) 의 차이점을 알고넘어가자. -->
+	
+	<!-- 모든 데이터가져오기 -->
+	<select id="getboardAllData" resultMap="BoardList">
+		SELECT * FROM kang_test.freeboard
+	</select>
+	
+	
+	<!-- 데이터 삽입 -->
+	<insert id="boardInsert" parameterClass="Board">
+		INSERT INTO test_kang.freeboard(name,email,subject,content) VALUES(
+		#name#,#email#, #subject#,#content#
+		)
+	</insert>
+
+
+
+	
+</sqlMap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

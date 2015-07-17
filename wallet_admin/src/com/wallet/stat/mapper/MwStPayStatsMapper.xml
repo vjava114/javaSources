@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.stat.mapper.MwStPayStatsMapper" >
+
+<resultMap id="BaseResultMap" type="com.wallet.stat.model.MwStPayStats" >
+    <id column="day" property="day" jdbcType="VARCHAR" />
+    <result column="k_1" property="k1" jdbcType="INTEGER" />
+    <result column="k_2" property="k2" jdbcType="INTEGER" />
+    <result column="k_3" property="k3" jdbcType="INTEGER" />
+    <result column="k_4" property="k4" jdbcType="INTEGER" />
+    <result column="s_1" property="s1" jdbcType="INTEGER" />
+    <result column="s_2" property="s2" jdbcType="INTEGER" />
+    <result column="s_3" property="s3" jdbcType="INTEGER" />
+    <result column="s_4" property="s4" jdbcType="INTEGER" />
+    <result column="l_1" property="l1" jdbcType="INTEGER" />
+    <result column="l_2" property="l2" jdbcType="INTEGER" />
+    <result column="l_3" property="l3" jdbcType="INTEGER" />
+    <result column="l_4" property="l4" jdbcType="INTEGER" />
+    <result column="sum_k" property="sumK" jdbcType="INTEGER" />
+    <result column="sum_s" property="sumS" jdbcType="INTEGER" />
+    <result column="sum_l" property="sumL" jdbcType="INTEGER" />
+    <result column="b_1" property="b1" jdbcType="INTEGER" />
+    <result column="b_2" property="b2" jdbcType="INTEGER" />
+    <result column="b_3" property="b3" jdbcType="INTEGER" />
+    <result column="b_4" property="b4" jdbcType="INTEGER" />
+    <result column="sunjng_k" property="sunjngK" jdbcType="INTEGER" />
+    <result column="sunjng_s" property="sunjngS" jdbcType="INTEGER" />
+    <result column="sunjng_l" property="sunjngL" jdbcType="INTEGER" />
+    <result column="ksl_1" property="ksl1" jdbcType="INTEGER" />
+    <result column="ksl_2" property="ksl2" jdbcType="INTEGER" />
+    <result column="sum_ksl" property="sumKsl" jdbcType="INTEGER" />
+    <result column="b_sum_ksl" property="BsumKsl" jdbcType="INTEGER" />
+    <result column="sunjng_ksl" property="sunjngKsl" jdbcType="INTEGER" />
+  </resultMap>
+  
+  	
+	<!-- 결제 통계 조회 : 일별-->
+	<select id="selectPayStatsDayList" parameterType="HashMap" resultMap="BaseResultMap">
+		select   case when a.day = 'TOTAL' then 'TOTAL'
+						 else SUBSTRING(a.day,1,4) + '-' + SUBSTRING(a.day,5,2) + '-' + SUBSTRING(a.day,7,2)
+						 end day
+						 ,sum(isnull(a.k_1,0)) k_1
+						 ,sum(isnull(a.k_2,0)) k_2
+						 ,sum(isnull(a.s_1,0)) s_1
+						 ,sum(isnull(a.s_2,0)) s_2
+						 ,sum(isnull(a.l_1,0)) l_1
+						 ,sum(isnull(a.l_2,0)) l_2
+						 ,sum(isnull(a.sum_k,0)) sum_k
+						 ,sum(isnull(a.sum_s,0)) sum_s
+						 ,sum(isnull(a.sum_l,0)) sum_l
+						 ,sum(isnull(a.sum_k,0)) - sum(isnull(a.b_sum_k,0)) sunjng_k
+						 ,sum(isnull(a.sum_s,0)) - sum(isnull(a.b_sum_s,0)) sunjng_s
+						 ,sum(isnull(a.sum_l,0)) - sum(isnull(a.b_sum_l,0)) sunjng_l
+						 ,sum(isnull(a.ksl_1,0)) ksl_1
+						 ,sum(isnull(a.ksl_2,0)) ksl_2
+						 ,sum(isnull(a.sum_k,0)) + sum(isnull(a.sum_s,0)) + sum(isnull(a.sum_l,0)) sum_ksl
+						 ,sum(isnull(a.b_sum_ksl,0)) b_sum_ksl
+						 ,sum(isnull(a.sum_k,0)) + sum(isnull(a.sum_s,0)) + sum(isnull(a.sum_l,0)) - sum(isnull(a.b_sum_ksl,0)) sunjng_ksl
+						 ,sum(isnull(a.b_1,0)) b_1
+						 ,sum(isnull(a.b_2,0)) b_2
+				from (
+						SELECT pay.day day
+								  ,isnull(pay.k_1,0) k_1
+								  ,isnull(pay.k_2,0) k_2
+								  ,isnull(pay.s_1,0) s_1
+								  ,isnull(pay.s_2,0) s_2
+								  ,isnull(pay.l_1,0) l_1
+								  ,isnull(pay.l_2,0) l_2
+								  ,isnull(pay.sum_k,0) sum_k
+								  ,isnull(pay.sum_s,0) sum_s
+								  ,isnull(pay.sum_l,0) sum_l
+								   ,(
+									SELECT sum(isnull(a.sum_k,0))
+									FROM stat_pay_use a
+									where a.day = CONVERT(NVARCHAR(20), DATEADD(day, -1, convert(datetime,pay.day)), 112) 
+								  ) b_sum_k
+								  ,(
+									SELECT sum(isnull(a.sum_s,0))
+									FROM stat_pay_use a
+									where a.day = CONVERT(NVARCHAR(20), DATEADD(day, -1, convert(datetime,pay.day)), 112) 
+								  ) b_sum_s
+								  ,(
+									SELECT sum(isnull(a.sum_l,0))
+									FROM stat_pay_use a
+									where a.day = CONVERT(NVARCHAR(20), DATEADD(day, -1, convert(datetime,pay.day)), 112) 
+								  ) b_sum_l
+								  ,(
+									SELECT sum(isnull(a.sum_k,0)) +  sum(isnull(a.sum_s,0)) + sum(isnull(a.sum_l,0))
+									FROM stat_pay_use a
+									where a.day = CONVERT(NVARCHAR(20), DATEADD(day, -1, convert(datetime,pay.day)), 112) 
+								  ) b_sum_ksl
+								  ,isnull(pay.k_1,0) + isnull(pay.s_1,0) + isnull(pay.l_1,0) ksl_1
+								  ,isnull(pay.k_2,0) + isnull(pay.s_2,0) + isnull(pay.l_2,0) ksl_2
+								  ,isnull(pay.b_1,0) b_1
+								  ,isnull(pay.b_2,0) b_2
+						FROM stat_pay_use pay
+						<where>
+					  	<if test="sday != null and sday != ''">
+						  	<![CDATA[
+					        and pay.day >=  #{sday,jdbcType=VARCHAR}
+					        ]]>	
+				    	</if>
+				    	<if test="eday != null and eday != ''">
+				        <![CDATA[
+				        	and pay.day <=  #{eday,jdbcType=VARCHAR}
+				        ]]>	
+			    		</if>
+				  	</where>
+						union all
+						SELECT 'TOTAL' day
+								  ,sum(isnull(pay.k_1,0)) k_1
+								  ,sum(isnull(pay.k_2,0)) k_2
+								  ,sum(isnull(pay.s_1,0)) s_1
+								  ,sum(isnull(pay.s_2,0)) s_2
+								  ,sum(isnull(pay.l_1,0)) l_1
+								  ,sum(isnull(pay.l_2,0)) l_2
+								  ,sum(isnull(pay.sum_k,0)) sum_k
+								  ,sum(isnull(pay.sum_s,0)) sum_s
+								  ,sum(isnull(pay.sum_l,0)) sum_l
+								  ,'-' b_sum_k
+								  ,'-' b_sum_s
+								  ,'-' b_sum_l
+								  ,'-' b_sum_ksl
+								  ,sum(isnull(pay.k_1,0)) + sum(isnull(pay.s_1,0)) + sum(isnull(pay.l_1,0)) ksl_1
+								  ,sum(isnull(pay.k_2,0)) + sum(isnull(pay.s_2,0)) + sum(isnull(pay.l_2,0)) ksl_2
+								  ,sum(isnull(pay.b_1,0)) b_1
+								  ,sum(isnull(pay.b_2,0)) b_2
+						FROM stat_pay_use pay
+						<where>
+					  	<if test="sday != null and sday != ''">
+						  	<![CDATA[
+					        and pay.day >=  #{sday,jdbcType=VARCHAR}
+					        ]]>	
+				    	</if>
+				    	<if test="eday != null and eday != ''">
+				        <![CDATA[
+				        	and pay.day <=  #{eday,jdbcType=VARCHAR}
+				        ]]>	
+			    		</if>
+				  	</where>
+				) a
+				group by a.day
+				order by a.day asc
+	</select>
+	
+
+					
+		<!-- 결제 통계 조회 : 월별/년도별-->
+		<select id="selectPayStatsMonthYearList" parameterType="HashMap" resultMap="BaseResultMap">
+			select  <if test="period.equals('month')">
+				       case when a.day = 'TOTAL' then 'TOTAL'
+							 else SUBSTRING(a.day,1,4) + '-' + SUBSTRING(a.day,5,2) + '-' + '01'
+							 end day
+							</if>
+							<if test="period.equals('year')">
+				       case when a.day = 'TOTAL' then 'TOTAL'
+							 else SUBSTRING(a.day,1,4) + '-' + '01 + '-' + '01'
+							 end day
+							</if>
+						 ,sum(isnull(a.k_1,0)) k_1
+						 ,sum(isnull(a.k_2,0)) k_2
+						 ,sum(isnull(a.s_1,0)) s_1
+						 ,sum(isnull(a.s_2,0)) s_2
+						 ,sum(isnull(a.l_1,0)) l_1
+						 ,sum(isnull(a.l_2,0)) l_2
+						 ,sum(isnull(a.ksl_1,0)) ksl_1
+						 ,sum(isnull(a.ksl_2,0)) ksl_2
+						 ,sum(isnull(a.b_1,0)) b_1
+						 ,sum(isnull(a.b_2,0)) b_2
+		from (
+						SELECT <if test="period.equals('month')">
+						       left(pay.day, 6) day
+									</if>
+									<if test="period.equals('year')">
+						       left(pay.day, 4) day
+									</if>
+								  ,isnull(pay.k_1,0) k_1
+								  ,isnull(pay.k_2,0) k_2
+								  ,isnull(pay.s_1,0) s_1
+								  ,isnull(pay.s_2,0) s_2
+								  ,isnull(pay.l_1,0) l_1
+								  ,isnull(pay.l_2,0) l_2
+								  ,isnull(pay.k_1,0) + isnull(pay.s_1,0) + isnull(pay.l_1,0) ksl_1
+								  ,isnull(pay.k_2,0) + isnull(pay.s_2,0) + isnull(pay.l_2,0) ksl_2
+								  ,isnull(pay.b_1,0) b_1
+								  ,isnull(pay.b_2,0) b_2
+						FROM stat_pay_use pay
+						<where>
+					  	<if test="sday != null and sday != ''">
+						  	<![CDATA[
+					        and pay.day >=  #{sday,jdbcType=VARCHAR}
+					        ]]>	
+				    	</if>
+				    	<if test="eday != null and eday != ''">
+				        <![CDATA[
+				        	and pay.day <=  #{eday,jdbcType=VARCHAR}
+				        ]]>	
+			    		</if>
+				  	</where>
+						union all
+						SELECT 'TOTAL' day
+								  ,sum(isnull(pay.k_1,0)) k_1
+								  ,sum(isnull(pay.k_2,0)) k_2
+								  ,sum(isnull(pay.s_1,0)) s_1
+								  ,sum(isnull(pay.s_2,0)) s_2
+								  ,sum(isnull(pay.l_1,0)) l_1
+								  ,sum(isnull(pay.l_2,0)) l_2
+								  ,sum(isnull(pay.k_1,0)) + sum(isnull(pay.s_1,0)) + sum(isnull(pay.l_1,0)) ksl_1
+								  ,sum(isnull(pay.k_2,0)) + sum(isnull(pay.s_2,0)) + sum(isnull(pay.l_2,0)) ksl_2
+								  ,sum(isnull(pay.b_1,0)) b_1
+								  ,sum(isnull(pay.b_2,0)) b_2
+						FROM stat_pay_use pay
+						<where>
+					  	<if test="sday != null and sday != ''">
+						  	<![CDATA[
+					        and pay.day >=  #{sday,jdbcType=VARCHAR}
+					        ]]>	
+				    	</if>
+				    	<if test="eday != null and eday != ''">
+				        <![CDATA[
+				        	and pay.day <=  #{eday,jdbcType=VARCHAR}
+				        ]]>	
+			    		</if>
+				  	</where>
+				) a
+				group by a.day
+				order by a.day asc
+	</select>
+	
+	<!-- 결제 통계 조회 : 누적-->
+	<select id="selectPayStatsAccList" parameterType="HashMap" resultMap="BaseResultMap">
+		select top 1
+				 	 isnull(sum_k,0) sum_k
+					,isnull(sum_s,0) sum_s
+					,isnull(sum_l,0) sum_l
+					,isnull(sum_k,0) + isnull(sum_s,0) + isnull(sum_l,0) sum_ksl
+		from stat_pay_use
+		order by day desc
+	</select>
+</mapper>

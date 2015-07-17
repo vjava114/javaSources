@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!--
+ 쿼리 원문을 관리하는 곳 입니다.
+ 이곳에서 원문을 추가한 뒤, ServiceImpl 에서도 내용을 추가해 줘야 Other가 제대로 인식됩니다.
+ -->
+
+<sqlMap namespace="heraQuery">
+
+	<sql id="select-Other">
+		SELECT
+		event.*,
+		hera.no user_no,
+		hera.phone uphone,
+		hera.name,
+		shop_name,
+		shop_phone,
+		'-' angel_code,
+		'-' angel_name,
+		0 coupon_cnt,
+		date_format(rdate,'%y-%m-%d %H:%i') fdate
+	</sql>
+
+	<sql id="from-Other">
+		FROM
+		hera_event event
+		LEFT JOIN
+		hera4_user hera
+		ON
+		event.userno = hera.user_no
+	</sql>
+	
+	<!-- 시작 -->
+	<sql id="select-130103">
+		SELECT
+		event.*,
+		hera.hera3_no user_no,
+		hera.phone uphone,
+		hera.name,
+		shop_name,
+		shop_phone,
+		'-' angel_code,
+		'-' angel_name,
+		0 coupon_cnt,
+		date_format(rdate,'%y-%m-%d %H:%i') fdate
+	</sql>
+
+	<sql id="from-130103">
+		FROM
+		hera_event event
+		LEFT JOIN
+		hera3_user hera
+		ON
+		event.userno = hera.user_no
+	</sql>
+	<!-- 끝  -->
+	
+	<!-- 시작 -->
+	<sql id="select-130128">
+		SELECT
+		event.*,
+		hera.no user_no,
+		hera.phone uphone,
+		hera.name,
+		shop_name,
+		shop_phone,
+		'-' angel_code,
+		'-' angel_name,
+		0 coupon_cnt,
+		date_format(rdate,'%y-%m-%d %H:%i') fdate
+	</sql>
+
+	<sql id="from-130128">
+		FROM
+		hera_event event
+		LEFT JOIN
+		hera4_user hera
+		ON
+		event.userno = hera.user_no
+	</sql>
+	<!-- 끝  -->
+	
+	
+	<sql id="select-130308">
+		SELECT
+			event.*,
+			hera.no user_no,
+			hera.phone uphone,
+			hera.name,
+			shop_name,
+			shop_phone,
+			'-' angel_code,
+			'-' angel_name,
+			( SELECT count(*) FROM hera6_coupon WHERE event.evt_code = evt_code AND
+			event.brand = brand AND event.userno = userno) coupon_cnt,
+			date_format(rdate,'%y-%m-%d %H:%i') fdate
+	</sql>
+
+	<sql id="from-130308">
+		FROM
+			hera_event event
+			LEFT JOIN
+			hera6_user hera
+			ON
+			event.userno = hera.user_no
+	</sql>
+
+
+</sqlMap>

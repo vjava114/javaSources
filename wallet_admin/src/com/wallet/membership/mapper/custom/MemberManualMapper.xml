@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.membership.mapper.custom.MemberManualMapper" >
+	<resultMap id="BaseResultMap" type="com.wallet.membership.model.custom.MemberManual" >
+		<result column="IDX" property="idx" jdbcType="VARCHAR" />
+		<result column="SELF_MEMB_ID" property="selfMembId" jdbcType="VARCHAR" />
+		<result column="MEMB_NAME" property="membName" jdbcType="VARCHAR" />
+		<result column="DET_MEMO" property="detMemo" jdbcType="VARCHAR" />
+		<result column="SHOW_YN" property="showYN" jdbcType="VARCHAR" />
+		<result column="REG_USER" property="regUser" jdbcType="VARCHAR" />
+		<result column="REG_USER_NM" property="regUserNm" jdbcType="VARCHAR" />
+		<result column="REG_DTM" property="regDtm" jdbcType="VARCHAR" />
+		<result column="CHG_USER" property="chgUser" jdbcType="VARCHAR" />
+		<result column="CHG_USER_NM" property="chgUserNm" jdbcType="VARCHAR" />
+		<result column="CHG_DTM" property="chgDtm" jdbcType="VARCHAR" />
+		
+		<result column="MEM_LIST_3GS" property="listImg_i3GS" jdbcType="VARCHAR" />
+		<result column="MEM_LIST_4S" property="listImg_i4S" jdbcType="VARCHAR" />
+		<result column="MEM_LIST_ANDROID" property="listImg_android" jdbcType="VARCHAR" />
+
+		<result column="MEM_DETAIL_3GS" property="detailImg_i3GS" jdbcType="VARCHAR" />
+		<result column="MEM_DETAIL_4S" property="detailImg_i4S" jdbcType="VARCHAR" />
+		<result column="MEM_DETAIL_ANDROID" property="detailImg_android" jdbcType="VARCHAR" />
+		
+	</resultMap>
+	
+	<!-- 조회조건에 대한 결제사 목록 -->
+	<select id="selectMemberManualList" parameterType="HashMap" resultMap="BaseResultMap" >
+		SELECT *
+		FROM (
+			SELECT <if test='top != null and top != ""'> top ${top} </if>
+				ROW_NUMBER() OVER(ORDER BY S.REG_DTM DESC) AS IDX
+				, S.SELF_MEMB_ID
+				, S.MEMB_NAME
+				, S.SHOW_YN
+				, S.DET_MEMO
+				, S.REG_USER
+				/*, U1.AUTH_NAME AS REG_USER_NM*/
+				, CONVERT(VARCHAR(10), S.REG_DTM, 120) as REG_DTM
+				, S.CHG_USER
+				/*, U2.AUTH_NAME AS CHG_USER_NM*/
+				, CONVERT(VARCHAR(10), S.CHG_DTM, 120) as CHG_DTM
+				, I.*
+			FROM MW_MS_SELF_MEMB S,
+				(
+					SELECT ID
+						, MAX(CASE WHEN I.OS_TYPE='01' AND I.USE_TYPE='11' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_LIST_3GS
+						, MAX(CASE WHEN I.OS_TYPE='02' AND I.USE_TYPE='11' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_LIST_4S
+						, MAX(CASE WHEN I.OS_TYPE='11' AND I.USE_TYPE='11' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_LIST_ANDROID
+						, MAX(CASE WHEN I.OS_TYPE='01' AND I.USE_TYPE='12' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_DETAIL_3GS
+						, MAX(CASE WHEN I.OS_TYPE='02' AND I.USE_TYPE='12' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_DETAIL_4S
+						, MAX(CASE WHEN I.OS_TYPE='11' AND I.USE_TYPE='12' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_DETAIL_ANDROID
+					FROM MW_CM_IMAGE I
+					GROUP BY ID
+				) I /*, USER_DESC U1, USER_DESC U2*/
+			WHERE S.SELF_MEMB_ID = I.ID
+			/*
+			AND U1.USER_ID = S.REG_USER
+			AND U2.USER_ID = S.CHG_USER
+			*/
+			<if test='selfMembId != null and selfMembId != ""'>
+				AND S.SELF_MEMB_ID = #{selfMembId}
+			</if>
+			<if test='membName != null and membName != ""'>
+				AND S.MEMB_NAME LIKE '%${membName}%'
+			</if>
+			<if test='ra_searchTerm!=null and ra_searchTerm!="" and ra_searchTerm!="all"'>
+				<if test='sdate!=null and sdate!=""'>
+					<if test='se_termOpt == "reg_date"'>
+						<![CDATA[
+							AND CONVERT(VARCHAR(10), S.REG_DTM, 120) >=	#{sdate}
+						]]>
+					</if>
+					<if test='se_termOpt == "chg_date"'>
+						<![CDATA[
+							AND CONVERT(VARCHAR(10), S.CHG_DTM, 120) >=	#{sdate}
+						]]>
+					</if>
+					
+					<if test='edate!=null and edate!=""'>
+						<if test='se_termOpt == "reg_date"'>
+							<![CDATA[
+								AND CONVERT(VARCHAR(10), S.REG_DTM, 120) <=	#{edate}
+							]]>
+						</if>
+						<if test='se_termOpt == "chg_date"'>
+							<![CDATA[
+								AND CONVERT(VARCHAR(10), S.CHG_DTM, 120) <=	#{edate}
+							]]>
+						</if>
+					</if>
+				</if>
+			</if>
+			<if test='se_termOpt == "chg_date"'>
+				AND S.CHG_DTM IS NOT NULL
+			</if>
+			<if test='ra_showYN != null and ra_showYN != "" and ra_showYN != "all"'>
+				AND S.SHOW_YN = #{ra_showYN}
+			</if>
+			) A
+		WHERE 1=1
+		<if test='startRow != null and startRow != ""'>
+			<if test='rowsPerPage != null and rowsPerPage != ""'>
+ 				AND A.IDX BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+	</select>
+	
+	<!-- 조회조건에 대한 결제사 총 수 -->
+	<select id="selectMemberManualListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MW_MS_SELF_MEMB S, 
+		(
+			SELECT ID
+			, MAX(CASE WHEN I.OS_TYPE='01' AND I.USE_TYPE='11' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_LIST_3GS
+			, MAX(CASE WHEN I.OS_TYPE='02' AND I.USE_TYPE='11' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_LIST_4S
+			, MAX(CASE WHEN I.OS_TYPE='11' AND I.USE_TYPE='11' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_LIST_ANDROID
+			, MAX(CASE WHEN I.OS_TYPE='01' AND I.USE_TYPE='12' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_DETAIL_3GS
+			, MAX(CASE WHEN I.OS_TYPE='02' AND I.USE_TYPE='12' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_DETAIL_4S
+			, MAX(CASE WHEN I.OS_TYPE='11' AND I.USE_TYPE='12' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_DETAIL_ANDROID
+			FROM MW_CM_IMAGE I
+			GROUP BY ID
+		) I /*, USER_DESC U1, USER_DESC U2*/
+		WHERE S.SELF_MEMB_ID = I.ID
+		<if test='selfMembId != null and selfMembId != ""'>
+			AND S.SELF_MEMB_ID = #{selfMembId}
+		</if>
+		<if test='membName != null and membName != ""'>
+			AND S.MEMB_NAME LIKE '%${membName}%'
+		</if>
+		<if test='ra_searchTerm!=null and ra_searchTerm!="" and ra_searchTerm!="all"'>
+			<if test='sdate!=null and sdate!=""'>
+				<if test='se_termOpt == "reg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), S.REG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+				<if test='se_termOpt == "chg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), S.CHG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+				
+				<if test='edate!=null and edate!=""'>
+					<if test='se_termOpt == "reg_date"'>
+						<![CDATA[
+							AND CONVERT(VARCHAR(10), S.REG_DTM, 120) <=	#{edate}
+						]]>
+					</if>
+					<if test='se_termOpt == "chg_date"'>
+						<![CDATA[
+							AND CONVERT(VARCHAR(10), S.CHG_DTM, 120) <=	#{edate}
+						]]>
+					</if>
+				</if>
+			</if>
+		</if>
+		<if test='se_termOpt == "chg_date"'>
+				AND S.CHG_DTM IS NOT NULL
+			</if>
+		<if test='ra_showYN != null and ra_showYN != "" and ra_showYN != "all"'>
+			AND S.SHOW_YN = #{ra_showYN}
+		</if>
+	</select>
+	
+	<!-- 조회조건에 대한 결제사 목록 -->
+	<select id="selectMemberManualInfo" parameterType="HashMap" resultMap="BaseResultMap" >
+		SELECT S.SELF_MEMB_ID
+			, S.MEMB_NAME
+			, S.SHOW_YN
+			, S.DET_MEMO
+			, S.REG_USER
+			/*, U1.AUTH_NAME AS REG_USER_NM*/
+			, CONVERT(VARCHAR(10), S.REG_DTM, 120) as REG_DTM
+			, S.CHG_USER
+			/*, U2.AUTH_NAME AS CHG_USER_NM*/
+			, CONVERT(VARCHAR(10), S.CHG_DTM, 120) as CHG_DTM
+			, I.*
+		FROM MW_MS_SELF_MEMB S,
+			(
+				SELECT ID
+				, MAX(CASE WHEN I.OS_TYPE='01' AND I.USE_TYPE='11' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_LIST_3GS
+				, MAX(CASE WHEN I.OS_TYPE='02' AND I.USE_TYPE='11' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_LIST_4S
+				, MAX(CASE WHEN I.OS_TYPE='11' AND I.USE_TYPE='11' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_LIST_ANDROID
+				, MAX(CASE WHEN I.OS_TYPE='01' AND I.USE_TYPE='12' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_DETAIL_3GS
+				, MAX(CASE WHEN I.OS_TYPE='02' AND I.USE_TYPE='12' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_DETAIL_4S
+				, MAX(CASE WHEN I.OS_TYPE='11' AND I.USE_TYPE='12' THEN /*I.IMAGE_HOST+*/I.IMAGE_URL END) AS MEM_DETAIL_ANDROID
+				FROM MW_CM_IMAGE I
+				GROUP BY ID
+			) I /*, USER_DESC U1, USER_DESC U2*/
+		WHERE S.SELF_MEMB_ID = I.ID
+		/*
+		AND U1.USER_ID = S.REG_USER
+		AND U2.USER_ID = S.CHG_USER
+		*/
+		<if test='membName != null and membName != ""'>
+			AND S.MEMB_NAME LIKE '%${membName}%'
+		</if>
+		<if test='ra_searchTerm!=null and ra_searchTerm!="" and ra_searchTerm!="all"'>
+			<if test='sdate!=null and sdate!=""'>
+				<if test='se_termOpt == "reg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), S.REG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+				<if test='se_termOpt == "chg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), S.CHG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+				
+				<if test='edate!=null and edate!=""'>
+					<if test='se_termOpt == "reg_date"'>
+						<![CDATA[
+							AND CONVERT(VARCHAR(10), S.REG_DTM, 120) <=	#{edate}
+						]]>
+					</if>
+					<if test='se_termOpt == "chg_date"'>
+						<![CDATA[
+							AND CONVERT(VARCHAR(10), S.CHG_DTM, 120) <=	#{edate}
+						]]>
+					</if>
+				</if>
+			</if>
+		</if>
+		<if test='ra_showYN != null and ra_showYN != "" and ra_showYN != "all"'>
+			AND S.SHOW_YN = #{ra_showYN}
+		</if>
+		AND S.SELF_MEMB_ID = #{selfMembId}
+	</select>
+
+	<insert id="insertMemberManual" parameterType="HashMap">
+		INSERT INTO MW_MS_SELF_MEMB (
+			SELF_MEMB_ID
+			, MEMB_NAME
+			, SHOW_YN
+			, DET_MEMO
+			, REG_USER
+			, REG_DTM
+		)
+		VALUES(
+			#{selfMembId} 
+			, #{membName}
+			,#{showYN}
+			,#{detMemo}
+			,#{regUser}
+			,GETDATE()
+		)
+	</insert>
+
+	<update id="updateMemberManual" parameterType="HashMap">
+		UPDATE MW_MS_SELF_MEMB
+		SET 
+			MEMB_NAME = #{membName}
+			, SHOW_YN = #{showYN}
+			, DET_MEMO = #{detMemo}
+			, CHG_USER = #{chgUser}
+			, CHG_DTM = GETDATE()
+		WHERE SELF_MEMB_ID = #{selfMembId}
+	</update>
+	
+	<delete id="deleteMemberManual" parameterType="HashMap">
+		DELETE
+		FROM MW_MS_SELF_MEMB
+		WHERE SELF_MEMB_ID = #{selfMembId}
+	</delete>
+	
+	<select id="memberManualDupCheck" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MW_MS_SELF_MEMB
+		WHERE SELF_MEMB_ID = 'SEL' + #{selfMembId}
+	</select>
+</mapper>

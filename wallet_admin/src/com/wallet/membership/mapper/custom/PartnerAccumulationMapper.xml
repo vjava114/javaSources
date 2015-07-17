@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.membership.mapper.custom.PartnerAccumulationMapper" >
+	<resultMap id="BaseResultMap" type="com.wallet.membership.model.custom.PartnerAccumulation" >
+		<result column="IDX" property="idx" jdbcType="VARCHAR" />
+		<result column="TERM" property="term" jdbcType="VARCHAR" />
+		<result column="COMP_NAME" property="compName" jdbcType="VARCHAR" />
+		<result column="CPN_NAME" property="cpnName" jdbcType="VARCHAR" />
+		<result column="CPN_DC_AMOUNT" property="cpn_dc_amount" jdbcType="VARCHAR" />
+		<result column="CNT" property="cnt" jdbcType="VARCHAR" />
+		<result column="SUM_PAY_AMOUNT" property="sum_pay_amount" jdbcType="VARCHAR" />
+		<result column="SUM_DC_PRICE" property="sum_dc_price" jdbcType="VARCHAR" />
+		<result column="COMP_SHARE_RATIO" property="comp_share_ratio" jdbcType="VARCHAR" />
+		<result column="DC_SHARE_RATIO" property="dc_share_ratio" jdbcType="VARCHAR" />
+		<result column="CPN_ID" property="cpn_id" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="selectPartnerAccumulationList" parameterType="HashMap" resultMap="BaseResultMap" >
+		SELECT *
+		FROM (
+			SELECT <if test='top!=null and top!=""'> top ${top} </if>
+				ROW_NUMBER() OVER(ORDER BY AA.CPN_NAME DESC) AS IDX
+
+					 ,'${sdate}  ~  ${edate}' AS TERM 
+				     , BB.COMP_NAME AS "COMP_NAME"
+				     , AA.CPN_NAME AS "CPN_NAME"
+ 				     , AA.CPN_DC_AMOUNT AS "CPN_DC_AMOUNT"
+ 				     , AA.CNT AS "CNT"
+ 				     , AA.SUM_PAY_AMOUNT AS "SUM_PAY_AMOUNT"
+				     , AA.SUM_DC_PRICE AS "SUM_DC_PRICE"
+				     , BB.COMP_SHARE_RATIO AS "COMP_SHARE_RATIO"
+				     , AA.SUM_DC_PRICE * (BB.COMP_SHARE_RATIO/100.0) AS "DC_SHARE_RATIO"
+				  FROM (
+		SELECT AA.CPN_ID
+							 , AA.CPN_NAME
+							 , AA.CPN_DC_AMOUNT
+							 , CC.CNT
+							 , CC.SUM_PAY_AMOUNT
+							 , CC.SUM_DC_PRICE
+						  FROM (
+								SELECT CPN_ID
+									 , COUNT(CPN_ID) AS CNT
+									 , SUM(TOT_PAY_AMOUNT) AS SUM_PAY_AMOUNT
+									 , SUM(ACTUAL_DC_PRICE) AS SUM_DC_PRICE
+								  FROM MW_CS_CPN_CONF
+								 WHERE REQ_TYPE = 'A' AND CANCEL_YN = 'N'
+								   AND CONF_DT BETWEEN REPLACE(#{sdate}, '-', '') AND REPLACE(#{edate}, '-', '') 
+								 GROUP BY CPN_ID
+								) CC INNER JOIN 
+								(
+								SELECT C.CPN_ID
+									 , C.part_v
+									 , C.NAME AS CPN_NAME
+									 , M.CPN_DISC_TYPE
+									 , M.CPN_DISC_AMOUNT
+									 , CASE WHEN M.CPN_DISC_TYPE='02' THEN CONVERT(VARCHAR(10),M.CPN_DISC_AMOUNT)+'%' 
+											ELSE CONVERT(VARCHAR(10),M.CPN_DISC_AMOUNT)+'원' 
+									   END AS CPN_DC_AMOUNT
+								  FROM CPN_LIST C INNER JOIN MW_CS_CPN_LIST M ON C.cpn_id = M.CPN_ID AND C.name LIKE '%${cpnName}%'
+								) AA ON CC.CPN_ID = AA.CPN_ID
+					   ) AA INNER JOIN 
+					   (
+						SELECT CS.CPN_ID
+							 , CS.COMP_ID
+							 , CP.COMP_NAME
+							 , CS.COMP_SHARE_RATIO
+						  FROM MW_CS_CPN_SHARERATIO CS
+							   INNER JOIN MW_CM_COMPANY CP ON CS.COMP_ID = CP.COMP_ID AND CS.COMP_TYPE = '01' AND CP.COMP_NAME LIKE '%${compName}%'	
+					   ) BB ON AA.CPN_ID = BB.CPN_ID ) ZX
+						WHERE 1=1
+						<if test='startRow!=null and startRow!=""'>
+							<if test='rowsPerPage!=null and rowsPerPage!=""'>
+ 								AND ZX.IDX BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+							</if>
+						</if>
+	</select>
+	
+	<select id="selectPartnerAccumulationListCount" parameterType="HashMap" resultType="java.lang.Integer" >
+	SELECT count(*)
+  FROM (
+		SELECT AA.CPN_ID
+			 , AA.CPN_NAME
+			 , AA.CPN_DC_AMOUNT
+			 , CC.CNT
+			 , CC.SUM_PAY_AMOUNT
+			 , CC.SUM_DC_PRICE
+		  FROM (
+				SELECT CPN_ID
+					 , COUNT(CPN_ID) AS CNT
+					 , SUM(TOT_PAY_AMOUNT) AS SUM_PAY_AMOUNT
+					 , SUM(ACTUAL_DC_PRICE) AS SUM_DC_PRICE
+				  FROM MW_CS_CPN_CONF
+				 WHERE REQ_TYPE = 'A' AND CANCEL_YN = 'N'
+				   AND CONF_DT BETWEEN REPLACE(#{sdate}, '-', '') AND REPLACE(#{edate}, '-', '') 
+				 GROUP BY CPN_ID
+				) CC INNER JOIN 
+				(
+				SELECT C.CPN_ID
+					 , C.part_v
+					 , C.NAME AS CPN_NAME
+					 , M.CPN_DISC_TYPE
+					 , M.CPN_DISC_AMOUNT
+					 , CASE WHEN M.CPN_DISC_TYPE='02' THEN CONVERT(VARCHAR(10),M.CPN_DISC_AMOUNT)+'%' 
+							ELSE CONVERT(VARCHAR(10),M.CPN_DISC_AMOUNT)+'원' 
+					   END AS CPN_DC_AMOUNT
+				  FROM CPN_LIST C INNER JOIN MW_CS_CPN_LIST M ON C.cpn_id = M.CPN_ID AND C.name LIKE '%${cpnName}%'
+				) AA ON CC.CPN_ID = AA.CPN_ID
+	   ) AA INNER JOIN 
+	   (
+		SELECT CS.CPN_ID
+			 , CS.COMP_ID
+			 , CP.COMP_NAME
+			 , CS.COMP_SHARE_RATIO
+		  FROM MW_CS_CPN_SHARERATIO CS
+			INNER JOIN MW_CM_COMPANY CP ON CS.COMP_ID = CP.COMP_ID AND CS.COMP_TYPE = '01' AND CP.COMP_NAME LIKE '%${compName}%')BB ON AA.CPN_ID = BB.CPN_ID
+			
+	
+	</select>
+</mapper>

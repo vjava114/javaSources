@@ -1,0 +1,816 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.stat.mapper.MwStMemberStatsMapper" >
+
+	<resultMap id="StatsOs" type="com.wallet.stat.model.MwStMemberStatsOs" >
+    <id column="day" property="day" jdbcType="VARCHAR" />
+    <result column="a_k" property="aK" jdbcType="VARCHAR" />
+    <result column="a_s" property="aS" jdbcType="VARCHAR" />
+    <result column="a_l" property="aL" jdbcType="VARCHAR" />
+    <result column="i_k" property="iK" jdbcType="VARCHAR" />
+    <result column="i_s" property="iS" jdbcType="VARCHAR" />
+    <result column="i_l" property="iL" jdbcType="VARCHAR" />
+    <result column="wat_in" property="watIn" jdbcType="VARCHAR" />
+    <result column="pay_in" property="payIn" jdbcType="VARCHAR" />
+    <result column="s_a_k" property="sAK" jdbcType="VARCHAR" />
+    <result column="s_a_s" property="sAS" jdbcType="VARCHAR" />
+    <result column="s_a_l" property="sAL" jdbcType="VARCHAR" />
+    <result column="s_i_k" property="sIK" jdbcType="VARCHAR" />
+    <result column="s_i_s" property="sIS" jdbcType="VARCHAR" />
+    <result column="s_i_l" property="sIL" jdbcType="VARCHAR" />
+    <result column="s_wat_in" property="sWatIn" jdbcType="VARCHAR" />
+    <result column="s_pay_in" property="sPayIn" jdbcType="VARCHAR" />
+    <result column="a_total" property="aTotal" jdbcType="VARCHAR" />
+    <result column="i_total" property="iTotal" jdbcType="VARCHAR" />
+    <result column="new_k_total" property="newKTotal" jdbcType="VARCHAR" />
+    <result column="new_s_total" property="newSTotal" jdbcType="VARCHAR" />
+    <result column="new_l_total" property="newLTotal" jdbcType="VARCHAR" />
+    <result column="new_total" property="newTotal" jdbcType="VARCHAR" />
+    <result column="s_a_total" property="sATotal" jdbcType="VARCHAR" />
+    <result column="s_i_total" property="sITotal" jdbcType="VARCHAR" />
+    <result column="s_total" property="sTotal" jdbcType="VARCHAR" />
+    <result column="b_s_total" property="bSTotal" jdbcType="VARCHAR" />
+    <result column="sunjng" property="sunjng" jdbcType="VARCHAR" />
+    <result column="mtow_a" property="mtowA" jdbcType="VARCHAR" />
+    <result column="mtow_r" property="mtowR" jdbcType="VARCHAR" />
+    <result column="wtom_a" property="wtomA" jdbcType="VARCHAR" />
+    <result column="wtom_r" property="wtomR" jdbcType="VARCHAR" />
+  </resultMap>
+  
+	<resultMap id="StatsAge" type="com.wallet.stat.model.MwStMemberStatsAge" >
+    <id column="day" property="day" jdbcType="VARCHAR" />
+    <result column="m_0" property="m0" jdbcType="VARCHAR" />
+    <result column="w_0" property="w0" jdbcType="VARCHAR" />
+    <result column="m_1" property="m1" jdbcType="VARCHAR" />
+    <result column="w_1" property="w1" jdbcType="VARCHAR" />
+    <result column="m_2" property="m2" jdbcType="VARCHAR" />
+    <result column="w_2" property="w2" jdbcType="VARCHAR" />
+    <result column="m_3" property="m3" jdbcType="VARCHAR" />
+    <result column="w_3" property="w3" jdbcType="VARCHAR" />
+    <result column="m_4" property="m4" jdbcType="VARCHAR" />
+    <result column="w_4" property="w4" jdbcType="VARCHAR" />
+    <result column="m_5" property="m5" jdbcType="VARCHAR" />
+    <result column="w_5" property="w5" jdbcType="VARCHAR" />
+    <result column="m_6" property="m6" jdbcType="VARCHAR" />
+    <result column="w_6" property="w6" jdbcType="VARCHAR" />
+    <result column="s_m_0" property="sM0" jdbcType="VARCHAR" />
+    <result column="s_w_0" property="sW0" jdbcType="VARCHAR" />
+    <result column="s_m_1" property="sM1" jdbcType="VARCHAR" />
+    <result column="s_w_1" property="sW1" jdbcType="VARCHAR" />
+    <result column="s_m_2" property="sM2" jdbcType="VARCHAR" />
+    <result column="s_w_2" property="sW2" jdbcType="VARCHAR" />
+    <result column="s_m_3" property="sM3" jdbcType="VARCHAR" />
+    <result column="s_w_3" property="sW3" jdbcType="VARCHAR" />
+    <result column="s_m_4" property="sM4" jdbcType="VARCHAR" />
+    <result column="s_w_4" property="sW4" jdbcType="VARCHAR" />
+    <result column="s_m_5" property="sM5" jdbcType="VARCHAR" />
+    <result column="s_w_5" property="sW5" jdbcType="VARCHAR" />
+    <result column="s_m_6" property="sM6" jdbcType="VARCHAR" />
+    <result column="s_w_6" property="sW6" jdbcType="VARCHAR" />
+    <result column="mw_0_total" property="mw0Total" jdbcType="VARCHAR" />
+    <result column="mw_1_total" property="mw1Total" jdbcType="VARCHAR" />
+    <result column="mw_2_total" property="mw2Total" jdbcType="VARCHAR" />
+    <result column="mw_3_total" property="mw3Total" jdbcType="VARCHAR" />
+    <result column="mw_4_total" property="mw4Total" jdbcType="VARCHAR" />
+    <result column="mw_5_total" property="mw5Total" jdbcType="VARCHAR" />
+    <result column="mw_6_total" property="mw6Total" jdbcType="VARCHAR" />
+    <result column="m_total" property="mTotal" jdbcType="VARCHAR" />
+    <result column="w_total" property="wTotal" jdbcType="VARCHAR" />
+    <result column="mw_total" property="mwTotal" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="MocaPay" type="com.wallet.stat.model.MwStMemberStatsMocaPay" >
+    <id column="day" property="day" jdbcType="VARCHAR" />
+    <result column="mtow_a" property="mtowA" jdbcType="VARCHAR" />
+    <result column="mtow_r" property="mtowR" jdbcType="VARCHAR" />
+    <result column="wtom_a" property="wtomA" jdbcType="VARCHAR" />
+    <result column="wtom_r" property="wtomR" jdbcType="VARCHAR" />
+    <result column="mtow_a_s" property="mtowAS" jdbcType="VARCHAR" />
+    <result column="mtow_r_s" property="mtowRS" jdbcType="VARCHAR" />
+    <result column="wtom_a_s" property="wtomAS" jdbcType="VARCHAR" />
+    <result column="wtom_r_s" property="wtomRS" jdbcType="VARCHAR" />
+    <result column="wtom_new_s" property="wtomNewS" jdbcType="VARCHAR" />
+    <result column="wtom_new_f" property="wtomNewF" jdbcType="VARCHAR" />
+    <result column="wtom_new_s_a" property="wtomNewSA" jdbcType="VARCHAR" />
+    <result column="wtom_new_f_a" property="wtomNewFA" jdbcType="VARCHAR" />
+  </resultMap>
+  
+	<!-- 누적가입자현황 : OS/이통사별 통계 -->
+	<select id="selectMemberStatsAcmOs" parameterType="HashMap" resultMap="StatsOs">
+		SELECT top 1
+					 isnull(s_a_k,0)	as s_a_k
+					,isnull(s_a_s,0)	as s_a_s
+					,isnull(s_a_l,0) as s_a_l
+					,isnull(s_i_k,0) as s_i_k
+					,isnull(s_i_s,0) as s_i_s
+					,isnull(s_i_l,0) as s_i_l
+		FROM stat_os
+		order by day desc
+	</select>
+	
+	<!-- 누적가입자현황 : 연령/성별 통계 -->
+	<select id="selectMemberStatsAcmAge" parameterType="HashMap" resultMap="StatsAge">
+		SELECT top 1
+					 isnull(s_m_0,0)	as s_m_0
+		      ,isnull(s_w_0,0)	as s_w_0 
+		      ,isnull(s_m_1,0)	as s_m_1 
+		      ,isnull(s_w_1,0)	as s_w_1 
+		      ,isnull(s_m_2,0)	as s_m_2 
+		      ,isnull(s_w_2,0)	as s_w_2 
+		      ,isnull(s_m_3,0)	as s_m_3 
+		      ,isnull(s_w_3,0)	as s_w_3 
+		      ,isnull(s_m_4,0)	as s_m_4 
+		      ,isnull(s_w_4,0)	as s_w_4 
+		      ,isnull(s_m_5,0)	as s_m_5 
+		      ,isnull(s_w_5,0)	as s_w_5 
+		      ,isnull(s_m_6,0)	as s_m_6 
+		      ,isnull(s_w_6,0)	as s_w_6 
+		FROM stat_age
+		order by day desc
+	</select>
+	
+	<!-- 누적가입자현황 : 모카페이 통계 -->
+	<select id="selectMemberStatsAcmMocaPay" parameterType="HashMap" resultMap="MocaPay">
+		select top 1 
+		       Isnull(mtow_a_s, 0) mtow_a_s, 
+		       Isnull(mtow_r_s, 0) mtow_r_s, 
+		       Isnull(wtom_a_s, 0) wtom_a_s, 
+		       Isnull(wtom_r_s, 0) wtom_r_s,
+		       Isnull(wtom_new_s_a, 0) wtom_new_s_a,
+		       Isnull(wtom_new_f_a, 0) wtom_new_f_a
+		from stat_pay_day
+		order by day desc
+	</select>
+	
+	<!-- 신규가입자현황 조회 : 단말기준  일별 -->
+	<select id="selectMemberStatsNewOsDayList" parameterType="HashMap" resultMap="StatsOs">
+		select
+					 case when a.day = 'TOTAL' then 'TOTAL'
+					 else SUBSTRING(a.day,1,4) + '-' + SUBSTRING(a.day,5,2) + '-' + SUBSTRING(a.day,7,2)
+					 end day
+					,sum(a.a_k)		a_k
+					,sum(a.a_s)		a_s
+					,sum(a.a_l)		a_l
+					,sum(a.a_total)	a_total
+					,sum(a.i_k)		i_k
+					,sum(a.i_s)		i_s
+					,sum(a.i_l)		i_l
+					,sum(a.i_total)		i_total
+					,sum(a.new_k_total)	new_k_total
+					,sum(a.new_s_total)	new_s_total
+					,sum(a.new_l_total)	new_l_total
+					,sum(a.new_total)	new_total
+					,sum(a.wat_in)		wat_in
+					,sum(a.pay_in)		pay_in
+					,sum(a.s_a_k)		s_a_k
+					,sum(a.s_a_s)		s_a_s
+					,sum(a.s_a_l)		s_a_l
+					,sum(a.s_a_total)	s_a_total
+					,sum(a.s_i_k)		s_i_k
+					,sum(a.s_i_s)		s_i_s
+					,sum(a.s_i_l)		s_i_l
+					,sum(a.s_i_total)	s_i_total
+					,sum(a.s_wat_in)	s_wat_in
+					,sum(a.s_pay_in)	s_pay_in
+					,Sum(a.s_a_total) + Sum(a.s_i_total) s_toal
+					,Sum(Isnull(a.b_s_total,0)) b_s_total
+       		,(Sum(a.s_a_total) + Sum(a.s_i_total)) - Sum(Isnull(a.b_s_total,0)) sunjng
+       		,Sum(isnull(a.mtow_a,0)) mtow_a
+					,Sum(isnull(a.mtow_r,0)) mtow_r
+					,Sum(isnull(a.wtom_a,0)) wtom_a
+					,Sum(isnull(a.wtom_r,0)) wtom_r
+		from (
+					SELECT	
+							 b.day
+				      ,isnull(b.a_k,0)a_k
+				      ,isnull(b.a_s,0)a_s
+				      ,isnull(b.a_l,0)a_l
+				      ,isnull(b.a_k,0) + isnull(b.a_s,0) + isnull(b.a_l,0) a_total
+				      ,isnull(b.i_k,0)i_k
+				      ,isnull(b.i_s,0)i_s
+				      ,isnull(b.i_l,0)i_l
+				      ,isnull(b.i_k,0) + isnull(b.i_s,0) + isnull(b.i_l,0) i_total
+				      ,isnull(b.a_k,0) + isnull(b.i_k,0)  new_k_total
+				      ,isnull(b.a_s,0) + isnull(b.i_s,0)  new_s_total
+				      ,isnull(b.a_l,0) + isnull(b.i_l,0)  new_l_total
+				      ,isnull(b.a_k,0) + isnull(b.i_k,0) + isnull(b.a_s,0) + isnull(b.i_s,0) + isnull(b.a_l,0) + isnull(b.i_l,0)  new_total
+				      ,isnull(b.wat_in,0)wat_in
+				      ,isnull(b.pay_in,0)pay_in
+				      ,isnull(b.s_a_k,0)s_a_k
+				      ,isnull(b.s_a_s,0)s_a_s
+				      ,isnull(b.s_a_l,0)s_a_l
+				      ,isnull(b.s_a_k,0) + isnull(b.s_a_s,0) + isnull(b.s_a_l,0) s_a_total
+				      ,isnull(b.s_i_k,0)s_i_k
+				      ,isnull(b.s_i_s,0)s_i_s
+				      ,isnull(b.s_i_l,0)s_i_l
+				      ,isnull(b.s_i_k,0) + isnull(b.s_i_s,0) + isnull(b.s_i_l,0) s_i_total
+				      ,isnull(b.s_wat_in,0)s_wat_in
+				      ,isnull(b.s_pay_in,0)s_pay_in
+				      ,(
+							 SELECT sum(Isnull(a.s_a_k, 0)) + sum(Isnull(a.s_a_s, 0)) + sum(Isnull(a.s_a_l, 0))
+							      + sum(Isnull(a.s_i_k, 0)) + sum(Isnull(a.s_i_s, 0)) + sum(Isnull(a.s_i_l, 0)) 
+                FROM   stat_os a
+                where a.day = CONVERT(NVARCHAR(20), DATEADD(day, -1, convert(datetime,b.day)), 112)
+							) b_s_total
+							,isnull(pay.mtow_a,0) mtow_a
+							,isnull(pay.mtow_r,0) mtow_r
+							,isnull(pay.wtom_a,0) wtom_a
+							,isnull(pay.wtom_r,0) wtom_r
+				  FROM stat_os b
+				  LEFT OUTER JOIN stat_pay_day pay
+      		on b.day = pay.day
+				  <where>
+				  	<if test="sday != null and sday != ''">
+					  	<![CDATA[
+				        and b.day >=  #{sday,jdbcType=VARCHAR}
+				        ]]>	
+			    	</if>
+			    	<if test="eday != null and eday != ''">
+			        <![CDATA[
+			        	and b.day <=  #{eday,jdbcType=VARCHAR}
+			        ]]>	
+		    		</if>
+				  </where>
+				  union all
+				  SELECT 'TOTAL' day
+				      ,sum(isnull(c.a_k,0)) a_k
+				      ,sum(isnull(c.a_s,0))a_s
+				      ,sum(isnull(c.a_l,0))a_l
+				      ,sum(isnull(c.a_k,0)) + sum(isnull(c.a_s,0)) + sum(isnull(c.a_l,0)) a_total
+				      ,sum(isnull(c.i_k,0))i_k
+				      ,sum(isnull(c.i_s,0))i_s
+				      ,sum(isnull(c.i_l,0))i_l
+				      ,sum(isnull(c.i_k,0)) + sum(isnull(c.i_s,0)) + sum(isnull(c.i_l,0)) i_total
+				      ,sum(isnull(c.a_k,0)) + sum(isnull(c.i_k,0))  new_k_total
+				      ,sum(isnull(c.a_s,0)) + sum(isnull(c.i_s,0))  new_s_total
+				      ,sum(isnull(c.a_l,0)) + sum(isnull(c.i_l,0))  new_l_total
+				      ,sum(isnull(c.a_k,0)) + sum(isnull(c.i_k,0)) + sum(isnull(c.a_s,0)) + sum(isnull(c.i_s,0))
+				       + sum(isnull(c.a_l,0)) + sum(isnull(c.i_l,0))  new_total
+				      ,sum(isnull(c.wat_in,0))wat_in
+				      ,sum(isnull(c.pay_in,0))pay_in
+				      ,sum(isnull(c.s_a_k,0))s_a_k
+				      ,sum(isnull(c.s_a_s,0))s_a_s
+				      ,sum(isnull(c.s_a_l,0))s_a_l
+				      ,sum(isnull(c.s_a_k,0)) + sum(isnull(c.s_a_s,0)) + sum(isnull(c.s_a_l,0)) s_a_total
+				      ,sum(isnull(c.s_i_k,0))s_i_k
+				      ,sum(isnull(c.s_i_s,0))s_i_s
+				      ,sum(isnull(c.s_i_l,0))s_i_l
+				      ,sum(isnull(c.s_i_k,0)) + sum(isnull(c.s_i_s,0)) + sum(isnull(c.s_i_l,0)) s_i_total
+				      ,sum(isnull(c.s_wat_in,0))s_wat_in
+				      ,sum(isnull(c.s_pay_in,0))s_pay_in
+				      ,'-' b_s_total
+				      ,sum(isnull(pay.mtow_a,0)) mtow_a
+				      ,sum(isnull(pay.mtow_r,0)) mtow_r
+				      ,sum(isnull(pay.wtom_a,0)) wtom_a
+				      ,sum(isnull(pay.wtom_r,0)) wtom_r
+				  FROM stat_os c
+				  LEFT OUTER JOIN stat_pay_day pay
+      		on c.day = pay.day
+				  <where>
+				  	<if test="sday != null and sday != ''">
+					  	<![CDATA[
+				        and c.day >=  #{sday,jdbcType=VARCHAR}
+				        ]]>	
+			    	</if>
+			    	<if test="eday != null and eday != ''">
+			        <![CDATA[
+			        	and c.day <=  #{eday,jdbcType=VARCHAR}
+			        ]]>	
+		    		</if>
+				  </where>
+			) a
+			group by a.day
+			order by a.day asc
+	</select>
+	
+	<!-- 신규가입자현황 조회 : 단말기준  월별 -->
+	<select id="selectMemberStatsNewOsMonthList" parameterType="HashMap" resultMap="StatsOs">
+		select 
+					 case when a.day = 'TOTAL' then 'TOTAL'
+					 else SUBSTRING(a.day,1,4) + '-' + SUBSTRING(a.day,5,2) + '01'
+					 end day
+					,sum(a.a_k)		a_k
+					,sum(a.a_s)		a_s
+					,sum(a.a_l)		a_l
+					,sum(a.a_total)	a_total
+					,sum(a.i_k)		i_k
+					,sum(a.i_s)		i_s
+					,sum(a.i_l)		i_l
+					,sum(a.i_total)		i_total
+					,sum(a.new_k_total)	new_k_total
+					,sum(a.new_s_total)	new_s_total
+					,sum(a.new_l_total)	new_l_total
+					,sum(a.new_total)	new_total
+					,sum(a.wat_in)		wat_in
+					,sum(a.pay_in)		pay_in
+					,sum(a.s_a_k)		s_a_k
+					,sum(a.s_a_s)		s_a_s
+					,sum(a.s_a_l)		s_a_l
+					,a.s_a_total	s_a_total
+					,sum(a.s_i_k)		s_i_k
+					,sum(a.s_i_s)		s_i_s
+					,sum(a.s_i_l)		s_i_l
+					,a.s_i_total	s_i_total
+					,sum(a.s_wat_in)	s_wat_in
+					,sum(a.s_pay_in)	s_pay_in
+					,a.s_a_total + a.s_i_total s_toal
+					,Sum(Isnull(a.b_s_total,0)) b_s_total
+       		,(a.s_a_total + a.s_i_total) - Sum(Isnull(a.b_s_total,0)) sunjng
+       		,Sum(isnull(a.mtow_a,0)) mtow_a
+					,Sum(isnull(a.mtow_r,0)) mtow_r
+					,Sum(isnull(a.wtom_a,0)) wtom_a
+					,Sum(isnull(a.wtom_r,0)) wtom_r
+		from (
+					SELECT	
+							 left(b.day, 6) day
+				      ,isnull(b.a_k,0)a_k
+				      ,isnull(b.a_s,0)a_s
+				      ,isnull(b.a_l,0)a_l
+				      ,isnull(b.a_k,0) + isnull(b.a_s,0) + isnull(b.a_l,0) a_total
+				      ,isnull(b.i_k,0)i_k
+				      ,isnull(b.i_s,0)i_s
+				      ,isnull(b.i_l,0)i_l
+				      ,isnull(b.i_k,0) + isnull(b.i_s,0) + isnull(b.i_l,0) i_total
+				      ,isnull(b.a_k,0) + isnull(b.i_k,0)  new_k_total
+				      ,isnull(b.a_s,0) + isnull(b.i_s,0)  new_s_total
+				      ,isnull(b.a_l,0) + isnull(b.i_l,0)  new_l_total
+				      ,isnull(b.a_k,0) + isnull(b.i_k,0) + isnull(b.a_s,0) + isnull(b.i_s,0) + isnull(b.a_l,0) + isnull(b.i_l,0)  new_total
+				      ,isnull(b.wat_in,0)wat_in
+				      ,isnull(b.pay_in,0)pay_in
+				      ,isnull(b.s_a_k,0)s_a_k
+				      ,isnull(b.s_a_s,0)s_a_s
+				      ,isnull(b.s_a_l,0)s_a_l
+				      ,(
+								select isnull(s_a_k,0) + isnull(s_a_s,0) + isnull(s_a_l,0)
+								from stat_os
+								where day = dateadd(month, 1, b.day) - datepart(day, dateadd(month, 1, b.day))
+						   ) s_a_total
+				      ,isnull(b.s_i_k,0)s_i_k
+				      ,isnull(b.s_i_s,0)s_i_s
+				      ,isnull(b.s_i_l,0)s_i_l
+				      ,(
+								select isnull(s_i_k,0) + isnull(s_i_s,0) + isnull(s_i_l,0)
+								from stat_os
+								where day = dateadd(month, 1, b.day) - datepart(day, dateadd(month, 1, b.day))
+				      ) s_i_total
+				      ,isnull(b.s_wat_in,0)s_wat_in
+				      ,isnull(b.s_pay_in,0)s_pay_in
+				      ,(
+							 SELECT sum(Isnull(a.s_a_k, 0)) + sum(Isnull(a.s_a_s, 0)) + sum(Isnull(a.s_a_l, 0))
+							      + sum(Isnull(a.s_i_k, 0)) + sum(Isnull(a.s_i_s, 0)) + sum(Isnull(a.s_i_l, 0)) 
+                FROM   stat_os a
+                WHERE a.day = CONVERT(NVARCHAR(20), DATEADD(day, -1, CONVERT(DATETIME,LEFT(b.day,6)+'01')),112)
+							) b_s_total
+							,isnull(pay.mtow_a,0) mtow_a
+							,isnull(pay.mtow_r,0) mtow_r
+							,isnull(pay.wtom_a,0) wtom_a
+							,isnull(pay.wtom_r,0) wtom_r
+				  FROM stat_os b
+				  LEFT OUTER JOIN stat_pay_day pay
+      		on b.day = pay.day
+				  <where>
+				  	<if test="sday != null and sday != ''">
+					  	<![CDATA[
+				        and b.day >=  #{sday,jdbcType=VARCHAR}
+				        ]]>	
+			    	</if>
+			    	<if test="eday != null and eday != ''">
+			        <![CDATA[
+			        	and b.day <=  #{eday,jdbcType=VARCHAR}
+			        ]]>	
+		    		</if>
+				  </where>
+				  union all
+				  SELECT 'TOTAL' day
+				      ,sum(isnull(c.a_k,0)) a_k
+				      ,sum(isnull(c.a_s,0))a_s
+				      ,sum(isnull(c.a_l,0))a_l
+				      ,sum(isnull(c.a_k,0)) + sum(isnull(c.a_s,0)) + sum(isnull(c.a_l,0)) a_total
+				      ,sum(isnull(c.i_k,0))i_k
+				      ,sum(isnull(c.i_s,0))i_s
+				      ,sum(isnull(c.i_l,0))i_l
+				      ,sum(isnull(c.i_k,0)) + sum(isnull(c.i_s,0)) + sum(isnull(c.i_l,0)) i_total
+				      ,sum(isnull(c.a_k,0)) + sum(isnull(c.i_k,0))  new_k_total
+				      ,sum(isnull(c.a_s,0)) + sum(isnull(c.i_s,0))  new_s_total
+				      ,sum(isnull(c.a_l,0)) + sum(isnull(c.i_l,0))  new_l_total
+				      ,sum(isnull(c.a_k,0)) + sum(isnull(c.i_k,0)) + sum(isnull(c.a_s,0)) + sum(isnull(c.i_s,0))
+				       + sum(isnull(c.a_l,0)) + sum(isnull(c.i_l,0))  new_total
+				      ,sum(isnull(c.wat_in,0))wat_in
+				      ,sum(isnull(c.pay_in,0))pay_in
+				      ,sum(isnull(c.s_a_k,0))s_a_k
+				      ,sum(isnull(c.s_a_s,0))s_a_s
+				      ,sum(isnull(c.s_a_l,0))s_a_l
+				      ,sum(isnull(c.s_a_k,0)) + sum(isnull(c.s_a_s,0)) + sum(isnull(c.s_a_l,0)) s_a_total
+				      ,sum(isnull(c.s_i_k,0))s_i_k
+				      ,sum(isnull(c.s_i_s,0))s_i_s
+				      ,sum(isnull(c.s_i_l,0))s_i_l
+				      ,sum(isnull(c.s_i_k,0)) + sum(isnull(c.s_i_s,0)) + sum(isnull(c.s_i_l,0)) s_i_total
+				      ,sum(isnull(c.s_wat_in,0))s_wat_in
+				      ,sum(isnull(c.s_pay_in,0))s_pay_in
+				      ,'-' b_s_total
+				      ,sum(isnull(pay.mtow_a,0)) mtow_a
+				      ,sum(isnull(pay.mtow_r,0)) mtow_r
+				      ,sum(isnull(pay.wtom_a,0)) wtom_a
+				      ,sum(isnull(pay.wtom_r,0)) wtom_r
+				  FROM stat_os c
+				  LEFT OUTER JOIN stat_pay_day pay
+      		on c.day = pay.day
+				  <where>
+				  	<if test="sday != null and sday != ''">
+					  	<![CDATA[
+				        and c.day >=  #{sday,jdbcType=VARCHAR}
+				        ]]>	
+			    	</if>
+			    	<if test="eday != null and eday != ''">
+			        <![CDATA[
+			        	and c.day <=  #{eday,jdbcType=VARCHAR}
+			        ]]>	
+		    		</if>
+				  </where>
+			) a
+			group by a.day, a.s_a_total,a.s_i_total
+			order by a.day asc
+	</select>
+	
+	<!-- 신규가입자현황 조회 : 단말기준  년도별 -->
+	<select id="selectMemberStatsNewOsYearList" parameterType="HashMap" resultMap="StatsOs">
+		select 
+					 case when a.day = 'TOTAL' then 'TOTAL'
+					 else SUBSTRING(a.day,1,4) + '0101'
+					 end day
+					,sum(a.a_k)		a_k
+					,sum(a.a_s)		a_s
+					,sum(a.a_l)		a_l
+					,sum(a.a_total)	a_total
+					,sum(a.i_k)		i_k
+					,sum(a.i_s)		i_s
+					,sum(a.i_l)		i_l
+					,sum(a.i_total)		i_total
+					,sum(a.new_k_total)	new_k_total
+					,sum(a.new_s_total)	new_s_total
+					,sum(a.new_l_total)	new_l_total
+					,sum(a.new_total)	new_total
+					,sum(a.wat_in)		wat_in
+					,sum(a.pay_in)		pay_in
+					,sum(a.s_a_k)		s_a_k
+					,sum(a.s_a_s)		s_a_s
+					,sum(a.s_a_l)		s_a_l
+					,sum(a.s_i_k)		s_i_k
+					,sum(a.s_i_s)		s_i_s
+					,sum(a.s_i_l)		s_i_l
+					,sum(a.s_wat_in)	s_wat_in
+					,sum(a.s_pay_in)	s_pay_in
+       		,Sum(isnull(a.mtow_a,0)) mtow_a
+					,Sum(isnull(a.mtow_r,0)) mtow_r
+					,Sum(isnull(a.wtom_a,0)) wtom_a
+					,Sum(isnull(a.wtom_r,0)) wtom_r
+		from (
+					SELECT	
+							 left(b.day, 4) day
+				      ,isnull(b.a_k,0)a_k
+				      ,isnull(b.a_s,0)a_s
+				      ,isnull(b.a_l,0)a_l
+				      ,isnull(b.a_k,0) + isnull(b.a_s,0) + isnull(b.a_l,0) a_total
+				      ,isnull(b.i_k,0)i_k
+				      ,isnull(b.i_s,0)i_s
+				      ,isnull(b.i_l,0)i_l
+				      ,isnull(b.i_k,0) + isnull(b.i_s,0) + isnull(b.i_l,0) i_total
+				      ,isnull(b.a_k,0) + isnull(b.i_k,0)  new_k_total
+				      ,isnull(b.a_s,0) + isnull(b.i_s,0)  new_s_total
+				      ,isnull(b.a_l,0) + isnull(b.i_l,0)  new_l_total
+				      ,isnull(b.a_k,0) + isnull(b.i_k,0) + isnull(b.a_s,0) + isnull(b.i_s,0) + isnull(b.a_l,0) + isnull(b.i_l,0)  new_total
+				      ,isnull(b.wat_in,0)wat_in
+				      ,isnull(b.pay_in,0)pay_in
+				      ,isnull(b.s_a_k,0)s_a_k
+				      ,isnull(b.s_a_s,0)s_a_s
+				      ,isnull(b.s_a_l,0)s_a_l
+				      ,isnull(b.s_i_k,0)s_i_k
+				      ,isnull(b.s_i_s,0)s_i_s
+				      ,isnull(b.s_i_l,0)s_i_l
+				      ,isnull(b.s_wat_in,0)s_wat_in
+				      ,isnull(b.s_pay_in,0)s_pay_in
+							,isnull(pay.mtow_a,0) mtow_a
+							,isnull(pay.mtow_r,0) mtow_r
+							,isnull(pay.wtom_a,0) wtom_a
+							,isnull(pay.wtom_r,0) wtom_r
+				  FROM stat_os b
+				  LEFT OUTER JOIN stat_pay_day pay
+      		on b.day = pay.day
+				  <where>
+				  	<if test="sday != null and sday != ''">
+					  	<![CDATA[
+				        and b.day >=  #{sday,jdbcType=VARCHAR}
+				        ]]>	
+			    	</if>
+			    	<if test="eday != null and eday != ''">
+			        <![CDATA[
+			        	and b.day <=  #{eday,jdbcType=VARCHAR}
+			        ]]>	
+		    		</if>
+				  </where>
+				  union all
+				  SELECT 'TOTAL' day
+				      ,sum(isnull(c.a_k,0)) a_k
+				      ,sum(isnull(c.a_s,0))a_s
+				      ,sum(isnull(c.a_l,0))a_l
+				      ,sum(isnull(c.a_k,0)) + sum(isnull(c.a_s,0)) + sum(isnull(c.a_l,0)) a_total
+				      ,sum(isnull(c.i_k,0))i_k
+				      ,sum(isnull(c.i_s,0))i_s
+				      ,sum(isnull(c.i_l,0))i_l
+				      ,sum(isnull(c.i_k,0)) + sum(isnull(c.i_s,0)) + sum(isnull(c.i_l,0)) i_total
+				      ,sum(isnull(c.a_k,0)) + sum(isnull(c.i_k,0))  new_k_total
+				      ,sum(isnull(c.a_s,0)) + sum(isnull(c.i_s,0))  new_s_total
+				      ,sum(isnull(c.a_l,0)) + sum(isnull(c.i_l,0))  new_l_total
+				      ,sum(isnull(c.a_k,0)) + sum(isnull(c.i_k,0)) + sum(isnull(c.a_s,0)) + sum(isnull(c.i_s,0))
+				       + sum(isnull(c.a_l,0)) + sum(isnull(c.i_l,0))  new_total
+				      ,sum(isnull(c.wat_in,0))wat_in
+				      ,sum(isnull(c.pay_in,0))pay_in
+				      ,sum(isnull(c.s_a_k,0))s_a_k
+				      ,sum(isnull(c.s_a_s,0))s_a_s
+				      ,sum(isnull(c.s_a_l,0))s_a_l
+				      ,sum(isnull(c.s_i_k,0))s_i_k
+				      ,sum(isnull(c.s_i_s,0))s_i_s
+				      ,sum(isnull(c.s_i_l,0))s_i_l
+				      ,sum(isnull(c.s_wat_in,0))s_wat_in
+				      ,sum(isnull(c.s_pay_in,0))s_pay_in
+				      ,sum(isnull(pay.mtow_a,0)) mtow_a
+				      ,sum(isnull(pay.mtow_r,0)) mtow_r
+				      ,sum(isnull(pay.wtom_a,0)) wtom_a
+				      ,sum(isnull(pay.wtom_r,0)) wtom_r
+				  FROM stat_os c
+				  LEFT OUTER JOIN stat_pay_day pay
+      		on c.day = pay.day
+				  <where>
+				  	<if test="sday != null and sday != ''">
+					  	<![CDATA[
+				        and c.day >=  #{sday,jdbcType=VARCHAR}
+				        ]]>	
+			    	</if>
+			    	<if test="eday != null and eday != ''">
+			        <![CDATA[
+			        	and c.day <=  #{eday,jdbcType=VARCHAR}
+			        ]]>	
+		    		</if>
+				  </where>
+			) a
+			group by a.day
+			order by a.day asc
+	</select>
+	
+	<!-- 신규가입자현황 조회 : 이용자기준(성별,연령)  일별/월별/년도별 -->
+	<select id="selectMemberStatsNewAgeList" parameterType="HashMap" resultMap="StatsAge">
+		SELECT   
+					<if test="period.equals('day')">
+		       case when a.day = 'TOTAL' then 'TOTAL'
+					 else SUBSTRING(a.day,1,4) + '-' + SUBSTRING(a.day,5,2) + '-' + SUBSTRING(a.day,7,2)
+					 end day
+					</if>
+					<if test="period.equals('month')">
+		       case when a.day = 'TOTAL' then 'TOTAL'
+					 else SUBSTRING(a.day,1,4) + '-' + SUBSTRING(a.day,5,2) + '01'
+					 end day
+					</if>
+					<if test="period.equals('year')">
+		       case when a.day = 'TOTAL' then 'TOTAL'
+					 else SUBSTRING(a.day,1,4) + '0101'
+					 end day
+					</if>
+						,Sum(a.m_0) m_0
+						,Sum(a.w_0) w_0
+						,Sum(a.mw_0_total) mw_0_total
+						,Sum(a.m_1) m_1
+						,Sum(a.w_1) w_1
+						,Sum(a.mw_1_total) mw_1_total
+						,Sum(a.m_2) m_2
+						,Sum(a.w_2) w_2
+						,Sum(a.mw_2_total) mw_2_total
+						,Sum(a.m_3) m_3
+						,Sum(a.w_3) w_3
+						,Sum(a.mw_3_total) mw_3_total
+						,Sum(a.m_4) m_4
+						,Sum(a.w_4) w_4
+						,Sum(a.mw_4_total) mw_4_total
+						,Sum(a.m_5) m_5
+						,Sum(a.w_5) w_5
+						,Sum(a.mw_5_total) mw_5_total
+						,Sum(a.m_6) m_6
+						,Sum(a.w_6) w_6
+						,Sum(a.mw_6_total) mw_6_total
+						,Sum(a.m_total) m_total
+						,Sum(a.w_total) w_total
+						,Sum(a.m_total) + Sum(a.w_total) mw_total
+						,Sum(a.s_m_0)	s_m_0
+						,Sum(a.s_w_0)	s_w_0
+						,Sum(a.s_m_1)	s_m_1
+						,Sum(a.s_w_1)	s_w_1
+						,Sum(a.s_m_2)	s_m_2
+						,Sum(a.s_w_2)	s_w_2
+						,Sum(a.s_m_3)	s_m_3
+						,Sum(a.s_w_3)	s_w_3
+						,Sum(a.s_m_4)	s_m_4
+						,Sum(a.s_w_4)	s_w_4
+						,Sum(a.s_m_5)	s_m_5
+						,Sum(a.s_w_5)	s_w_5
+						,Sum(a.s_m_6)	s_m_6
+						,Sum(a.s_w_6)	s_w_6
+				FROM (
+				SELECT 
+						<if test="period.equals('day')">
+				      day
+						</if>
+						<if test="period.equals('month')">
+				      left(day, 6) day
+						</if>
+						<if test="period.equals('year')">
+				      left(day, 4) day
+						</if>
+						,Isnull(m_0,0 )m_0
+						,Isnull(w_0,0) w_0
+						,Isnull(m_0,0) + Isnull(w_0,0) mw_0_total
+						,Isnull(m_1,0) m_1
+						,Isnull(w_1,0) w_1
+						,Isnull(m_1,0) + Isnull(w_1,0) mw_1_total
+						,Isnull(m_2,0) m_2
+						,Isnull(w_2,0) w_2
+						,Isnull(m_2,0) + Isnull(w_2,0) mw_2_total
+						,Isnull(m_3,0) m_3
+						,Isnull(w_3,0) w_3
+						,Isnull(m_3,0) + Isnull(w_3,0) mw_3_total
+						,Isnull(m_4,0) m_4
+						,Isnull(w_4,0) w_4
+						,Isnull(m_4,0) + Isnull(w_4,0) mw_4_total
+						,Isnull(m_5,0) m_5
+						,Isnull(w_5,0) w_5
+						,Isnull(m_5,0) + Isnull(w_5,0) mw_5_total
+						,Isnull(m_6,0) m_6
+						,Isnull(w_6,0) w_6
+						,Isnull(m_6,0) + Isnull(w_6,0) mw_6_total
+						,Isnull(m_0,0) + Isnull(m_1,0) + Isnull(m_2,0) + Isnull(m_3,0) + Isnull(m_4,0) + Isnull(m_5,0) + Isnull(m_6,0) m_total
+						,Isnull(w_0,0) + Isnull(w_1,0) + Isnull(w_2,0) + Isnull(w_3,0) + Isnull(w_4,0) + Isnull(w_5,0) + Isnull(w_6,0) w_total
+						,Isnull(s_m_0,0) s_m_0
+						,Isnull(s_w_0,0) s_w_0
+						,Isnull(s_m_1,0) s_m_1
+						,Isnull(s_w_1,0) s_w_1
+						,Isnull(s_m_2,0) s_m_2
+						,Isnull(s_w_2,0) s_w_2
+						,Isnull(s_m_3,0) s_m_3
+						,Isnull(s_w_3,0) s_w_3
+						,Isnull(s_m_4,0) s_m_4
+						,Isnull(s_w_4,0) s_w_4
+						,Isnull(s_m_5,0) s_m_5
+						,Isnull(s_w_5,0) s_w_5
+						,Isnull(s_m_6,0) s_m_6
+						,Isnull(s_w_6,0) s_w_6
+				FROM stat_age
+				<where>
+			  	<if test="sday != null and sday != ''">
+				  	<![CDATA[
+			        and day >=  #{sday,jdbcType=VARCHAR}
+			        ]]>	
+		    	</if>
+		    	<if test="eday != null and eday != ''">
+		        <![CDATA[
+		        	and day <=  #{eday,jdbcType=VARCHAR}
+		        ]]>	
+	    		</if>
+			  </where>
+				union all
+				SELECT   'TOTAL' day
+						,Sum(Isnull(m_0,0)) m_0
+						,Sum(Isnull(w_0,0)) w_0
+						,Sum(Isnull(m_0,0)) + Sum(Isnull(w_0,0)) mw_0_total
+						,Sum(Isnull(m_1,0)) m_1
+						,Sum(Isnull(w_1,0)) w_1
+						,Sum(Isnull(m_1,0)) + Sum(Isnull(w_1,0)) mw_1_total
+						,Sum(Isnull(m_2,0)) m_2
+						,Sum(Isnull(w_2,0)) w_2
+						,Sum(Isnull(m_2,0)) + Sum(Isnull(w_2,0)) mw_2_total
+						,Sum(Isnull(m_3,0)) m_3
+						,Sum(Isnull(w_3,0)) w_3
+						,Sum(Isnull(m_3,0)) + Sum(Isnull(w_3,0)) mw_3_total
+						,Sum(Isnull(m_4,0)) m_4
+						,Sum(Isnull(w_4,0)) w_4
+						,Sum(Isnull(m_4,0)) + Sum(Isnull(w_4,0)) mw_4_total
+						,Sum(Isnull(m_5,0)) m_5
+						,Sum(Isnull(w_5,0)) w_5
+						,Sum(Isnull(m_5,0)) + Sum(Isnull(w_5,0)) mw_5_total
+						,Sum(Isnull(m_6,0)) m_6
+						,Sum(Isnull(w_6,0)) w_6
+						,Sum(Isnull(m_6,0)) + Sum(Isnull(w_6,0)) mw_6_total
+						,Sum(Isnull(m_0,0)) + Sum(Isnull(m_1,0)) + Sum(Isnull(m_2,0)) + Sum(Isnull(m_3,0)) 
+						+ Sum(Isnull(m_4,0)) + Sum(Isnull(m_5,0)) + Sum(Isnull(m_6,0)) m_total
+						,Sum(Isnull(w_0,0)) + Sum(Isnull(w_1,0)) + Sum(Isnull(w_2,0)) + Sum(Isnull(w_3,0)) 
+						+ Sum(Isnull(w_4,0)) + Sum(Isnull(w_5,0)) + Sum(Isnull(w_6,0)) w_total
+						,Sum(Isnull(s_m_0,0)) s_m_0
+						,Sum(Isnull(s_w_0,0)) s_w_0
+						,Sum(Isnull(s_m_1,0)) s_m_1
+						,Sum(Isnull(s_w_1,0)) s_w_1
+						,Sum(Isnull(s_m_2,0)) s_m_2
+						,Sum(Isnull(s_w_2,0)) s_w_2
+						,Sum(Isnull(s_m_3,0)) s_m_3
+						,Sum(Isnull(s_w_3,0)) s_w_3
+						,Sum(Isnull(s_m_4,0)) s_m_4
+						,Sum(Isnull(s_w_4,0)) s_w_4
+						,Sum(Isnull(s_m_5,0)) s_m_5
+						,Sum(Isnull(s_w_5,0)) s_w_5
+						,Sum(Isnull(s_m_6,0)) s_m_6
+						,Sum(Isnull(s_w_6,0)) s_w_6
+				FROM stat_age
+				<where>
+			  	<if test="sday != null and sday != ''">
+				  	<![CDATA[
+			        and day >=  #{sday,jdbcType=VARCHAR}
+			        ]]>	
+		    	</if>
+		    	<if test="eday != null and eday != ''">
+		        <![CDATA[
+		        	and day <=  #{eday,jdbcType=VARCHAR}
+		        ]]>	
+	    		</if>
+			  </where>
+				) a
+				group by a.day
+			order by a.day asc
+	</select>
+	
+	<!-- 신규가입자현황 조회 : 모카페이 유입  일별/월별/년도별 -->
+	<select id="selectMemberStatsNewMocaPayList" parameterType="HashMap" resultMap="MocaPay">
+		select 
+					<if test="period.equals('day')">
+		       case when a.day = 'TOTAL' then 'TOTAL'
+					 else SUBSTRING(a.day,1,4) + '-' + SUBSTRING(a.day,5,2) + '-' + SUBSTRING(a.day,7,2)
+					 end day
+					</if>
+					<if test="period.equals('month')">
+		       case when a.day = 'TOTAL' then 'TOTAL'
+					 else SUBSTRING(a.day,1,4) + '-' + SUBSTRING(a.day,5,2) + '01'
+					 end day
+					</if>
+					<if test="period.equals('year')">
+		       case when a.day = 'TOTAL' then 'TOTAL'
+					 else SUBSTRING(a.day,1,4) + '-' + SUBSTRING(a.day,5,2) + '0101'
+					 end day
+					</if>
+						,Sum(isnull(a.mtow_a,0)) mtow_a
+						,Sum(isnull(a.mtow_r,0)) mtow_r
+						,Sum(isnull(a.wtom_a,0)) wtom_a
+						,Sum(isnull(a.wtom_r,0)) wtom_r
+						,Sum(isnull(a.wtom_new_s,0)) wtom_new_s
+						,Sum(isnull(a.wtom_new_f,0)) wtom_new_f
+		from (
+						SELECT	
+									 <if test="period.equals('day')">
+								      pay.day day
+									 </if>
+									 <if test="period.equals('month')">
+								      left(pay.day, 6) day
+									 </if>
+									 <if test="period.equals('year')">
+								      left(pay.day, 4) day
+									 </if>
+									,isnull(pay.mtow_a,0) mtow_a
+									,isnull(pay.mtow_r,0) mtow_r
+									,isnull(pay.wtom_a,0) wtom_a
+									,isnull(pay.wtom_r,0) wtom_r
+									,isnull(pay.wtom_new_s,0) wtom_new_s
+									,isnull(pay.wtom_new_f,0) wtom_new_f
+					  FROM stat_pay_day pay
+					  <where>
+					  	<if test="sday != null and sday != ''">
+						  	<![CDATA[
+					        and pay.day >=  #{sday,jdbcType=VARCHAR}
+					        ]]>	
+				    	</if>
+				    	<if test="eday != null and eday != ''">
+				        <![CDATA[
+				        	and pay.day <=  #{eday,jdbcType=VARCHAR}
+				        ]]>	
+			    		</if>
+					  </where>
+					  union all
+					  SELECT 'TOTAL' day
+							  ,sum(isnull(pay.mtow_a,0)) mtow_a
+							  ,sum(isnull(pay.mtow_r,0)) mtow_r
+							  ,sum(isnull(pay.wtom_a,0)) wtom_a
+							  ,sum(isnull(pay.wtom_r,0)) wtom_r
+							  ,sum(isnull(pay.wtom_new_s,0)) wtom_new_s
+							  ,sum(isnull(pay.wtom_new_f,0)) wtom_new_f
+					  FROM stat_pay_day pay
+					  <where>
+					  	<if test="sday != null and sday != ''">
+						  	<![CDATA[
+					        and pay.day >=  #{sday,jdbcType=VARCHAR}
+					        ]]>	
+				    	</if>
+				    	<if test="eday != null and eday != ''">
+				        <![CDATA[
+				        	and pay.day <=  #{eday,jdbcType=VARCHAR}
+				        ]]>	
+			    		</if>
+					  </where>
+				) a
+				group by a.day
+				order by a.day asc
+	</select>
+
+</mapper>

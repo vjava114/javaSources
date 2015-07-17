@@ -1,0 +1,815 @@
+/*
+- 2012.09.03 #m_container .afoot .action 수정함.
+select.def_Select, 등 수정함.
+input_small_text 수정
+
+*/
+
+
+
+
+
+/******************************************************************************************************************************
+	COMMON ELEMENT
+******************************************************************************************************************************/
+body, h1, h2, h3, h4, h5, h6, p, dl, dt, dd, ul, ol, li, th, td, blockquote, pre, form {
+margin:0;
+padding:0;
+}
+body {
+font:12px '돋움',Dotum,arial,sans-serif;
+line-height:1.5em;
+border:none;
+}
+h1, h2, h3, h4, h5, h6 {
+font-weight:normal;
+font-size:100%;
+}
+ol,ul {
+list-style:none;
+}
+table {
+border-collapse:collapse;
+border-spacing:0;
+padding:0;
+border:none;
+}
+th, td {
+margin:0;
+padding:0;
+border:none;
+font-weight:normal;
+}
+img,fieldset {
+border:none;
+}
+a:link {
+text-decoration:none;
+color: #555;
+}
+a:visited {
+text-decoration:none; 
+color: #555;
+}
+a:hover {
+text-decoration:none;
+color: #555;
+}
+a img {
+vertical-align:top
+}
+/******************************************************************************************************************************
+	COMMON ATTRIBUTE
+******************************************************************************************************************************/
+.left {
+float:left;
+}
+.right {
+float:right;
+}
+.clear:after {
+content:"";
+display:block;
+clear:both;
+}
+.width100 {
+width:100px !important;
+}
+.width221 {
+width:221px !important;
+}
+.border_none {
+border:none !important;
+}
+.border_right {
+text-align:center;
+border-right:1px solid #a3a3a3 !important;
+}
+.border_bottom {
+border-bottom:1px solid #a3a3a3 !important;
+}
+.center {
+text-align:center;
+background:#f2f2f2;
+}
+.underline {
+border-bottom:1px solid #555;
+}
+/******************************************************************************************************************************
+	WRAP
+******************************************************************************************************************************/
+#wrap {
+position:relative;
+width:2500px;
+z-index:30;
+}
+
+/******************************************************************************************************************************
+	NAV
+******************************************************************************************************************************/
+#nav {
+width:198px;
+height:700px;
+}
+#nav h2 {
+width:180px;
+margin:10px 0 0 5px;
+font-size:14px;
+font-weight:bold;
+color:#333;
+}
+#nav h2 img {
+margin-right:5px;
+}
+#nav ul {
+width:175px;
+margin-left:27px;
+font-size:13px;
+}
+
+/******************************************************************************************************************************
+	CONTAINER
+******************************************************************************************************************************/
+/*container 대신 사용, membership admin container의 약자*/
+#m_container{
+	border-left:1px solid #ccc;
+}
+#m_container .location{
+	margin-bottom:24px;
+}
+#m_container .location h3 {
+	
+	margin:28px 0 0 10px;
+	padding-bottom:5px;
+	background:url(/img/stat/bar_location.png) left bottom no-repeat;
+}
+
+#m_container .ahead .descript {
+	margin:0 0 4px 10px;
+	/*margin:0 0 4px 0px;*/
+	border:none;
+}
+#m_container .ahead .descript td {
+	border:none;
+}
+
+#m_container .ahead .searchArea{
+	width:830px;
+	margin:0 0 4px 10px;
+	/*margin:0 0 10px ;*/
+	
+	/*margin:0 auto;*/
+}
+#m_container .ahead .searchArea th {
+	width:120px;
+	height:30px;
+	border:1px solid #a3a3a3;
+	background:#f2f2f2;
+}
+#m_container .ahead .searchArea td {
+	border:1px solid #a3a3a3;
+	height:30px;
+	padding: 0 5px 0 5px;
+}
+
+#m_container .ahead .border_none {
+	width:100%;
+}
+#m_container .ahead .border_none td {
+	border:none;
+}
+#m_container .ahead .border_none td.Ltd {
+	border:none;
+	text-align:left;
+}
+#m_container .ahead .border_none td.Ctd {
+	border:none;
+	text-align:center;
+}
+#m_container .ahead .border_none td.Rtd {
+	border:none;
+	text-align:right;
+}
+
+#m_container .ahead .action {
+	width:322px;
+	margin:0 0 4px 35px;
+	border:none;
+}
+#m_container .ahead .action td {
+	/*width:161px;*/
+	border:none;
+}
+#m_container .ahead .action img {
+	cursor:pointer;
+}
+
+
+
+#m_container .abody .border_none {
+	width:100%;
+	height:25px;
+}
+#m_container .abody .border_none td {
+	border:none;
+}
+#m_container .abody .border_none td.Ltd {
+	text-align:left;
+}
+#m_container .abody .border_none td.Ctd {
+	text-align:center;
+}
+#m_container .abody .border_none td.Rtd {
+	text-align:right;
+}
+
+#m_container .abody_list {
+	margin:0 auto;
+}
+#m_container .abody_list th {
+	/*width:120px;*/
+	height:30px;
+	border:1px solid #a3a3a3;
+	background:#f2f2f2;
+}
+#m_container .abody_list td {
+	border:1px solid #a3a3a3;
+	height:30px;
+	margin:0 5px 0 5px;
+}
+#m_container .abody_list td.Ltd {
+	border:1px solid #a3a3a3;
+	height:30px;
+	margin:0 5px 0 5px;
+	text-align:left;
+}
+#m_container .abody_list td.Ctd {
+	border:1px solid #a3a3a3;
+	height:30px;
+	margin:0 5px 0 5px;
+	text-align:center;
+}
+#m_container .abody_list td.Rtd {
+	border:1px solid #a3a3a3;
+	height:30px;
+	margin:0 5px 0 5px;
+	text-align:right;
+}
+
+#m_container .abody_list .check_os {
+	width:13px;
+	height:13px;
+	margin:0 3px 3px 9px;
+	padding:0;
+	vertical-align:middle;
+}
+#m_container .abody_list .check_os_last {
+	margin-left:95px;
+}
+#m_container .abody_list .border_none {
+	width:100%;
+}
+#m_container .abody_list .border_none td {
+	border:none;
+	margin:0 5px 0 5px auto;
+}
+#m_container .abody_list .border_none td.Ltd {
+	border:none;
+	margin:0 5px 0 5px auto;
+	text-align:left;
+}
+#m_container .abody_list .border_none td.Ctd {
+	border:none;
+	margin:0 5px 0 5px auto;
+	text-align:center;
+}
+#m_container .abody_list .border_none td.Rtd {
+	border:none;
+	margin:0 5px 0 5px auto;
+	text-align:right;
+}
+#m_container .abody_list .file_url {
+	margin:0 9px;
+}
+
+#m_container .abody_paging{
+	margin:10 auto;
+}
+
+#m_container .abody_paging tr{
+}
+
+#m_container .abody_paging td{
+	height:35px;
+	margin:0 5px 0 5px;
+}
+
+#m_container .abody_paging td.Ltd{
+	height:35px;
+	margin:0 5px 0 5px;
+	text-align:left;
+}
+
+#m_container .abody_paging td.Ctd{
+	height:35px;
+	margin:0 5px 0 5px;
+	text-align:center;
+}
+
+#m_container .abody_paging td.Rtd{
+	height:35px;
+	margin:0 5px 0 5px;
+	text-align:right;
+}
+
+
+#m_container .afoot .action {
+/*width:303px;*/
+margin:15px auto 0;
+border:none;
+}
+#m_container .afoot .action td {
+width:101px;
+border:none;
+text-align:center;
+}
+#m_container .afoot .action img {
+cursor:pointer;
+}
+/******************************************************************************************************************************
+	POPUP
+******************************************************************************************************************************/
+.beta { 
+background:#000;
+background: rgba(0, 0, 0, 0.5);
+filter:alpha(opacity=30);
+-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+z-index:35;
+}
+
+
+
+
+
+/* 
+## select box ##
+ - def_Select : default select class, width 값을 화면에서 지정가능함.
+*/
+select.def_Select{
+	margin-left:9px;
+}
+select.big_select {
+	width:210px;
+	margin-left:9px;
+}
+select.small_select {
+	width:80px;
+	margin-left:9px;
+}
+
+/* 
+## input text type ##
+ - input_default : default select class, width 값을 화면에서 지정가능함.
+*/
+input.input_default_text{
+	margin-left:9px;
+	padding:4px 0 2px 5px;
+	font-size:9pt;
+	color:#333;
+	border:1px solid #c3c3cf;
+}
+input.input_big_text {
+	width:570px;
+	margin-left:9px;
+	padding:4px 0 2px 5px;
+	font-size:9pt;
+	color:#333;
+	border:1px solid #c3c3cf;
+}
+input.input_medium_text {
+	width:280px;
+	margin-left:9px;
+	padding:4px 0 2px 5px;
+	font-size:9pt;
+	color:#333;
+	border:1px solid #c3c3cf;
+}
+input.input_medium_text2 {
+	width:280px;
+	margin-left:11px;
+	padding:4px 0 2px 5px;
+	font-size:9pt;
+	color:#333;
+	border:1px solid #c3c3cf;
+}
+input.input_small_text {
+	width:80px;
+	margin-left:9px;
+	padding:4px 0 2px 5px;
+	font-size:9pt;
+	color:#333;
+	border:1px solid #c3c3cf;
+	vertical-align:middle;
+}
+input.input_tiny_text {
+	width:150px;
+	height:19px;
+	margin:-2px 2px 0;
+	padding:2px 0 0 5px;
+	font-size:9pt;
+	color:#333;
+	border:1px solid #c3c3cf;
+	vertical-align:middle;
+}
+
+
+/* 
+## input radio type ##
+ - input_default : default select class, width 값을 화면에서 지정가능함.
+*/
+input.input_default_radio {
+	margin:0 5px 3px 9px;
+	padding:0;
+	width:13px;
+	height:13px;
+	vertical-align:middle;
+}
+input.short_next_radio {
+	margin-left:25px;
+}
+input.middle_next_radio {
+	margin-left:70px;
+}
+input.long_next_radio {
+	margin-left:95px;
+}
+
+/*
+## input button type ##
+*/
+button.date{
+	padding:0;
+	margin:0;
+	width:20px;
+	height:22px;
+	border:none;
+	vertical-align:middle;
+	cursor:pointer;
+	background:url(../img/btn_date.png);
+}
+
+.textarea {
+	resize:none;
+	margin-left:9px;
+	padding:4px 0 2px 5px;
+	border:1px solid #c3c3cf;
+	width:570px;
+	height:75px;
+	overflow-y:auto;
+}
+
+.file {
+	position:absolute;
+	bottom:0; right:0;
+	height:25px;
+	font-size:166px;
+	opacity:0; filter:alpha(opacity=0);
+	z-index:1000;
+	cursor:pointer;
+}
+
+
+
+span.btn_close_memNotiHtmlUp {
+*zoom:1;
+*display:inline;
+display:-moz-inline-stack;
+display:inline-block;
+vertical-align:middle;
+width:45px;
+height:25px;
+margin-left:415px;
+text-indent:-9999px;
+cursor:pointer;
+background:url(/img/btn_closeB.png) left 0px no-repeat;
+}
+
+.member_noti_html_uplaod {
+position:absolute;
+z-index:40;
+width:540px;
+height:250px;
+top:160px;
+left:0;
+background:#fff;
+border:1px solid #a3a3a3;
+}
+.member_noti_html_uplaod h3 {
+height:30px;
+line-height:30px;
+padding-left:10px;
+font-size:14px;
+color:#444;
+background:#f2f2f2;
+border-bottom:1px solid #a3a3a3;
+}
+.member_noti_html_uplaod table {
+margin:10px auto 0;
+}
+.member_noti_html_uplaod th {
+width:100px;
+height:30px;
+padding-left:9px;
+border:1px solid #a3a3a3;
+}
+.member_noti_html_uplaod td {
+width:399px;
+height:30px;
+padding-left:9px;
+border:1px solid #a3a3a3;
+}
+
+/******************************************************************************************************************************
+  하렉스 김미애 추가 시작
+******************************************************************************************************************************/
+.br_5 {
+	height:5px;
+	margin:0;
+	padding:0;
+	border:0;
+}
+.br_10 {
+	height:10px;
+	margin:0;
+	padding:0;
+	border:0;
+}
+.br_15 {
+	height:15px;
+	margin:0;
+	padding:0;
+	border:0;
+}
+#m_container .txt_830{
+	width: 830px;
+	margin:0 auto;	
+}
+/******************************************************************************************************************************
+  하렉스 김미애 추가 끝
+******************************************************************************************************************************/
+
+
+/******************************************************************************************************************************
+  하렉스 김대환 추가
+******************************************************************************************************************************/
+#m_container .ahead .searchAreaNoBorder{
+	/* width:830px; */ 
+	margin:0 0 4px 35px;
+	border: none;
+	/*margin:0 0 10px ;*/
+	
+	/*margin:0 auto;*/
+}
+
+#m_container .txt_700{
+	width: 700px;
+	margin:0 auto;	
+}
+
+#m_container .txt_600{
+	width: 600px;
+	margin:0 auto;	
+}
+
+.center_f {
+text-align:center;
+}
+
+#m_container .abody_list_noborder td {
+	border:1px solid #a3a3a3;
+	height:30px;
+	margin:0 5px 0 5px;
+	border:none;
+}
+
+/******************************************************************************************************************************
+  하렉스 김대환 추가 끝
+******************************************************************************************************************************/
+
+
+/******************************************************************************************************************************
+  하렉스 장명훈 추가 (팝업용)
+******************************************************************************************************************************/
+#p_container{
+	/*border-left:1px solid #ccc;*/
+}
+#p_container .location{
+	margin-bottom:24px;
+}
+#p_container .location h3 {
+	margin:28px auto 0;
+	padding-bottom:5px;
+}
+
+#p_container .ahead .descript {
+	margin:0 0 4px 35px;
+	/*margin:0 0 4px 0px;*/
+	border:none;
+}
+#p_container .ahead .descript td {
+	border:none;
+}
+
+#p_container .ahead .searchArea{
+	margin:0 0 4px 35px;
+	/*margin:0 0 10px ;*/
+	
+	/*margin:0 auto;*/
+}
+#p_container .ahead .searchArea th {
+	width:120px;
+	height:30px;
+	border:1px solid #a3a3a3;
+	background:#f2f2f2;
+}
+#p_container .ahead .searchArea td {
+	border:1px solid #a3a3a3;
+	height:30px;
+	padding: 0 5px 0 5px;
+}
+
+#p_container .ahead .border_none {
+	width:100%;
+}
+#p_container .ahead .border_none td {
+	border:none;
+}
+#p_container .ahead .border_none td.Ltd {
+	border:none;
+	text-align:left;
+}
+#p_container .ahead .border_none td.Ctd {
+	border:none;
+	text-align:center;
+}
+#p_container .ahead .border_none td.Rtd {
+	border:none;
+	text-align:right;
+}
+
+#p_container .ahead .action {
+	width:322px;
+	margin:0 0 4px 35px;
+	border:none;
+}
+#p_container .ahead .action td {
+	/*width:161px;*/
+	border:none;
+}
+#p_container .ahead .action img {
+	cursor:pointer;
+}
+
+
+#p_container .abody .descript {
+	margin:0 0 4px 100px;
+	border:none;
+}
+
+#p_container .abody .border_none {
+	width:100%;
+	height:25px;
+}
+#p_container .abody .border_none td {
+	border:none;
+}
+#p_container .abody .border_none td.Ltd {
+	text-align:left;
+}
+#p_container .abody .border_none td.Ctd {
+	text-align:center;
+}
+#p_container .abody .border_none td.Rtd {
+	text-align:right;
+}
+
+#p_container .abody_list {
+	margin:0 auto;
+}
+#p_container .abody_list th {
+	/*width:120px;*/
+	height:30px;
+	border:1px solid #a3a3a3;
+	background:#f2f2f2;
+}
+#p_container .abody_list td {
+	border:1px solid #a3a3a3;
+	height:30px;
+	margin:0 5px 0 5px;
+}
+#p_container .abody_list td.Ltd {
+	border:1px solid #a3a3a3;
+	height:30px;
+	margin:0 5px 0 5px;
+	text-align:left;
+}
+#p_container .abody_list td.Ctd {
+	border:1px solid #a3a3a3;
+	height:30px;
+	margin:0 5px 0 5px;
+	text-align:center;
+}
+#p_container .abody_list td.Rtd {
+	border:1px solid #a3a3a3;
+	height:30px;
+	margin:0 5px 0 5px;
+	text-align:right;
+}
+
+#p_container .abody_list .check_os {
+	width:13px;
+	height:13px;
+	margin:0 3px 3px 9px;
+	padding:0;
+	vertical-align:middle;
+}
+#p_container .abody_list .check_os_last {
+	margin-left:95px;
+}
+#p_container .abody_list .border_none {
+	width:100%;
+}
+#p_container .abody_list .border_none td {
+	border:none;
+	margin:0 5px 0 5px auto;
+}
+#p_container .abody_list .border_none td.Ltd {
+	border:none;
+	margin:0 5px 0 5px auto;
+	text-align:left;
+}
+#p_container .abody_list .border_none td.Ctd {
+	border:none;
+	margin:0 5px 0 5px auto;
+	text-align:center;
+}
+#p_container .abody_list .border_none td.Rtd {
+	border:none;
+	margin:0 5px 0 5px auto;
+	text-align:right;
+}
+#p_container .abody_list .file_url {
+	margin:0 9px;
+}
+
+#p_container .abody_paging{
+	margin:10 auto;
+}
+
+#p_container .abody_paging tr{
+}
+
+#p_container .abody_paging td{
+	height:35px;
+	margin:0 5px 0 5px;
+}
+
+#p_container .abody_paging td.Ltd{
+	height:35px;
+	margin:0 5px 0 5px;
+	text-align:left;
+}
+
+#p_container .abody_paging td.Ctd{
+	height:35px;
+	margin:0 5px 0 5px;
+	text-align:center;
+}
+
+#p_container .abody_paging td.Rtd{
+	height:35px;
+	margin:0 5px 0 5px;
+	text-align:right;
+}
+
+
+#p_container .afoot .action {
+/*width:303px;*/
+margin:15px auto 0;
+border:none;
+}
+#p_container .afoot .action td {
+width:101px;
+border:none;
+text-align:center;
+}
+#p_container .afoot .action img {
+cursor:pointer;
+}
+/******************************************************************************************************************************
+  하렉스 장명훈 추가 끝
+******************************************************************************************************************************/
+#p_container .txt_600{
+	width: 600px;
+	margin:0 auto;	
+}

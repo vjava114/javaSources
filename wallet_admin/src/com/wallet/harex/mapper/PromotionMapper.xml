@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>                                                                                              
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">                         
+<mapper namespace="com.wallet.harex.mapper.PromotionMapper">                                                                        
+                                                                                                                                    
+  <resultMap id="PromotionList" type="com.wallet.harex.model.PromotionList">                                                        
+		<result column="SEQ" jdbcType="INTEGER" property="seq"/>                                                                        
+		<result column="PROMO_NAME" jdbcType="VARCHAR" property="promoName"/>                                                           
+		<result column="BRAND_NAME" jdbcType="VARCHAR" property="brandName"/>                                                           
+		<result column="COMP_NAME" jdbcType="VARCHAR" property="compName"/>                                                             
+		<result column="REGION_TYPE" jdbcType="CHAR" property="regionType"/>                                                            
+		<result column="REGION_NAME" jdbcType="VARCHAR" property="regionName"/>                                                         
+		<result column="SHOP_NAME" jdbcType="VARCHAR" property="shopName"/>                                                             
+		<result column="BANK_CODE" jdbcType="CHAR" property="bankCode"/>                                                                
+		<result column="BANK_NAME" jdbcType="VARCHAR" property="bankName"/>                                                             
+		<result column="START_DT" jdbcType="VARCHAR" property="startDt"/>                                                               
+		<result column="END_DT" jdbcType="VARCHAR" property="endDt"/>                                                                   
+		<result column="REG_DTTM" jdbcType="VARCHAR" property="regDttm"/>    	                                                          
+		<result column="COMP_ID" jdbcType="VARCHAR" property="compId"/>    	                                                            
+		<result column="BRAND_ID" jdbcType="VARCHAR" property="brandId"/>    	                                                          
+		<result column="SHOP_ID" jdbcType="VARCHAR" property="shopId"/>    	                                                            
+		<result column="PROMO_CD" jdbcType="CHAR" property="promoCd"/>                                                                  
+		  	                                                                                                                            
+		<result column="PERIOD" jdbcType="VARCHAR" property="period"/>                                                                  
+		<result column="DC_GUBUN_CODE" jdbcType="VARCHAR" property="dcGubunCode"/>                                                      
+		<result column="DC_GUBUN_NAME" jdbcType="VARCHAR" property="dcGubunName"/>                                                      
+		<result column="DC_TYPE_CODE" jdbcType="VARCHAR" property="dcTypeCode"/>                                                        
+		<result column="DC_TYPE_NAME" jdbcType="VARCHAR" property="dcTypeName"/>                                                        
+		                                                                                                                                
+		<result column="DC_PRICE" jdbcType="VARCHAR" property="dcPrice"/>                                                               
+		<result column="DC_RATE" jdbcType="VARCHAR" property="dcRate"/>                                                                 
+		<result column="DC_GUIDE_TX" jdbcType="VARCHAR" property="dcGuideTx"/>                                                          
+                                                                                                                                    
+		<result column="MIN_PAY_PRICE" jdbcType="INTEGER" property="minPayPrice"/>                                                      
+		<result column="MAX_DC_PRICE" jdbcType="INTEGER" property="maxDcPrice"/>                                                        
+		<result column="DC_CNT_BASE_CODE" jdbcType="VARCHAR" property="dcCntBaseCode"/>                                                 
+		<result column="DC_CNT_BASE_NAME" jdbcType="VARCHAR" property="dcCntBaseName"/>                                                 
+		<result column="DC_CNT" jdbcType="INTEGER" property="dcCnt"/>                                                                   
+		<result column="DC_CNT_TX" jdbcType="INTEGER" property="dcCntTx"/>                                                              
+  </resultMap>                                                                                                                      
+                                                                                                                                    
+	<resultMap id="PromotionInfo" type="com.wallet.harex.model.PromotionInfo">                                                        
+  	<result column="BANK_CODE" jdbcType="VARCHAR" property="bankCode"/>                                                             
+		<result column="BANK_NAME" jdbcType="VARCHAR" property="bankName"/>                                                             
+		<result column="PROMO_NAME" jdbcType="VARCHAR" property="promoName"/>                                                           
+		<result column="START_DT" jdbcType="VARCHAR" property="startDt"/>                                                               
+		<result column="END_DT" jdbcType="VARCHAR" property="endDt"/>                                                                   
+		<result column="PERIOD" jdbcType="VARCHAR" property="period"/>                                                                  
+		<result column="DC_GUBUN_CODE" jdbcType="VARCHAR" property="dcGubunCode"/>                                                      
+		<result column="DC_GUBUN_NAME" jdbcType="VARCHAR" property="dcGubunName"/>                                                      
+		<result column="DC_TYPE_CODE" jdbcType="VARCHAR" property="dcTypeCode"/>                                                        
+		<result column="DC_TYPE_NAME" jdbcType="VARCHAR" property="dcTypeName"/>                                                        
+		<result column="DC_PRICE" jdbcType="VARCHAR" property="dcPrice"/>                                                               
+		<result column="DC_RATE" jdbcType="VARCHAR" property="dcRate"/>                                                                 
+		<result column="DC_GUIDE_TX" jdbcType="VARCHAR" property="dcGuideTx"/>                                                          
+		<result column="MIN_PAY_PRICE" jdbcType="INTEGER" property="minPayPrice"/>                                                      
+		<result column="MAX_DC_PRICE" jdbcType="INTEGER" property="maxDcPrice"/>                                                        
+		<result column="DC_CNT_BASE_CODE" jdbcType="VARCHAR" property="dcCntBaseCode"/>                                                 
+		<result column="DC_CNT_BASE_NAME" jdbcType="VARCHAR" property="dcCntBaseName"/>                                                 
+		<result column="DC_CNT" jdbcType="INTEGER" property="dcCnt"/>                                                                   
+		<result column="DC_CNT_TX" jdbcType="INTEGER" property="dcCntTx"/>                                                              
+		<result column="DC_UNIT" jdbcType="CHAR" property="dcUnit"/>                                                                    
+		<result column="ROUND_TYPE" jdbcType="CHAR" property="roundType"/>                                                              
+		<result column="PROMO_DATE" jdbcType="VARCHAR" property="promoDate"/>                                                              
+  </resultMap>                                                                                                                      
+	                                                                                                                                  
+	<resultMap id="PromotionCode" type="com.wallet.harex.model.PromotionInfo">                                                        
+		<result column="CODE" jdbcType="CHAR" property="code" />                                                                        
+		<result column="NAME" jdbcType="VARCHAR" property="name" />                                                                     
+	</resultMap>                                                                                                                      
+	                                                                                                                                  
+	<resultMap id="PromotionModify" type="com.wallet.harex.model.PromotionInfo">                                                      
+		<result column="PROMO_CD" jdbcType="VARCHAR"    property="promoCode"/>                                                          
+		<result column="BANK_CODE" jdbcType="VARCHAR"    property="bankCode"/>                                                          
+		<result column="PROMO_NAME" jdbcType="VARCHAR"    property="promoName"/>                                                        
+		<result column="START_DT"  jdbcType="VARCHAR"   property="startDt"/>                                                            
+		<result column="END_DT" jdbcType="VARCHAR"    property="endDt"/>                                                                
+		<result column="SERVICE_ID" jdbcType="VARCHAR"    property="serviceId"/>                                                        
+		<result column="DC_GUBUN" jdbcType="VARCHAR"    property="dcGubunCode"/>                                                        
+		<result column="DC_TYPE" jdbcType="VARCHAR"    property="dcTypeCode"/>                                                          
+		<result column="DC_RATE" jdbcType="VARCHAR"    property="dcRate"/>                                                              
+		<result column="DC_PRICE" jdbcType="VARCHAR"    property="dcPrice"/>                                                            
+		<result column="DC_UNIT" jdbcType="VARCHAR"    property="dcUnit"/>                                                              
+		<result column="ROUND_TYPE" jdbcType="VARCHAR"    property="roundType"/>                                                        
+		<result column="MIN_PAY_PRICE" jdbcType="VARCHAR"    property="minPayPrice"/>                                                   
+		<result column="MAX_DC_PRICE" jdbcType="VARCHAR"    property="maxDcPrice"/>                                                     
+		<result column="DC_CNT_BASE" jdbcType="VARCHAR"    property="dcCntBaseCode"/>                                                   
+		<result column="DC_CNT" jdbcType="VARCHAR"    property="dcCnt"/>                                                                
+		<result column="PROMO_NAME_IND" jdbcType="VARCHAR" property="promoNameInd"/>                                                    
+		<result column="START_DT_IND" jdbcType="VARCHAR" property="startDtInd"/>                                                        
+		<result column="END_DT_IND" jdbcType="VARCHAR" property="endDtInd"/>                                                            
+		<result column="COMP_ID" jdbcType="VARCHAR" property="compId"/>                                                                 
+		<result column="COMP_NAME" jdbcType="VARCHAR" property="compName"/>                                                             
+		<result column="BRAND_ID" jdbcType="VARCHAR" property="brandId"/>                                                               
+		<result column="BRAND_NAME" jdbcType="VARCHAR" property="brandName"/>                                                           
+		<result column="SERVICE_NAME" jdbcType="VARCHAR" property="serviceName"/>                                                       
+	</resultMap>                                                                                                                      
+	                                                                                                                                  
+	<resultMap id="PromotionShopList" type="com.wallet.harex.model.PromotionInfo" >                                                   
+		<result column="PROMO_CD" jdbcType="VARCHAR" property="promoCode"/>                                                             
+		<result column="SHOP_ID" jdbcType="VARCHAR" property="shopId"/>                                                                 
+		<result column="SHOP_NAME" jdbcType="VARCHAR" property="shopName"/>                                                             
+	</resultMap>                                                                                                                      
+	                                                                                                                                  
+  <!-- 결제기관별 (가맹점별) 프로모션 목록 -->                                                                                      
+  <select id="selectPromotionList" parameterType="HashMap" resultMap="PromotionList">                                               
+  	SELECT *                                                                                                                        
+		FROM (                                                                                                                          
+			SELECT <if test='top!=null and top!=""'> top ${top} </if>                                                                     
+  					  row_number() over (order by a.PROMO_NAME)		AS SEQ                                                                
+  					 , A.PROMO_CD																	AS PROMO_CD                                                                         
+				    , a.PROMO_NAME																AS PROMO_NAME                                                                       
+				    , dbo.GET_COMP_NM(a.COMP_ID)									AS COMP_NAME                                                                              
+				    , a.COMP_ID																		AS COMP_ID                                                      
+    				, dbo.GET_COMP_NM(a.BRD_ID)										AS BRAND_NAME                                                                            
+    				, BRD_ID																			AS BRAND_ID                                                                                                 
+				    , a.BANK_CODE																	AS BANK_CODE                                                                          
+				    , dbo.GET_CODE_NM('PS0100', a.BANK_CODE)			AS BANK_NAME                                                            
+				    , x1.START_DT																	AS START_DT                                                                       
+				    , x1.END_DT																		AS END_DT                                                                         
+				    , left(convert(varchar, convert(datetime, a.REG_DTTM, 120), 120), 10) 	AS REG_DTTM                                     
+			     	, (left(convert(varchar, convert(datetime, x1.START_DT, 120), 120), 10))  + ' ~ ' + (left(convert(varchar, convert(datetime, x1.END_DT, 120), 120), 10))	AS PERIOD                                                   
+				    , x1.DC_GUBUN																	AS DC_GUBUN_CODE                                                      
+				    , dbo.GET_CODE_NM('PS0020', x1.DC_GUBUN)			AS DC_GUBUN_NAME                                          
+				    , x1.DC_TYPE																	AS DC_TYPE_CODE                                                       
+				    , dbo.GET_CODE_NM('PS0015', x1.DC_TYPE)				AS DC_TYPE_NAME                                           
+				    , x1.DC_PRICE																	AS DC_PRICE                                                           
+				    , x1.DC_RATE																	AS DC_RATE                                                            
+				    , case when x1.DC_TYPE = '01'  then dbo.GET_CODE_NM('PS0015', x1.DC_TYPE) + '(' + convert(varchar, x1.DC_PRICE)  + ')'  
+            			 when x1.DC_TYPE = '02'  then dbo.GET_CODE_NM('PS0015', x1.DC_TYPE) + '(' + convert(varchar, x1.DC_RATE)  + '%)' end AS DC_GUIDE_TX
+				    , x1.MIN_PAY_PRICE														AS MIN_PAY_PRICE                                                    
+				    , x1.MAX_DC_PRICE															AS MAX_DC_PRICE                                                     
+				    , x1.DC_CNT_BASE															AS DC_CNT_BASE_CODE                                                   
+				    , dbo.GET_CODE_NM('PS0021', x1.DC_CNT_BASE)		AS DC_CNT_BASE_NAME                                     
+				    , x1.DC_CNT																		AS DC_CNT                                                               
+				    , case when x1.DC_CNT_BASE = '00' then dbo.GET_CODE_NM('PS0021', x1.DC_CNT_BASE)                                        
+				           else dbo.GET_CODE_NM('PS0021', x1.DC_CNT_BASE) + ' ' + convert(varchar, x1.DC_CNT) + '회' end AS DC_CNT_TX                                                                                                          
+				FROM
+				      mw_ps_promo a
+				    	left outer join MW_PS_PROMO_DTL    	as x1 on  a.PROMO_CD    	= x1.PROMO_CD      
+				    	<if test="shopId != ''">	     
+				    	left outer join MW_PS_PROMO_SHOP    	as x2 on  a.PROMO_CD    	= x2.PROMO_CD
+				    	</if>                                     
+				WHERE 1 = 1                                                                                                                       
+				<if test="promoName != ''">   	                                                                                              
+				and a.promo_name like '%' +  #{promoName} + '%'                                                                               
+				</if>
+				<if test="shopId != ''">	      
+				and x2.shop_Id = #{shopId}                                                                   
+				</if>                                                                                                                           
+		) AA                                                                                                                            
+		WHERE 1=1                                                                                                                       
+		<if test='startRow!=null and startRow!=""'>                                                                                     
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>                                                                             
+ 				AND AA.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}                                            
+			</if>                                                                                                                         
+		</if>			                                                                                                                      
+  </select>                                                                                                                         
+                                                                                                                                    
+  <!-- 결제기관별 (가맹점별) 프로모션 목록 카운트-->                                                                                
+  <select id="selectPromotionListCnt" parameterType="HashMap" resultType="java.lang.Integer">                                       
+  	SELECT                                                                                                                          
+  						COUNT(*) AS CNT                                                                                                       
+			FROM                                                                                                                          
+				      mw_ps_promo a                                                                                                         
+				    	left outer join MW_PS_PROMO_DTL    	as x1 on  a.PROMO_CD    	= x1.PROMO_CD                                           
+  </select>                                                                                                                         
+                                                                                                                                    
+  <!-- 결제기관별 (가맹점별) 프로모션 상세화면 -->                                                                                  
+  <select id="selectPromotionInfo" parameterType="HashMap" resultMap="PromotionInfo">                                               
+  		select                                                                                                                        
+				      b.BANK_CODE  																							AS BANK_CODE                                                          
+				    , dbo.GET_CODE_NM('PS0100', b.BANK_CODE) 			AS BANK_NAME                                              
+				    , a.PROMO_NAME 																						AS PROMO_NAME                                                         
+				    , a.START_DT 																									AS START_DT                                                             
+				    , a.END_DT 																										AS END_DT                                                               
+				    , left(convert(varchar, convert(datetime, a.START_DT, 120), 120), 10) + '~' + left(convert(varchar, convert(datetime, a.END_DT, 120), 120), 10) AS PERIOD  
+				    , a.DC_GUBUN  																								AS DC_GUBUN_CODE                                                      
+				    , dbo.GET_CODE_NM('PS0020', a.DC_GUBUN) 				AS DC_GUBUN_NAME                                          
+				    , a.DC_TYPE  																									AS DC_TYPE_CODE                                                         
+				    , dbo.GET_CODE_NM('PS0015', a.DC_TYPE)  					AS DC_TYPE_NAME                                           
+				    , a.DC_PRICE  																									AS DC_PRICE                                                           
+				    , a.DC_RATE  																									AS DC_RATE                                                              
+				    , case when a.DC_TYPE = '01'  then dbo.GET_CODE_NM('PS0015', a.DC_TYPE) + '(' + convert(varchar, a.DC_PRICE)  + ')'     
+            			   when a.DC_TYPE = '02'  then dbo.GET_CODE_NM('PS0015', a.DC_TYPE) + '(' + convert(varchar, a.DC_RATE)  + '%)'   
+      				  end                                                           AS DC_GUIDE_TX                    
+				    , a.MIN_PAY_PRICE 																					AS MIN_PAY_PRICE                                                    
+				    , a.MAX_DC_PRICE 																						AS MAX_DC_PRICE                                                       
+				    , a.DC_CNT_BASE 																						AS DC_CNT_BASE_CODE                                                   
+				    , dbo.GET_CODE_NM('PS0021', a.DC_CNT_BASE) 		AS DC_CNT_BASE_NAME                                     
+				    , a.DC_CNT 																										AS DC_CNT                                                               
+				    , case when a.DC_CNT_BASE = '00' then dbo.GET_CODE_NM('PS0021', a.DC_CNT_BASE)                                          
+				           else dbo.GET_CODE_NM('PS0021', a.DC_CNT_BASE) + ' ' + convert(varchar, a.DC_CNT) + '회'                          
+				      end				                                                                                                            
+				      AS DC_CNT_TX                                                                                                          
+				    , (select COM_CD_VAL from MW_CM_CODE p where GRP_CODE = '0008' and p.COM_CD = a.DC_UNIT ) as DC_UNIT                    
+    				, (select COM_CD_VAL from MW_CM_CODE p where GRP_CODE = '0023' and p.COM_CD = a.ROUND_TYPE ) AS  ROUND_TYPE   
+    				, left(convert(varchar, convert(datetime, b.START_DT, 120), 120), 10) + '~' + left(convert(varchar, convert(datetime, b.END_DT, 120), 120), 10) AS PROMO_DATE 
+    				 
+			from                                                                                                                          
+			    	MW_PS_PROMO     b                                                                                                       
+   			  , MW_PS_PROMO_DTL a                                                                                                       
+			where                                                                                                                         
+			  		   b.PROMO_CD = a.PROMO_CD                                                                                              
+			   and b.PROMO_CD =  #{promo_cd}	                                                                                            
+  </select>                                                                                                                         
+                                                                                                                                    
+	<!-- combo 상세조회 가맹점 목록 조회 -->                                                                                          
+  <select id="selectPromInfoShopList" resultMap="PromotionCode">                                                                    
+      select                                                                                                                        
+					      COMP_ID 			as CODE                                                                                               
+					    , COMP_NAME 	as NAME                                                                                                 
+			from 		MW_CM_COMPANY                                                                                                         
+			where                                                                                                                         
+								COMP_LEVEL_TYPE = '03'                                                                                              
+			   and 	UPPER_COMP_ID = #{brand_id}                                                                                           
+  </select>                                                                                                                         
+                                                                                                                                    
+	<!-- combo 결제서비스사 목록 조회 -->                                                                                             
+  <select id="selectPayCompList" resultMap="PromotionCode">                                                                         
+      select 	paycomp_id 			as CODE,                                                                                              
+      					paycomp_name 	as NAME                                                                                               
+        from 	MW_CM_PAYCOMPANY                                                                                                      
+  </select>                                                                                                                         
+                                                                                                                                    
+	<!-- combo 은행 목록 조회 -->                                                                                                     
+  <select id="selectBankList" resultMap="PromotionCode">                                                                            
+      select COM_CD 				AS CODE,                                                                                                
+       				 COM_CD_VAL AS NAME                                                                                                   
+       	from MW_CM_CODE                                                                                                             
+			where grp_code  = 'PS0100' and remark1 = '0'                                                                                  
+			order by grp_code, com_cd                                                                                                     
+  </select>                                                                                                                         
+	                                                                                                                                  
+	<!-- combo 카드사 목록 조회 -->                                                                                                   
+  <select id="selectCardList" resultMap="PromotionCode">                                                                            
+       select COM_CD 				AS CODE,                                                                                                
+       				 COM_CD_VAL AS NAME                                                                                                   
+       	from MW_CM_CODE                                                                                                             
+			where grp_code  = 'PS0100' and remark1 = '1'                                                                                  
+			order by grp_code, com_cd                                                                                                     
+  </select>                                                                                                                         
+	                                                                                                                                  
+	<!-- combo 할인횟수기준  목록 조회 -->                                                                                            
+  <select id="selectDcCntBaseList" resultMap="PromotionCode">                                                                       
+      select                                                                                                                        
+					      COM_CD  				AS CODE                                                                                             
+					    , COM_CD_VAL		AS NAME                                                                                               
+				from MW_CM_CODE                                                                                                             
+			where GRP_CODE = 'PS0021'                                                                                                     
+			 order by seq_no                                                                                                              
+  </select>                                                                                                                         
+                                                                                                                                    
+	<!-- combo 정율할인 근사계산단위  목록 조회 -->                                                                                   
+  <select id="selectDcUnitList" resultMap="PromotionCode">                                                                          
+      select                                                                                                                        
+					      COM_CD  				AS CODE                                                                                             
+					    , COM_CD_VAL		AS NAME                                                                                               
+				from MW_CM_CODE                                                                                                             
+			where GRP_CODE = '0008'                                                                                                       
+			 order by seq_no                                                                                                              
+  </select>                                                                                                                         
+                                                                                                                                    
+	<!-- combo 정율할인 근사계산  목록 조회 -->                                                                                       
+  <select id="selectRoundTypeList" resultMap="PromotionCode">                                                                       
+      select                                                                                                                        
+					      COM_CD  				AS CODE                                                                                             
+					    , COM_CD_VAL		AS NAME                                                                                               
+				from MW_CM_CODE                                                                                                             
+			where GRP_CODE = '0023'                                                                                                       
+			 order by seq_no                                                                                                              
+  </select>                                                                                                                         
+                                                                                                                                    
+  	<!-- 프로모션 등록/수정 popup - 결제서비스사 목록 조회 -->                                                                      
+  <select id="selectShopList" parameterType="HashMap"  resultMap="PromotionCode">                                                   
+			select
+		      COMP_ID  AS CODE
+		    , COMP_NAME + '(' + COMP_ID + ')' AS NAME
+			from MW_CM_COMPANY
+			where 1=1
+					and COMPLEX_PAYMENT_YN = 'Y'                                                                                                                         
+          and COMP_LEVEL_TYPE = '03'
+			    and UPPER_COMP_ID = #{brand_id}
+			 <if test="region_type != ''">
+			    and REGION_TYPE = #{region_type}
+			 </if>
+			 <if test="shop_nm != ''">
+			    and COMP_NAME     LIKE '%' +  #{shop_nm} + '%'
+			 </if>
+  </select>
+                                                                                                                                    
+  <!-- 1. 결제기관별 (가맹점별) 프로모션 정보등록 MW_PS_PROMO -->                                                                   
+  <insert id="insertPromotion" parameterType="HashMap" >                                                                            
+  	insert into MW_PS_PROMO                                                                                                         
+		(                                                                                                                               
+		      PROMO_CD                                                                                                                  
+		    , BANK_CODE                                                                                                                 
+		    , PROMO_NAME                                                                                                                
+		    , START_DT                                                                                                                  
+		    , END_DT                                                                                                                    
+		    , SERVICE_ID                                                                                                                
+		    , REG_ID                                                                                                                    
+		    , REG_DTTM                                                                                                                  
+		    , COMP_ID                                                                                                                   
+		    , BRD_ID                                                                                                                    
+		)                                                                                                                               
+		values                                                                                                                          
+		(                                                                                                                               
+		      #{promoCd,jdbcType=VARCHAR}                                                                                               
+		    , #{bankCode,jdbcType=VARCHAR}                                                                                              
+		    , #{promoName,jdbcType=VARCHAR}                                                                                             
+		    , #{startDt,jdbcType=VARCHAR}                                                                                               
+		    , #{endDt,jdbcType=VARCHAR}                                                                                                 
+		    , #{serviceId,jdbcType=VARCHAR}                                                                                             
+		    , #{regId,jdbcType=VARCHAR}                                                                                                 
+		    , GETDATE()                                                                                                                 
+		    , #{compId,jdbcType=VARCHAR}                                                                                                
+		    , #{brdId,jdbcType=VARCHAR}                                                                                                 
+		)                                                                                                                               
+  </insert>                                                                                                                         
+                                                                                                                                    
+  <!-- 2. 결제기관별 (가맹점별) 프로모션 정보등록 MW_PS_PROMO_DTL -->                                                               
+  <insert id="insertPromotionDtl" parameterType="HashMap" >                                                                         
+  	insert into MW_PS_PROMO_DTL                                                                                                     
+			(                                                                                                                             
+			      PROMO_CD                                                                                                                
+			    , DC_GUBUN                                                                                                  
+			    , DC_TYPE                                                                                                 
+			    , DC_RATE                                                                                                     
+			    , DC_PRICE                                                                                                  
+			    , DC_UNIT                                                                                                    
+			    , ROUND_TYPE                                                                                     
+			    , MIN_PAY_PRICE                                                                                         
+			    , MAX_DC_PRICE                                                                                         
+			    , DC_CNT_BASE                                                                                               
+			    , DC_CNT                                                                                                           
+			    , PROMO_NAME                                                                                          
+			    , START_DT                                                                                            
+			    , END_DT                                                                                              
+			    , REG_ID                                                                                                                  
+			    , REG_DTTM                                                                                                                
+			)                                                                                                                             
+			values                                                                                                                        
+			(                                                                                                                             
+			      #{promoCd,jdbcType=VARCHAR}                                                                                             
+			    , #{dcGubun,jdbcType=VARCHAR}                                                                                             
+			    , #{dcType,jdbcType=VARCHAR}                                                                                              
+			    , #{dcRate,jdbcType=VARCHAR}                                                                                              
+			    , #{dcPrice,jdbcType=VARCHAR}                                                                                             
+			    , #{dcUnit,jdbcType=VARCHAR}                                                                                              
+			    , #{roundType,jdbcType=VARCHAR}                                                                                           
+			    , #{minPayPrice,jdbcType=VARCHAR}                                                                                         
+			    , #{maxDcPrice,jdbcType=VARCHAR}                                                                                          
+			    , #{dcCntBase,jdbcType=VARCHAR}                                                                                           
+			    , #{dcCnt,jdbcType=VARCHAR}                                                                                               
+			    , #{promoName,jdbcType=VARCHAR}                                                                                           
+			    , #{startDt,jdbcType=VARCHAR}                                                                                             
+			    , #{endDt,jdbcType=VARCHAR}                                                                                               
+			    , #{regId,jdbcType=VARCHAR}                                                                                               
+			    , GETDATE()                                                                                                               
+			)                                                                                                                             
+  </insert>                                                                                                                         
+                                                                                                                                    
+  <!-- 3. 결제기관별 (가맹점별) 프로모션 정보등록 MW_PS_PROMO_SHOP -->                                                              
+  <insert id="insertPromotionShop" parameterType="HashMap" >                                                                        
+  	insert into MW_PS_PROMO_SHOP                                                                                                    
+			(                                                                                                                             
+			      PROMO_CD                                                                                                                
+			    , SHOP_ID                                                                                                                 
+			    , REG_ID                                                                                                                  
+			    , REG_DTTM                                                                                                                
+			)                                                                                                                             
+			values                                                                                                                        
+			(                                                                                                                             
+			      #{promoCd,jdbcType=VARCHAR}                                                                                             
+			    , #{shopId,jdbcType=VARCHAR}                                                                                              
+			    , #{regId,jdbcType=VARCHAR}                                                                                               
+			    , GETDATE()                                                                                                               
+			   )                                                                                                                          
+  </insert>                                                                                                                         
+                                                                                                                                    
+  <!-- 결제기관별 (가맹점별) 프로모션 수정시 정보 조회  -->                                                                         
+  <select id="selectPromotionUpdate" parameterType="HashMap" resultMap="PromotionModify">                                           
+      SELECT                                                                                                                        
+						   	A.PROMO_CD      AS PROMO_CD                                                                                         
+						   ,A.BANK_CODE     AS BANK_CODE                                                                                        
+						   ,A.PROMO_NAME    AS PROMO_NAME                                                                                       
+						   ,A.START_DT      AS START_DT                                                                                         
+						   ,A.END_DT        AS END_DT                                                                                           
+						   ,A.SERVICE_ID    AS SERVICE_ID                                                                                       
+						   ,(select E.PAYCOMP_NAME from MW_CM_PAYCOMPANY E where E.PAYCOMP_ID = A.SERVICE_ID) AS SERVICE_NAME                   
+						   ,B.DC_GUBUN	    AS DC_GUBUN	                                                                                        
+						   ,B.DC_TYPE       AS DC_TYPE                                                                                          
+						   ,B.DC_RATE       AS DC_RATE                                                                                          
+						   ,B.DC_PRICE      AS DC_PRICE                                                                                         
+						   ,B.DC_UNIT       AS DC_UNIT                                                                                          
+						   ,B.ROUND_TYPE    AS ROUND_TYPE                                                                                       
+						   ,B.MIN_PAY_PRICE AS MIN_PAY_PRICE                                                                                    
+						   ,B.MAX_DC_PRICE  AS MAX_DC_PRICE                                                                                     
+						   ,B.DC_CNT_BASE   AS DC_CNT_BASE                                                                                      
+						   ,B.DC_CNT        AS DC_CNT                                                                                           
+						   ,B.PROMO_NAME    AS PROMO_NAME_IND                                                                                   
+						   ,B.START_DT      AS START_DT_IND                                                                                     
+						   ,B.END_DT        AS END_DT_IND                                                                                       
+						   ,A.COMP_ID AS COMP_ID                                                                                                
+						   ,(SELECT C.COMP_NAME FROM MW_CM_COMPANY C WHERE C.COMP_LEVEL_TYPE = '01' AND C.COMP_ID = A.COMP_ID) AS COMP_NAME     
+						   ,A.BRD_ID   AS BRAND_ID                                                                                              
+						   ,(SELECT D.COMP_NAME FROM MW_CM_COMPANY D WHERE D.COMP_LEVEL_TYPE = '02' AND D.COMP_ID = A.BRD_ID) AS BRAND_NAME     
+		  FROM  MW_PS_PROMO A                                                                                                           
+			   			,MW_PS_PROMO_DTL B                                                                                                    
+		 WHERE                                                                                                                          
+		       			A.PROMO_CD = B.PROMO_CD                                                                                             
+		    AND 	A.PROMO_CD = #{promo_cd}                                                                                              
+</select>                                                                                                                           
+                                                                                                                                    
+  <select id="selectModifyShopList" parameterType="HashMap" resultMap="PromotionShopList" >                                         
+      SELECT                                                                                                                        
+						     A.PROMO_CD 					AS PROMO_CD                                                                                   
+					      ,A.SHOP_ID 						AS SHOP_ID                                                                                    
+					      ,(SELECT B.COMP_NAME FROM MW_CM_COMPANY B WHERE B.COMP_LEVEL_TYPE = '03' AND B.COMP_ID = A.SHOP_ID)  AS SHOP_NAME   
+			  FROM MW_PS_PROMO_SHOP A                                                                                                     
+			  where A.PROMO_CD = #{promo_cd}                                                                                              
+  </select>                                                                                                                         
+                                                                                                                                    
+  <update id="updatePromotionPromo" parameterType="HashMap">                                                                        
+      UPDATE MW_PS_PROMO                                                                                                            
+				   SET                                                                                                                      
+							 BANK_CODE    	= #{bankCode,jdbcType=VARCHAR}                                                                        
+							,PROMO_NAME  	= #{promoName,jdbcType=VARCHAR}                                                                         
+							,START_DT    		= #{startDt,jdbcType=VARCHAR}                                                                         
+							,END_DT      			= #{endDt,jdbcType=VARCHAR}                                                                       
+							,UPDATE_ID   		= #{updateId,jdbcType=VARCHAR}                                                                        
+							,UPDATE_DTTM 	= GETDATE()                                                                                             
+		WHERE	 PROMO_CD      	= #{promoCd}                                                                                             
+                                                                                                                                    
+  </update>                                                                                                                         
+                                                                                                                                    
+  <update id="updatePromotionPromoDtl" parameterType="HashMap">                                                                     
+      UPDATE MW_PS_PROMO_DTL                                                                                                        
+				   SET                                                                                                                      
+							   DC_GUBUN      		= #{dcGubun,jdbcType=VARCHAR}                                                                     
+							  ,DC_TYPE       		= #{dcType,jdbcType=VARCHAR}                                                                      
+							  ,DC_RATE       		= #{dcRate,jdbcType=VARCHAR}                                                                      
+							  ,DC_PRICE      			= #{dcPrice,jdbcType=VARCHAR}                                                                   
+							  ,DC_UNIT       			= #{dcUnit,jdbcType=VARCHAR}                                                                    
+							  ,ROUND_TYPE    	= #{roundType,jdbcType=VARCHAR}                                                                     
+							  ,MIN_PAY_PRICE 	= #{minPayPrice,jdbcType=VARCHAR}                                                                   
+							  ,MAX_DC_PRICE  	= #{maxDcPrice,jdbcType=VARCHAR}                                                                    
+							  ,DC_CNT_BASE   	= #{dcCntBase,jdbcType=VARCHAR}                                                                     
+							  ,DC_CNT        			= #{dcCnt,jdbcType=VARCHAR}                                                                     
+							  ,PROMO_NAME    	= #{promoName,jdbcType=VARCHAR}                                                                     
+							  ,START_DT      		= #{startDt,jdbcType=VARCHAR}                                                                     
+							  ,END_DT        			= #{endDt,jdbcType=VARCHAR}                                                                     
+							  ,UPDATE_ID     		= #{regId,jdbcType=VARCHAR}                                                                       
+							  ,UPDATE_DTTM   	= GETDATE()                                                                                         
+			WHERE  PROMO_CD 				=  #{promoCd}                                                                                        
+  </update>                                                                                                                         
+                                                                                                                                    
+  <delete id="deletePromotion" parameterType="HashMap">                                                                             
+      DELETE	  MW_PS_PROMO_SHOP                                                                                                    
+ 			 WHERE	PROMO_CD = #{promoCd}                                                                                                
+  </delete>                                                                                                                         
+                                                                                                                                    
+</mapper>

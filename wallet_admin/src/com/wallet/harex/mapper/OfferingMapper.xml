@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.harex.mapper.OfferingMapper" >
+  <resultMap id="BaseResultMap" type="com.wallet.harex.model.OfferingList" >
+    <id column="SEQ" property="seq" jdbcType="VARCHAR" />
+    <result column="SHOP_ID" property="shopId" jdbcType="VARCHAR" />
+    <result column="SHOP_NAME" property="shopName" jdbcType="VARCHAR" />
+    <result column="BRAND_ID" property="brandId" jdbcType="VARCHAR" />
+    <result column="BRAND_NAME" property="brandName" jdbcType="VARCHAR" />
+    <result column="REGION_CODE" property="regionCode" jdbcType="VARCHAR" />
+    <result column="REGION_NAME" property="regionName" jdbcType="VARCHAR" />
+    <result column="CPN_ORDER" property="cpnOrder" jdbcType="VARCHAR" />
+    <result column="DC_ORDER" property="dcOrder" jdbcType="VARCHAR" />
+    <result column="USE_ORDER" property="useOrder" jdbcType="VARCHAR" />
+    <result column="OLLEH_MS_USE_YN" property="ollehMsUseYn" jdbcType="VARCHAR" />
+    <result column="STAMP_SAVE_YN" property="stampSaveYn" jdbcType="VARCHAR" />
+    <result column="STAMP_USE_YN" property="stampUseYn" jdbcType="VARCHAR" />
+    <result column="REG_DTTM" property="regDttm" jdbcType="VARCHAR" />
+    <result column="RULE_ID" property="ruleId" jdbcType="VARCHAR" />
+    <result column="USE_YN" property="useYn" jdbcType="VARCHAR" />
+    <result column="SERVICE_ID" property="serviceId" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="OfferingCaseDetailInfoResultMap" type="com.wallet.harex.model.OfferingList">
+  	<result column="COMP_ID" property="compId" jdbcType="VARCHAR" />
+    <result column="COMP_NAME" property="compName" jdbcType="VARCHAR" />
+  	<result column="SHOP_ID" property="shopId" jdbcType="VARCHAR" />
+    <result column="SHOP_NAME" property="shopName" jdbcType="VARCHAR" />
+    <result column="BRAND_ID" property="brandId" jdbcType="VARCHAR" />
+    <result column="BRAND_NAME" property="brandName" jdbcType="VARCHAR" />
+    <result column="REGION_NAME" property="regionName" jdbcType="VARCHAR" />
+    <result column="REG_DTTM" property="regDttm" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="OfferingCaseDetailUseYNResultMap" type="com.wallet.harex.model.OfferingDetail" >
+    <result column="ACPOS_YN" property="acposYn" jdbcType="VARCHAR" />
+    <result column="CPN_YN" property="cpnYn" jdbcType="VARCHAR" />
+    <result column="MEMB_DC_YN" property="membDcYn" jdbcType="VARCHAR" />
+    <result column="MEMB_USE_YN" property="membUseYn" jdbcType="VARCHAR" />
+    <result column="OLLEH_MS_USE_YN" property="ollehMsUseYn" jdbcType="VARCHAR" />
+    <result column="MEMB_SAVE_YN" property="membSaveYn" jdbcType="VARCHAR" />
+    <result column="STAMP_SAVE_YN" property="stampSaveYn" jdbcType="VARCHAR" />
+    <result column="STAMP_USE_YN" property="stampUseYn" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="OfferingCaseDetailOrderResultMap" type="com.wallet.harex.model.OfferingDetail" >
+    <result column="CPN_ORDER" property="cpnOrder" jdbcType="VARCHAR" />
+    <result column="CPN_CALC_BASE_CD" property="cpnCalcBaseCd" jdbcType="VARCHAR" />
+    <result column="CPN_CALC_BASE_NM" property="cpnCalcBaseNm" jdbcType="VARCHAR" />
+    <result column="CPN_FIX_RATE_PRIORITY" property="cpnFixRatePriority" jdbcType="VARCHAR" />
+    <result column="CPN_FIX_RATE_PRIORITY_NM" property="cpnFixRatePriorityNm" jdbcType="VARCHAR" />
+    <result column="MAX_DUP_CNT" property="maxDupCnt" jdbcType="VARCHAR" />
+    <result column="MS_DC_ORDER" property="msDcOrder" jdbcType="VARCHAR" />
+    <result column="MS_CALC_BASE_CD" property="msCalcBaseCd" jdbcType="VARCHAR" />
+    <result column="MS_CALC_BASE_NM" property="msCalcBaseNm" jdbcType="VARCHAR" />
+    <result column="OLLEH_MS_USE_YN" property="ollehMsUseYn" jdbcType="VARCHAR" />
+    <result column="MP_USE_ORDER" property="mpUseOrder" jdbcType="VARCHAR" />
+    <result column="MP_CALC_BASE_CD" property="mpCalcBaseCd" jdbcType="VARCHAR" />
+    <result column="MP_CALC_BASE_NM" property="mpCalcBaseNm" jdbcType="VARCHAR" />
+    <result column="MP_CALC_ORDER" property="mpCalcOrder" jdbcType="VARCHAR" />
+    <result column="MP_CALC_ORDER_NM" property="mpCalcOrderNm" jdbcType="VARCHAR" />
+    <result column="MS_SAVE_SELF_YN" property="msSaveSelfYn" jdbcType="VARCHAR" />
+    <result column="RULE_ID" property="ruleId" jdbcType="VARCHAR" />
+    <result column="USE_YN" property="useYn" jdbcType="VARCHAR" />
+    <result column="K_SHOP_ID" property="kShopId" jdbcType="VARCHAR" />
+    <result column="SERVICE_ID" property="serviceId" jdbcType="VARCHAR" />
+    <result column="SERVICE_NM" property="serviceNm" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="OfferingCouponPopupResultMap" type="com.wallet.harex.model.OfferingCoupon" >
+    <result column="CPN_ID" property="cpnId" jdbcType="VARCHAR" />
+    <result column="CPN_NAME" property="cpnName" jdbcType="VARCHAR" />
+    <result column="POINT_DUP_USABLE_YN" property="pointDupUsableYn" jdbcType="VARCHAR" />
+    <result column="CPN_DUP_USABLE_YN" property="cpnDupUsableYn" jdbcType="VARCHAR" />
+    <result column="CPN_DISC_TYPE" property="cpnDiscType" jdbcType="VARCHAR" />
+    <result column="MIN_PAY_PRICE" property="minPayPrice" jdbcType="VARCHAR" />
+    <result column="MAX_DIC_PRICE" property="maxDicPrice" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="OfferingMembershipPopupResultMap" type="com.wallet.harex.model.OfferingMembership" >
+	<result column="DC_RATE"              property="dcRate"           jdbcType="VARCHAR"/>
+	<result column="DC_ROUND_TYPE"        property="dcRoundType"      jdbcType="VARCHAR"/>
+	<result column="MEMB_DC_RATE"         property="membDcRate"       jdbcType="VARCHAR"/>
+	<result column="MEMB_LOW_PAY"         property="membLowPay"       jdbcType="VARCHAR"/>
+	<result column="MAX_DC_PRICE"         property="maxDcPrice"       jdbcType="VARCHAR"/>
+	<result column="SAVE_RATE_FIXED_YN"   property="saveRateFixedYn"  jdbcType="VARCHAR"/>
+	<result column="CASH_SAVE_RATE"       property="cashSaveRate"     jdbcType="VARCHAR"/>
+	<result column="CARD_SAVE_RATE"       property="cardSaveRate"     jdbcType="VARCHAR"/>
+	<result column="COMP_SAVE_RATE"       property="compSaveRate"     jdbcType="VARCHAR"/>
+	<result column="DEBIT_SAVE_RATE"      property="debitSaveRate"    jdbcType="VARCHAR"/>
+	<result column="SAVE_NOTICE"          property="saveNotice"       jdbcType="VARCHAR"/>
+	<result column="SAVE_ROUND_TYPE"      property="saveRoundType"    jdbcType="VARCHAR"/>
+	<result column="DC_SAVE_PRICE_TYPE"   property="dcSavePriceType"  jdbcType="VARCHAR"/>
+	<result column="SAVE_MIN_PAY_PRICE"   property="saveMinPayPrice"  jdbcType="VARCHAR"/>
+	<result column="SAVE_MAX_PAY_PRICE"   property="saveMaxPayPrice"  jdbcType="VARCHAR"/>
+	<result column="MAX_SAVE_POINT"       property="maxSavePoint"     jdbcType="VARCHAR"/>
+	<result column="POINT_USE_TYPE"       property="pointUseType"     jdbcType="VARCHAR"/>
+	<result column="POINT_USE_UNIT"       property="pointUseUnit"     jdbcType="VARCHAR"/>
+	<result column="USE_ROUND_TYPE"       property="useRoundType"     jdbcType="VARCHAR"/>
+	<result column="FIXED_RATE"           property="fixedRate"        jdbcType="VARCHAR"/>
+	<result column="MIN_pay_PRICE"        property="minPayPrice"      jdbcType="VARCHAR"/>
+	<result column="MIN_USE_POINT"        property="minUsePoint"      jdbcType="VARCHAR"/>
+	<result column="MAX_USE_POINT"        property="maxUsePoint"      jdbcType="VARCHAR"/>
+	<result column="STAMP_UNIT"           property="stampUnit"        jdbcType="VARCHAR"/>
+	<result column="STAMP_MAX_NO"         property="stampMaxNo"       jdbcType="VARCHAR"/>
+  </resultMap>
+  
+  <resultMap id="OfferingCode" type="com.wallet.harex.model.OfferingInfo">                                                        
+		<result column="CODE" jdbcType="CHAR" property="code" />                                                                        
+		<result column="NAME" jdbcType="VARCHAR" property="name" />                                                                     
+	</resultMap>
+  
+  <!-- 가맹점별 오퍼링 유형 조회 -->
+	<select id="selectOfferingCaseList" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT *
+		FROM (
+			SELECT <if test='top!=null and top!=""'> top ${top} </if>
+						 ROW_NUMBER() OVER (ORDER BY a.COMP_ID)  AS SEQ, 
+						 a.COMP_ID AS SHOP_ID, 
+	           a.COMP_NAME AS SHOP_NAME, 
+	           a.UPPER_COMP_ID AS BRAND_ID, 
+	           (SELECT COMP_NAME FROM MW_CM_COMPANY WHERE COMP_ID = a.UPPER_COMP_ID) AS BRAND_NAME, 
+						 a.REGION_TYPE AS REGION_CODE, 
+						 (SELECT COM_CD_VAL FROM MW_CM_CODE WHERE GRP_CODE = '0027' AND COM_CD = a.REGION_TYPE) AS REGION_NAME, 
+						 case when x1.K_SHOP_ID is null then '오퍼X' 
+						      else convert(varchar,x1.CPN_ORDER)   end AS CPN_ORDER, 
+						 case when x1.K_SHOP_ID is null then '오퍼X' 
+						      else convert(varchar,x1.MS_DC_ORDER) end AS DC_ORDER,
+						 case when x1.K_SHOP_ID is null then '오퍼X' 
+						      else 
+						      		case when convert(varchar,x1.MS_USE_ORDER) = '99' then '마지막' else convert(varchar,x1.MS_USE_ORDER) end  end AS USE_ORDER,
+						 case when x1.K_SHOP_ID is null then '오퍼X' 
+						      else convert(varchar,x1.OLLEH_MS_USE_YN) end AS OLLEH_MS_USE_YN,
+						 case when x2.K_SHOP_ID is null then '매핑X' 
+						      else isNull(convert(varchar,x2.STAMP_SAVE_YN),'N') end AS STAMP_SAVE_YN,
+						 case when x2.K_SHOP_ID is null then '매핑X' 
+						      else isNull(convert(varchar,x2.STAMP_USE_YN),'N') end AS STAMP_USE_YN,
+						 CONVERT(CHAR(10), x1.REG_DTTM, 120) AS REG_DTTM, 
+						 x1.RULE_ID,
+						 x1.use_yn,
+						 x2.service_id AS SERVICE_ID 
+						 
+			FROM MW_CM_COMPANY a 
+	    LEFT OUTER JOIN MW_PS_RULE_MST        	AS x1 on  a.COMP_ID = x1.K_SHOP_ID
+	    LEFT OUTER JOIN MW_PS_SHOP_MAPPING    AS x2 on  a.COMP_ID = x2.K_SHOP_ID
+			WHERE 1 = 1
+			AND a.COMP_LEVEL_TYPE = '03'
+			AND a.complex_payment_yn = 'Y'
+			AND a.UPPER_COMP_ID is not NULL
+			AND a.ALLY_STAT is not NULL
+			AND x2.service_id = #{service_id}
+			<if test='comp_id != null and comp_id != ""'>
+				AND a.UPPER_COMP_ID IN ( SELECT COMP_ID FROM MW_CM_COMPANY WHERE COMP_LEVEL_TYPE = '02' AND UPPER_COMP_ID = #{comp_id,jdbcType=VARCHAR})
+			</if>
+			<if test='brand_id != null and brand_id != ""'>
+				AND a.UPPER_COMP_ID = #{brand_id,jdbcType=VARCHAR}
+			</if>
+			<if test='region_type != null and region_type != ""'>
+				AND a.REGION_TYPE = #{region_type,jdbcType=VARCHAR}
+			</if>
+			<if test='comp_name != null and comp_name != ""'>
+			  AND a.COMP_NAME LIKE '%' +  #{comp_name} + '%'
+			</if>
+			) AA
+		WHERE 1=1
+		<if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+ 				AND AA.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+	</select>
+	
+	<!-- 가맹점별 오퍼링 유형 조회 Count -->
+	<select id="selectOfferingCaseListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MW_CM_COMPANY a 
+	    LEFT OUTER JOIN MW_PS_RULE_MST        AS x1 on  a.COMP_ID = x1.K_SHOP_ID
+	    LEFT OUTER JOIN MW_PS_SHOP_MAPPING    AS x2 on  a.COMP_ID = x2.K_SHOP_ID
+			WHERE 1 = 1
+			AND a.COMP_LEVEL_TYPE = '03'
+			AND a.complex_payment_yn = 'Y'
+			AND a.UPPER_COMP_ID is not NULL
+			AND a.ALLY_STAT is not NULL
+			AND x2.service_id = #{service_id}
+			<if test='comp_id != null and comp_id != ""'>
+				AND a.UPPER_COMP_ID IN ( SELECT COMP_ID FROM MW_CM_COMPANY WHERE COMP_LEVEL_TYPE = '02' AND UPPER_COMP_ID = #{comp_id,jdbcType=VARCHAR})
+			</if>
+			<if test='brand_id != null and brand_id != ""'>
+				AND a.UPPER_COMP_ID = #{brand_id,jdbcType=VARCHAR}
+			</if>
+			<if test='region_type != null and region_type != ""'>
+				AND a.REGION_TYPE = #{region_type,jdbcType=VARCHAR}
+			</if>
+			<if test='comp_name != null and comp_name != ""'>
+			  AND a.COMP_NAME LIKE '%' +  #{comp_name} + '%'
+			</if>
+	</select>
+	
+	<!-- 가맹점별 오퍼링 유형 상세조회 -->
+	<select id="selectOfferingCaseDetailInfo" parameterType="HashMap" resultMap="OfferingCaseDetailInfoResultMap">
+		SELECT (SELECT COMP_ID FROM GET_COMPANY_INFO(#{shopId,jdbcType=VARCHAR})) AS COMP_ID, 
+					 (SELECT COMP_NAME FROM GET_COMPANY_INFO(#{shopId,jdbcType=VARCHAR})) AS COMP_NAME, 
+					 (SELECT COMP_ID FROM GET_BRAND_INFO(#{shopId,jdbcType=VARCHAR})) AS BRAND_ID, 
+					 (SELECT COMP_NAME FROM GET_BRAND_INFO(#{shopId,jdbcType=VARCHAR})) AS BRAND_NAME, 
+					 IsNULL(dbo.GET_CODE_NM('0027', b.REGION_TYPE), '') AS REGION_NAME, 
+					 b.COMP_ID AS SHOP_ID, 
+					 b.COMP_NAME AS SHOP_NAME, 
+					 a.REG_DTTM AS REG_DTTM
+		FROM MW_PS_RULE_MST a, MW_CM_COMPANY b
+		WHERE 1 = 1
+	    AND a.K_SHOP_ID = b.COMP_ID
+	    AND b.COMP_LEVEL_TYPE = '03'
+	    AND a.K_SHOP_ID  = #{shopId,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 가맹점별 오퍼링 유형 상세조회 -->
+	<select id="selectOfferingCaseDetailUseYN" parameterType="HashMap" resultMap="OfferingCaseDetailUseYNResultMap">
+		SELECT a.ACPOS_YN, 
+					 a.CPN_YN, 
+					 a.MEMB_DC_YN, 
+					 a.MEMB_USE_YN, 
+					 x1.OLLEH_MS_USE_YN, 
+					 a.MEMB_SAVE_YN, 
+					 a.STAMP_USE_YN, 
+					 a.STAMP_SAVE_YN
+					  
+		FROM MW_PS_RULE_MST x1
+             LEFT OUTER JOIN  MW_PS_SHOP_MAPPING AS a ON x1.K_SHOP_ID = a.K_SHOP_ID
+    
+		WHERE 1 = 1
+		AND x1.K_SHOP_ID = #{shopId,jdbcType=VARCHAR}
+		AND a.SERVICE_ID = #{serviceId,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 가맹점별 오퍼링 유형 상세조회 -->
+	<select id="selectOfferingCaseDetailOrder" parameterType="HashMap" resultMap="OfferingCaseDetailOrderResultMap">
+		SELECT x1.CPN_ORDER, 
+			 		 x2.CALC_BASE_CD AS CPN_CALC_BASE_CD, 
+			 		 dbo.GET_CODE_NM('PS0014',x2.CALC_BASE_CD) AS CPN_CALC_BASE_NM, 
+			 		 x2.FIX_RATE_PRIORITY AS CPN_FIX_RATE_PRIORITY, 
+			 		 dbo.GET_CODE_NM('PS0015',x2.FIX_RATE_PRIORITY) AS CPN_FIX_RATE_PRIORITY_NM, 
+			 		 x2.MAX_DUP_CNT, 
+			 
+			 		 x1.MS_DC_ORDER, 
+			 		 x3.CALC_BASE_CD AS MS_CALC_BASE_CD, 
+			 		 dbo.GET_CODE_NM('PS0014',x3.CALC_BASE_CD) AS MS_CALC_BASE_NM, 
+			 		 x1.OLLEH_MS_USE_YN, 
+			 
+			 		 x1.MS_USE_ORDER AS MP_USE_ORDER, 
+			 		 x4.CALC_BASE_CD AS MP_CALC_BASE_CD, 
+			 		 dbo.GET_CODE_NM('PS0014',x4.CALC_BASE_CD) AS MP_CALC_BASE_NM, 
+			 		 x4.CALC_ORDER AS MP_CALC_ORDER, 
+			 		 dbo.GET_CODE_NM('PS0016',x4.CALC_ORDER) AS MP_CALC_ORDER_NM,
+			 		 x1.MS_SAVE_SELF_YN, 
+			 		 x1.RULE_ID, 
+			 		 x1.USE_YN, 
+			 		 x1.K_SHOP_ID,
+			 		 a.SERVICE_ID AS SERVICE_ID, 					 
+					 ISNULL((SELECT paycomp_name FROM MW_CM_PAYCOMPANY C WHERE C.PAYCOMP_ID = a.SERVICE_ID), '') AS SERVICE_NM 
+		
+		FROM MW_PS_RULE_MST x1 
+		LEFT OUTER JOIN MW_PS_SHOP_MAPPING AS a ON  x1.K_SHOP_ID = a.K_SHOP_ID
+		LEFT OUTER JOIN MW_PS_RULE_CPN     AS x2 ON  x1.K_SHOP_ID = x2.K_SHOP_ID
+		LEFT OUTER JOIN MW_PS_RULE_MS_DC   AS x3 ON  x1.K_SHOP_ID = x3.K_SHOP_ID
+		LEFT OUTER JOIN MW_PS_RULE_MS_USE  AS x4 ON  x1.K_SHOP_ID = x4.K_SHOP_ID
+		
+		WHERE 1 = 1
+		AND x1.K_SHOP_ID = #{shopId,jdbcType=VARCHAR}
+		AND a.SERVICE_ID  = #{serviceId,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 가맹점별 오퍼링 유형 상세조회 BY Rule ID -->
+	<select id="selectOfferingCaseDetailByRuleId" parameterType="HashMap" resultMap="OfferingCaseDetailOrderResultMap">
+		SELECT x1.CPN_ORDER, 
+			 		 x2.CALC_BASE_CD AS CPN_CALC_BASE_CD, 
+			 		 dbo.GET_CODE_NM('PS0014',x2.CALC_BASE_CD) AS CPN_CALC_BASE_NM, 
+			 		 x2.FIX_RATE_PRIORITY AS CPN_FIX_RATE_PRIORITY, 
+			 		 dbo.GET_CODE_NM('PS0015',x2.FIX_RATE_PRIORITY) AS CPN_FIX_RATE_PRIORITY_NM, 
+			 		 x2.MAX_DUP_CNT, 
+			 
+			 		 x1.MS_DC_ORDER, 
+			 		 x3.CALC_BASE_CD AS MS_CALC_BASE_CD, 
+			 		 dbo.GET_CODE_NM('PS0014',x3.CALC_BASE_CD) AS MS_CALC_BASE_NM, 
+			 		 x1.OLLEH_MS_USE_YN, 
+			 
+			 		 x1.MS_USE_ORDER AS MP_USE_ORDER, 
+			 		 x4.CALC_BASE_CD AS MP_CALC_BASE_CD, 
+			 		 dbo.GET_CODE_NM('PS0014',x4.CALC_BASE_CD) AS MP_CALC_BASE_NM, 
+			 		 x4.CALC_ORDER AS MP_CALC_ORDER, 
+			 		 dbo.GET_CODE_NM('PS0016',x4.CALC_ORDER) AS MP_CALC_ORDER_NM, 
+			 		 x1.MS_SAVE_SELF_YN, 
+			 		 x1.RULE_ID, 
+			 		 x1.USE_YN 
+		
+		FROM MW_PS_SHOP_MAPPING a
+		LEFT OUTER JOIN MW_PS_RULE_MST     AS x1 ON  a.K_SHOP_ID = x1.K_SHOP_ID
+		LEFT OUTER JOIN MW_PS_RULE_CPN     AS x2 ON  a.K_SHOP_ID = x2.K_SHOP_ID
+		LEFT OUTER JOIN MW_PS_RULE_MS_DC   AS x3 ON  a.K_SHOP_ID = x3.K_SHOP_ID
+		LEFT OUTER JOIN MW_PS_RULE_MS_USE  AS x4 ON  a.K_SHOP_ID = x4.K_SHOP_ID
+		
+		WHERE 1 = 1
+		AND x1.RULE_ID = #{ruleId,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 가맹점별 오퍼링 쿠폰 팝업 -->
+	<select id="selectOfferingCouponPopup" parameterType="HashMap" resultMap="OfferingCouponPopupResultMap">
+		SELECT 
+			  x1.CPN_ID AS CPN_ID
+			, x3.name as CPN_NAME
+			, x1.POINT_DUP_USABLE_YN AS POINT_DUP_USABLE_YN 
+			, x1.CPN_DUP_USABLE_YN AS CPN_DUP_USABLE_YN 
+			, CASE WHEN x1.CPN_DISC_TYPE = '01' THEN '정액' 
+				   WHEN x1.CPN_DISC_TYPE = '02' THEN '정율 (' + CONVERT(VARCHAR, X1.CPN_DISC_AMOUNT) + '%)' END AS CPN_DISC_TYPE  
+			, x1.MIN_PAY_PRICE AS MIN_PAY_PRICE  
+			, x1.MAX_DIC_PRICE AS MAX_DIC_PRICE
+		FROM 
+			  MW_CS_CPN_LIST x1 
+        	, cpn_list x3
+		
+		WHERE 
+				1= 1
+			AND x1.cpn_id = x3.cpn_id 
+			AND x3.COMP_PAY_YN = 'Y'  
+			AND x1.SHOP_SVC_LIST = 'A'
+	UNION
+		SELECT 
+			  x1.CPN_ID AS CPN_ID 
+			, x3.name as CPN_NAME
+			, x1.POINT_DUP_USABLE_YN AS POINT_DUP_USABLE_YN 
+			, x1.CPN_DUP_USABLE_YN AS CPN_DUP_USABLE_YN 
+			, CASE WHEN x1.CPN_DISC_TYPE = '01' THEN '정액' 
+				   WHEN x1.CPN_DISC_TYPE = '02' THEN '정율 (' + CONVERT(VARCHAR, X1.CPN_DISC_AMOUNT) + '%)' END AS CPN_DISC_TYPE  
+			, x1.MIN_PAY_PRICE AS MIN_PAY_PRICE  
+			, x1.MAX_DIC_PRICE AS MAX_DIC_PRICE
+		FROM 
+			  MW_CS_CPN_LIST x1 
+        	, MW_CS_CPN_SHOP x2
+        	, cpn_list x3
+		WHERE 
+				1= 1
+			AND x1.CPN_ID = x2.CPN_ID 
+			AND x1.cpn_id = x3.cpn_id   
+			AND x3.COMP_PAY_YN = 'Y'
+			AND x1.SHOP_SVC_LIST = 'Y'
+			AND x2.COMP_ID = #{shopId,jdbcType=VARCHAR}
+	UNION
+		SELECT 
+			  x1.CPN_ID AS CPN_ID 
+			, x3.name as CPN_NAME
+			, x1.POINT_DUP_USABLE_YN AS POINT_DUP_USABLE_YN 
+			, x1.CPN_DUP_USABLE_YN AS CPN_DUP_USABLE_YN 
+			, CASE WHEN x1.CPN_DISC_TYPE = '01' THEN '정액' 
+				   WHEN x1.CPN_DISC_TYPE = '02' THEN '정율 (' + CONVERT(VARCHAR, X1.CPN_DISC_AMOUNT) + '%)' END AS CPN_DISC_TYPE  
+			, x1.MIN_PAY_PRICE AS MIN_PAY_PRICE  
+			, x1.MAX_DIC_PRICE AS MAX_DIC_PRICE
+		FROM 
+			  MW_CS_CPN_LIST x1 
+        	, cpn_list x3
+		
+		WHERE 
+				1= 1
+			AND x1.SHOP_SVC_LIST = 'N'
+			AND x1.cpn_id = x3.cpn_id
+			AND x3.COMP_PAY_YN = 'Y'
+ 			AND x1.cpn_id not in ( select a.cpn_id from MW_CS_CPN_LIST a, MW_CS_CPN_SHOP b where a.SHOP_SVC_LIST = 'N' and a.cpn_id = b.cpn_id and b.comp_id = #{shopId,jdbcType=VARCHAR} )
+	</select>
+	
+	<!-- Membership 팝업 -->
+	<select id="selectOfferingMembershipPopup" parameterType="HashMap" resultMap="OfferingMembershipPopupResultMap">
+		SELECT 
+				x3.DC_RATE 							AS DC_RATE, 
+		       dbo.GET_CODE_NM('0023',x3.DC_ROUND_TYPE) 			AS DC_ROUND_TYPE, 
+		       (SELECT COM_CD_VAL 
+		       FROM MW_CM_CODE 
+		       WHERE GRP_CODE = '0008' 
+		       AND COM_CD = x3.DC_UNIT) AS MEMB_DC_RATE, 
+		       x3.MIN_PAY_PRICE 				AS MEMB_LOW_PAY, 
+		       x3.MAX_DC_PRICE 					AS MAX_DC_PRICE, 
+		       X3.SAVE_RATE_FIXED_YN 		AS SAVE_RATE_FIXED_YN, 
+		       x3.CASH_SAVE_RATE 				AS CASH_SAVE_RATE, 
+		       x3.CARD_SAVE_RATE 				AS CARD_SAVE_RATE, 
+		       x3.COMP_SAVE_RATE 				AS COMP_SAVE_RATE, 
+		       x3.DEBIT_SAVE_RATE 			AS DEBIT_SAVE_RATE, 
+		       x3.SAVE_NOTICE 					AS SAVE_NOTICE, 
+		       dbo.GET_CODE_NM('0023',x3.SAVE_ROUND_TYPE) 		AS SAVE_ROUND_TYPE, 
+		       dbo.GET_CODE_NM('0011',x3.DC_SAVE_PRICE_TYPE) 	AS DC_SAVE_PRICE_TYPE, 
+		       x3.SAVE_MIN_PAY_PRICE 		AS SAVE_MIN_PAY_PRICE, 
+		       x3.SAVE_MAX_PAY_PRICE 		AS SAVE_MAX_PAY_PRICE, 
+		       x3.MAX_SAVE_POINT 				AS MAX_SAVE_POINT, 
+		       x3.POINT_USE_TYPE				AS POINT_USE_TYPE, 
+		       x3.POINT_USE_UNIT 				AS POINT_USE_UNIT, 
+		       x3.USE_ROUND_TYPE 				AS USE_ROUND_TYPE, 
+		       x3.FIXED_RATE 						AS FIXED_RATE, 
+		       x3.MIN_pay_PRICE 				AS MIN_pay_PRICE, 
+		       x3.MIN_USE_POINT 				AS MIN_USE_POINT, 
+		       x3.MAX_USE_POINT 				AS MAX_USE_POINT, 
+		       x4.STAMP_UNIT 						AS STAMP_UNIT, 
+		       x4.STAMP_MAX_NO 					AS STAMP_MAX_NO
+		       
+		FROM MW_CM_COMPANY x2
+    LEFT OUTER JOIN MW_MS_COMP_PAYMENT   AS x3 ON  x2.COMP_ID = x3.COMP_id
+    LEFT OUTER JOIN MW_MS_STAMP          AS x4 ON  x2.MEMB_ID = x4.MEMB_ID
+
+		WHERE 1 = 1
+    AND 
+    		1 = 1
+    	and x2.COMP_ID = #{shopId,jdbcType=VARCHAR}
+    	and x2.COMP_LEVEL_TYPE='03'
+	</select>
+	
+	<insert id="insertOfferingRuleMst" parameterType="HashMap">
+		INSERT INTO MW_PS_RULE_MST(K_SHOP_ID, CPN_ORDER, MS_DC_ORDER, MS_USE_ORDER, OLLEH_MS_USE_YN, MS_SAVE_SELF_YN, RULE_ID, REG_ID, REG_DTTM, USE_YN )
+		VALUES(#{k_shop_id}, #{cpn_order}, #{ms_dc_order}, #{ms_use_order}, #{olleh_ms_use_yn}, #{ms_save_self_yn}, #{rule_id}, #{regUser}, GETDATE(), 'Y')
+	</insert>
+	
+	<insert id="insertOfferingRuleCpn" parameterType="HashMap">
+		INSERT INTO MW_PS_RULE_CPN(K_SHOP_ID, CALC_BASE_CD, FIX_RATE_PRIORITY, MAX_DUP_CNT, RULE_ID, REG_ID, REG_DTTM )
+		VALUES(#{k_shop_id}, #{calc_base_cd1}, #{fix_rate_priority}, #{max_dup_cnt}, #{rule_id}, #{regUser}, GETDATE())
+	</insert>
+	
+	<insert id="insertOfferingRuleMsDc" parameterType="HashMap">
+		INSERT INTO MW_PS_RULE_MS_DC(K_SHOP_ID, CALC_BASE_CD, RULE_ID, REG_ID, REG_DTTM )
+		VALUES(#{k_shop_id}, #{calc_base_cd2}, #{rule_id}, #{regUser}, GETDATE())
+	</insert>
+	
+	<insert id="insertOfferingRuleMsUse" parameterType="HashMap">
+		INSERT INTO MW_PS_RULE_MS_USE(K_SHOP_ID, CALC_BASE_CD, CALC_ORDER, RULE_ID, REG_ID, REG_DTTM )
+		VALUES(#{k_shop_id}, #{calc_base_cd3}, #{calc_order}, #{rule_id}, #{regUser}, GETDATE())
+	</insert>
+	
+	<update id="updateOfferingRuleMst" parameterType="HashMap">
+		UPDATE MW_PS_RULE_MST SET
+			CPN_ORDER = #{cpn_order}, 
+			MS_DC_ORDER = #{ms_dc_order}, 
+			MS_USE_ORDER = #{ms_use_order}, 
+			OLLEH_MS_USE_YN = #{olleh_ms_use_yn}, 
+			MS_SAVE_SELF_YN = #{ms_save_self_yn}, 
+			USE_YN = #{use_yn}, 
+			UPDATE_ID = #{regUser}, 
+			UPDATE_DTTM = GETDATE()
+		WHERE K_SHOP_ID = #{k_shop_id}
+	</update>
+	
+	<update id="updateOfferingRuleCpn" parameterType="HashMap">
+		UPDATE MW_PS_RULE_CPN SET
+			CALC_BASE_CD = #{calc_base_cd1}, 
+			FIX_RATE_PRIORITY = #{fix_rate_priority},  
+			MAX_DUP_CNT = #{max_dup_cnt},  
+			UPDATE_ID = #{regUser}, 
+			UPDATE_DTTM = GETDATE()
+		WHERE K_SHOP_ID = #{k_shop_id}
+	</update>
+	
+	<update id="updateOfferingRuleMsDc" parameterType="HashMap">
+		UPDATE MW_PS_RULE_MS_DC SET
+			CALC_BASE_CD = #{calc_base_cd2}, 
+			UPDATE_ID = #{regUser}, 
+			UPDATE_DTTM = GETDATE()
+		WHERE K_SHOP_ID = #{k_shop_id}
+	</update>
+	
+	<update id="updateOfferingRuleMsUse" parameterType="HashMap">
+		UPDATE MW_PS_RULE_MS_USE SET
+			CALC_BASE_CD = #{calc_base_cd3},
+			CALC_ORDER = #{calc_order},
+			UPDATE_ID = #{regUser}, 
+			UPDATE_DTTM = GETDATE()
+		WHERE K_SHOP_ID = #{k_shop_id}
+	</update>
+	
+	<delete id="deleteOfferingRuleMst" parameterType="HashMap">
+		DELETE MW_PS_RULE_MST WHERE RULE_ID = #{ruleId,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteOfferingRuleCpn" parameterType="HashMap">
+		DELETE MW_PS_RULE_CPN WHERE RULE_ID = #{ruleId,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteOfferingRuleMsDc" parameterType="HashMap">
+		DELETE MW_PS_RULE_MS_DC WHERE RULE_ID = #{ruleId,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteOfferingRuleMsUse" parameterType="HashMap">
+		DELETE MW_PS_RULE_MS_USE WHERE RULE_ID = #{ruleId,jdbcType=VARCHAR}
+	</delete>
+	
+	<!-- 오퍼링 Case 등록/수정 popup - 가맹점 조회 -->                                                                      
+  <select id="selectShopList" parameterType="HashMap"  resultMap="OfferingCode">                                                   
+			select
+		      COMP_ID  AS CODE
+		    , COMP_NAME + '(' + COMP_ID + ')' AS NAME
+			from MW_CM_COMPANY
+			where 1=1
+					and COMPLEX_PAYMENT_YN = 'Y'                                                                                                                         
+          and COMP_LEVEL_TYPE = '03'
+          and COMP_ID NOT IN (SELECT K_SHOP_ID FROM MW_PS_RULE_MST)
+			    and UPPER_COMP_ID = #{brand_id}
+			 <if test="region_type != ''">
+			    and REGION_TYPE = #{region_type}
+			 </if>
+			 <if test="shop_nm != ''">
+			    and COMP_NAME     LIKE '%' +  #{shop_nm} + '%'
+			 </if>
+  </select>
+</mapper>

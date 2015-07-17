@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.admin.mapper.MwAdPaymentMapper" >
+  <resultMap id="BaseResultMap" type="com.wallet.admin.model.MwAdPayment" >
+    <id column="pay_code" property="payCode" jdbcType="VARCHAR" />
+    <result column="memb_id" property="membId" jdbcType="VARCHAR" />
+    <result column="os" property="os" jdbcType="VARCHAR" />
+    <result column="link_mode" property="linkMode" jdbcType="VARCHAR" />
+    <result column="market" property="market" jdbcType="VARCHAR" />
+    <result column="pay_type" property="payType" jdbcType="VARCHAR" />
+    <result column="dis_sday" property="disSday" jdbcType="VARCHAR" />
+    <result column="dis_eday" property="disEday" jdbcType="VARCHAR" />
+    <result column="stat" property="stat" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="info" property="info" jdbcType="VARCHAR" />
+    <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="reg_user" property="regUser" jdbcType="VARCHAR" />
+    <result column="chg_day" property="chgDay" jdbcType="VARCHAR" />
+    <result column="reg_day" property="regDay" jdbcType="VARCHAR" />
+    <result column="main_idx" property="mainIdx" jdbcType="INTEGER" />
+    <result column="display_yn" property="displayYn" jdbcType="VARCHAR" />
+    <result column="app_url" property="appUrl" jdbcType="VARCHAR" />
+    <result column="img_host" property="imgHost" jdbcType="VARCHAR" />
+    <result column="l_img_i3" property="lImgI3" jdbcType="VARCHAR" />
+    <result column="l_img_i4" property="lImgI4" jdbcType="VARCHAR" />
+    <result column="l_img_i5" property="lImgI5" jdbcType="VARCHAR" />
+    <result column="l_img_r4" property="lImgR4" jdbcType="VARCHAR" />
+    <result column="l_img_r5" property="lImgR5" jdbcType="VARCHAR" />
+    <result column="l_img_r6" property="lImgR6" jdbcType="VARCHAR" />
+    <result column="l_img_r7" property="lImgR7" jdbcType="VARCHAR" />
+    <result column="d_img_i3" property="dImgI3" jdbcType="VARCHAR" />
+    <result column="d_img_i4" property="dImgI4" jdbcType="VARCHAR" />
+    <result column="d_img_i5" property="dImgI5" jdbcType="VARCHAR" />
+    <result column="d_img_r4" property="dImgR4" jdbcType="VARCHAR" />
+    <result column="d_img_r5" property="dImgR5" jdbcType="VARCHAR" />
+    <result column="d_img_r6" property="dImgR6" jdbcType="VARCHAR" />
+    <result column="d_img_r7" property="dImgR7" jdbcType="VARCHAR" />
+    <result column="apple_id" property="appleId" jdbcType="VARCHAR" />
+    <result column="apple_url" property="appleUrl" jdbcType="VARCHAR" />
+    <result column="google_pkg" property="googlePkg" jdbcType="VARCHAR" />
+    <result column="google_class" property="googleClass" jdbcType="VARCHAR" />
+    <result column="google_down" property="googleDown" jdbcType="VARCHAR" />
+    <result column="olleh_id" property="ollehId" jdbcType="VARCHAR" />
+    <result column="olleh_pkg" property="ollehPkg" jdbcType="VARCHAR" />
+    <result column="olleh_class" property="ollehClass" jdbcType="VARCHAR" />
+    <result column="olleh_down" property="ollehDown" jdbcType="VARCHAR" />
+    <result column="apple_down" property="appleDown" jdbcType="VARCHAR" />
+    <result column="company_nm" property="companyNm" jdbcType="VARCHAR" />
+    
+    <result column="idx" property="idx" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="web" property="web" jdbcType="VARCHAR" />
+    <result column="chk" property="chk" jdbcType="VARCHAR" />
+    <result column="ver" property="ver" jdbcType="VARCHAR" />
+  </resultMap>
+ 
+	<!--  -->
+	<select id="selectPaymentList" parameterType="HashMap" resultMap="BaseResultMap">
+		select <if test="top != null and top != ''">
+							top ${top}
+					</if>  
+		       memb_id
+		      ,pay_code
+		      ,os
+		      ,link_mode
+		      ,market
+		      ,pay_type
+		      ,dis_sday
+		      ,dis_eday
+		      ,stat
+		      ,name
+		      ,info
+		      ,memo
+		      ,reg_user
+		      ,chg_day
+		      ,reg_day
+		      ,main_idx
+		      ,display_yn
+		      ,app_url
+		      ,img_host
+		      ,l_img_i3
+		      ,l_img_i4
+		      ,l_img_i5
+		      ,l_img_r4
+		      ,l_img_r5
+		      ,l_img_r6
+		      ,l_img_r7
+		      ,d_img_i3
+		      ,d_img_i4
+		      ,d_img_i5
+		      ,d_img_r4
+		      ,d_img_r5
+		      ,d_img_r6
+		      ,d_img_r7
+		      ,apple_id
+		      ,apple_url
+		      ,google_pkg
+		      ,google_class
+		      ,google_down
+		      ,olleh_id
+		      ,olleh_pkg
+		      ,olleh_class
+		      ,olleh_down
+		      ,apple_down
+		      ,company_nm
+		  from pay_list
+		  <where>
+		  	<choose>
+				<when test="view.equals('dtl')">
+				 	and memb_id  = #{memb_id,jdbcType=VARCHAR}
+				</when>
+				</choose>
+		  </where>
+		  order by main_idx asc
+	</select>
+
+	<!--  max+1 idx -->
+	<select id="selectPaymentMainIdx" parameterType="HashMap" resultMap="BaseResultMap">
+		select (
+						 select isnull(cast(max(main_idx) as int),0) + 1 from pay_list
+					 ) main_idx
+					,
+					(
+						select isnull(cast(max(convert(INT,pay_code)) as int),0) + 1 from pay_list
+					) pay_code
+	</select>
+	
+	<!-- INSERT -->
+  <insert id="insertPaymentReg" parameterType="HashMap">
+  	insert into pay_list (
+  		  reg_day
+  		 ,chg_day
+  		 ,pay_code
+  		 ,main_idx
+  		<if test="memb_id != null and memb_id != ''">
+        ,memb_id
+      </if>
+      <if test="os != null and os != ''">
+        ,os
+      </if>
+      <if test="link_mode != null and link_mode != ''">
+        ,link_mode
+      </if>
+      <if test="market != null and market != ''">
+        ,market
+      </if>
+      <if test="pay_type != null and pay_type != ''">
+        ,pay_type
+      </if>
+      <if test="dis_sday != null and dis_sday != ''">
+        ,dis_sday
+      </if>
+      <if test="dis_eday != null and dis_eday != ''">
+        ,dis_eday
+      </if>
+      <if test="stat != null and stat != ''">
+        ,stat
+      </if>
+      <if test="name != null and name != ''">
+        ,name
+      </if>
+      <if test="info != null and info != ''">
+        ,info
+      </if>
+      <if test="memo != null and memo != ''">
+        ,memo
+      </if>
+      <if test="reg_user != null and reg_user != ''">
+        ,reg_user
+      </if>
+      <if test="display_yn != null and display_yn != ''">
+        ,display_yn
+      </if>
+      <if test="app_url != null and app_url != ''">
+        ,app_url
+      </if>
+      <if test="img_host != null and img_host != ''">
+        ,img_host
+      </if>
+      <if test="l_img_i3 != null and l_img_i3 != ''">
+        ,l_img_i3
+      </if>
+      <if test="l_img_i4 != null and l_img_i4 != ''">
+        ,l_img_i4
+      </if>
+      <if test="l_img_i5 != null and l_img_i5 != ''">
+        ,l_img_i5
+      </if>
+      <if test="l_img_r4 != null and l_img_r4 != ''">
+        ,l_img_r4
+      </if>
+      <if test="l_img_r5 != null and l_img_r5 != ''">
+        ,l_img_r5
+      </if>
+      <if test="l_img_r6 != null and l_img_r6 != ''">
+        ,l_img_r6
+      </if>
+      <if test="l_img_r7 != null and l_img_r7 != ''">
+        ,l_img_r7
+      </if>
+      <if test="d_img_i3 != null and d_img_i3 != ''">
+        ,d_img_i3
+      </if>
+      <if test="d_img_i4 != null and d_img_i4 != ''">
+        ,d_img_i4
+      </if>
+      <if test="d_img_i5 != null and d_img_i5 != ''">
+        ,d_img_i5
+      </if>
+			<if test="d_img_r4 != null and d_img_r4 != ''">
+        ,d_img_r4
+      </if>
+      <if test="d_img_r5 != null and d_img_r5 != ''">
+        ,d_img_r5
+      </if>
+      <if test="d_img_r6 != null and d_img_r6 != ''">
+        ,d_img_r6
+      </if>
+      <if test="d_img_r7 != null and d_img_r7 != ''">
+        ,d_img_r7
+      </if>
+      <if test="apple_id != null and apple_id != ''">
+        ,apple_id
+      </if>
+      <if test="apple_url != null and apple_url != ''">
+        ,apple_url
+      </if>
+      <if test="google_pkg != null and google_pkg != ''">
+        ,google_pkg
+      </if>
+      <if test="google_class != null and google_class != ''">
+        ,google_class
+      </if>
+      <if test="google_down != null and google_down != ''">
+        ,google_down
+      </if>
+      <if test="olleh_id != null and olleh_id != ''">
+        ,olleh_id
+      </if>
+      <if test="olleh_pkg != null and olleh_pkg != ''">
+        ,olleh_pkg
+      </if>
+      <if test="olleh_class != null and olleh_class != ''">
+        ,olleh_class
+      </if>
+      <if test="olleh_down != null and olleh_down != ''">
+        ,olleh_down
+      </if>
+      <if test="apple_down != null and apple_down != ''">
+        ,apple_down
+      </if>
+      <if test="company_nm != null and company_nm != ''">
+        ,company_nm
+      </if>
+  	) values (
+  		 replace(replace(replace(convert(varchar,getdate(),120),'-',''),':',''),' ','')
+  		,replace(replace(replace(convert(varchar,getdate(),120),'-',''),':',''),' ','')
+  		,#{pay_code,jdbcType=VARCHAR}
+  		,#{main_idx,jdbcType=INTEGER}
+  		<if test="memb_id != null and memb_id != ''">
+        ,#{memb_id,jdbcType=VARCHAR}
+      </if>
+      <if test="os != null and os != ''">
+        ,#{os,jdbcType=VARCHAR}
+      </if>
+      <if test="link_mode != null and link_mode != ''">
+        ,#{link_mode,jdbcType=VARCHAR}
+      </if>
+      <if test="market != null and market != ''">
+        ,#{market,jdbcType=VARCHAR}
+      </if>
+      <if test="pay_type != null and pay_type != ''">
+        ,#{pay_type,jdbcType=VARCHAR}
+      </if>
+      <if test="dis_sday != null and dis_sday != ''">
+        ,#{dis_sday,jdbcType=VARCHAR}
+      </if>
+      <if test="dis_eday != null and dis_eday != ''">
+        ,#{dis_eday,jdbcType=VARCHAR}
+      </if>
+      <if test="stat != null and stat != ''">
+        ,#{stat,jdbcType=VARCHAR}
+      </if>
+      <if test="name != null and name != ''">
+        ,#{name,jdbcType=VARCHAR}
+      </if>
+      <if test="info != null and info != ''">
+        ,#{info,jdbcType=VARCHAR}
+      </if>
+      <if test="memo != null and memo != ''">
+        ,#{memo,jdbcType=VARCHAR}
+      </if>
+      <if test="reg_user != null and reg_user != ''">
+        ,#{reg_user,jdbcType=VARCHAR}
+      </if>
+      <if test="display_yn != null and display_yn != ''">
+        ,#{display_yn,jdbcType=VARCHAR}
+      </if>
+      <if test="app_url != null and app_url != ''">
+        ,#{app_url,jdbcType=VARCHAR}
+      </if>
+      <if test="img_host != null and img_host != ''">
+        ,#{img_host,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_i3 != null and l_img_i3 != ''">
+        ,#{l_img_i3,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_i4 != null and l_img_i4 != ''">
+        ,#{l_img_i4,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_i5 != null and l_img_i5 != ''">
+        ,#{l_img_i5,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r4 != null and l_img_r4 != ''">
+        ,#{l_img_r4,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r5 != null and l_img_r5 != ''">
+        ,#{l_img_r5,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r6 != null and l_img_r6 != ''">
+        ,#{l_img_r6,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r7 != null and l_img_r7 != ''">
+        ,#{l_img_r7,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_i3 != null and d_img_i3 != ''">
+        ,#{d_img_i3,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_i4 != null and d_img_i4 != ''">
+        ,#{d_img_i4,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_i5 != null and d_img_i5 != ''">
+        ,#{d_img_i5,jdbcType=VARCHAR}
+      </if>
+			<if test="d_img_r4 != null and d_img_r4 != ''">
+        ,#{d_img_r4,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_r5 != null and d_img_r5 != ''">
+        ,#{d_img_r5,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_r6 != null and d_img_r6 != ''">
+        ,#{d_img_r6,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_r7 != null and d_img_r7 != ''">
+        ,#{d_img_r7,jdbcType=VARCHAR}
+      </if>
+      <if test="apple_id != null and apple_id != ''">
+        ,#{apple_id,jdbcType=VARCHAR}
+      </if>
+      <if test="apple_url != null and apple_url != ''">
+        ,#{apple_url,jdbcType=VARCHAR}
+      </if>
+      <if test="google_pkg != null and google_pkg != ''">
+        ,#{google_pkg,jdbcType=VARCHAR}
+      </if>
+      <if test="google_class != null and google_class != ''">
+        ,#{google_class,jdbcType=VARCHAR}
+      </if>
+      <if test="google_down != null and google_down != ''">
+        ,#{google_down,jdbcType=VARCHAR}
+      </if>
+      <if test="olleh_id != null and olleh_id != ''">
+        ,#{olleh_id,jdbcType=VARCHAR}
+      </if>
+      <if test="olleh_pkg != null and olleh_pkg != ''">
+        ,#{olleh_pkg,jdbcType=VARCHAR}
+      </if>
+      <if test="olleh_class != null and olleh_class != ''">
+        ,#{olleh_class,jdbcType=VARCHAR}
+      </if>
+      <if test="olleh_down != null and olleh_down != ''">
+        ,#{olleh_down,jdbcType=VARCHAR}
+      </if>
+      <if test="apple_down != null and apple_down != ''">
+        ,#{apple_down,jdbcType=VARCHAR}
+      </if>
+      <if test="company_nm != null and company_nm != ''">
+        ,#{company_nm,jdbcType=VARCHAR}
+      </if>
+  	)
+  </insert>
+  
+  <!-- UPDATE -->
+	<update id="updatePaymentDtl" parameterType="HashMap">
+		 update pay_list
+		 <set>
+		 	chg_day = replace(replace(replace(convert(varchar,getdate(),120),'-',''),':',''),' ','')
+      <if test="os != null and os != ''">
+        ,os = #{os,jdbcType=VARCHAR}
+      </if>
+      <if test="link_mode != null and link_mode != ''">
+        ,link_mode = #{link_mode,jdbcType=VARCHAR}
+      </if>
+      <if test="market != null and market != ''">
+        ,market = #{market,jdbcType=VARCHAR}
+      </if>
+      <if test="pay_type != null and pay_type != ''">
+        ,pay_type = #{pay_type,jdbcType=VARCHAR}
+      </if>
+      <if test="dis_sday != null and dis_sday != ''">
+        ,dis_sday = #{dis_sday,jdbcType=VARCHAR}
+      </if>
+      <if test="dis_eday != null and dis_eday != ''">
+        ,dis_eday = #{dis_eday,jdbcType=VARCHAR}
+      </if>
+      <if test="stat != null and stat != ''">
+        ,stat = #{stat,jdbcType=VARCHAR}
+      </if>
+      <if test="name != null and name != ''">
+        ,name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="info != null and info != ''">
+        ,info = #{info,jdbcType=VARCHAR}
+      </if>
+      <if test="memo != null and memo != ''">
+        ,memo = #{memo,jdbcType=VARCHAR}
+      </if>
+      <if test="reg_user != null and reg_user != ''">
+        ,reg_user = #{reg_user,jdbcType=VARCHAR}
+      </if>
+      <if test="main_idx != null and main_idx != ''">
+        ,main_idx = #{main_idx,jdbcType=INTEGER}
+      </if>
+      <if test="display_yn != null and display_yn != ''">
+        ,display_yn = #{display_yn,jdbcType=VARCHAR}
+      </if>
+      <if test="app_url != null and app_url != ''">
+        ,app_url = #{app_url,jdbcType=VARCHAR}
+      </if>
+      <if test="img_host != null and img_host != ''">
+        ,img_host = #{img_host,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_i3 != null and l_img_i3 != ''">
+        ,l_img_i3 = #{l_img_i3,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_i4 != null and l_img_i4 != ''">
+        ,l_img_i4 = #{l_img_i4,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_i5 != null and l_img_i5 != ''">
+        ,l_img_i5 = #{l_img_i5,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r4 != null and l_img_r4 != ''">
+        ,l_img_r4 = #{l_img_r4,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r5 != null and l_img_r5 != ''">
+        ,l_img_r5 = #{l_img_r5,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r6 != null and l_img_r6 != ''">
+        ,l_img_r6 = #{l_img_r6,jdbcType=VARCHAR}
+      </if>
+      <if test="l_img_r7 != null and l_img_r7 != ''">
+        ,l_img_r7 = #{l_img_r7,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_i3 != null and d_img_i3 != ''">
+        ,d_img_i3 = #{d_img_i3,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_i4 != null and d_img_i4 != ''">
+        ,d_img_i4 = #{d_img_i4,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_i5 != null and d_img_i5 != ''">
+        ,d_img_i5 = #{d_img_i5,jdbcType=VARCHAR}
+      </if>
+			<if test="d_img_r4 != null and d_img_r4 != ''">
+        ,d_img_r4 = #{d_img_r4,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_r5 != null and d_img_r5 != ''">
+        ,d_img_r5 = #{d_img_r5,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_r6 != null and d_img_r6 != ''">
+        ,d_img_r6 = #{d_img_r6,jdbcType=VARCHAR}
+      </if>
+      <if test="d_img_r7 != null and d_img_r7 != ''">
+        ,d_img_r7 = #{d_img_r7,jdbcType=VARCHAR}
+      </if>
+      <if test="apple_id != null and apple_id != ''">
+        ,apple_id = #{apple_id,jdbcType=VARCHAR}
+      </if>
+      <if test="apple_url != null and apple_url != ''">
+        ,apple_url = #{apple_url,jdbcType=VARCHAR}
+      </if>
+      <if test="google_pkg != null and google_pkg != ''">
+        ,google_pkg = #{google_pkg,jdbcType=VARCHAR}
+      </if>
+      <if test="google_class != null and google_class != ''">
+        ,google_class = #{google_class,jdbcType=VARCHAR}
+      </if>
+      <if test="google_down != null and google_down != ''">
+        ,google_down = #{google_down,jdbcType=VARCHAR}
+      </if>
+      <if test="olleh_id != null and olleh_id != ''">
+        ,olleh_id = #{olleh_id,jdbcType=VARCHAR}
+      </if>
+      <if test="olleh_pkg != null and olleh_pkg != ''">
+        ,olleh_pkg = #{olleh_pkg,jdbcType=VARCHAR}
+      </if>
+      <if test="olleh_class != null and olleh_class != ''">
+        ,olleh_class = #{olleh_class,jdbcType=VARCHAR}
+      </if>
+      <if test="olleh_down != null and olleh_down != ''">
+        ,olleh_down = #{olleh_down,jdbcType=VARCHAR}
+      </if>
+      <if test="apple_down != null and apple_down != ''">
+        ,apple_down = #{apple_down,jdbcType=VARCHAR}
+      </if>
+      <if test="company_nm != null and company_nm != ''">
+        ,company_nm = #{company_nm,jdbcType=VARCHAR}
+      </if>
+		 </set>
+		 <where>
+		 		and memb_id = #{memb_id,jdbcType=VARCHAR}
+		 </where>
+  </update>
+  
+  <!-- order UPDATE -->
+  <update id="updatePaymentIdx" parameterType="HashMap">
+	  update pay_list
+	   <set>
+				<choose>
+					<when test="idxGb.equals('update')">
+						 <if test="main_idx != null and main_idx != ''">
+				        main_idx = #{main_idx,jdbcType=VARCHAR},
+				     </if>
+			       <if test="thisIdx !=null and thisIdx != '' and targetIdx != null and targetIdx != ''">
+			       		<if test="thisIdx &gt; targetIdx">
+					      	main_idx = main_idx + 1
+					      </if>
+					      <if test="thisIdx &lt; targetIdx">
+					      	main_idx = main_idx - 1
+					      </if>
+				     </if>
+					</when>
+					<otherwise>
+						main_idx = main_idx - 1
+					</otherwise>
+				</choose>
+	    </set>
+	    <where>
+	    	<choose>
+					<when test="idxGb.equals('update')">
+						<if test="memb_id != null and memb_id != ''">
+				       and memb_id = #{memb_id,jdbcType=VARCHAR}
+			      </if>
+			      <if test="thisIdx != null and thisIdx != '' and targetIdx != null and targetIdx != ''">
+			      	<if test="thisIdx &lt; targetIdx">
+								and main_idx between ${thisIdx} and ${targetIdx}
+							</if>
+					    <if test="thisIdx &gt; targetIdx">
+								and main_idx between ${targetIdx} and ${thisIdx}
+							</if>
+			      </if>
+					</when>
+					<otherwise>
+						main_idx > #{main_idx,jdbcType=INTEGER}
+					</otherwise>
+				</choose>
+      </where>
+  </update>
+  
+	<!-- DELETE -->
+	<delete id="deletePaymentDtl" parameterType="HashMap">
+    delete pay_list
+    <where>
+			memb_id = #{memb_id,jdbcType=VARCHAR}
+		</where>
+  </delete>
+	
+	<!-- TB SELECT -->
+	<select id="selectUseClauseList" parameterType="HashMap" resultMap="BaseResultMap">
+		select memb_id
+		      ,idx
+		      ,title
+		      ,info
+		      ,chk
+	  from memb_agree
+	  <where>
+	  	and memb_id = #{memb_id,jdbcType=VARCHAR}
+	  </where>
+	</select>
+	
+		<!-- TB DELETE -->
+	<delete id="deleteUseClause" parameterType="HashMap">
+    delete memb_agree
+    <where>
+    	 memb_id = #{memb_id,jdbcType=VARCHAR}
+		</where>
+  </delete>
+	
+	<!-- INSERT -->
+  <insert id="insertUseClause" parameterType="HashMap">
+  	insert into memb_agree (
+        memb_id
+      <if test="idx != null and idx != ''">
+        ,idx
+      </if>
+      <if test="title != null and title != ''">
+        ,title
+      </if>
+      <if test="info != null and info != ''">
+        ,info
+      </if>
+      <if test="chk != null and chk != ''">
+        ,chk
+      </if>
+  	) values (
+  		 #{memb_id,jdbcType=VARCHAR}
+  		<if test="idx != null and idx != ''">
+        ,#{idx,jdbcType=INTEGER}
+      </if>
+      <if test="title != null and title != ''">
+        ,#{title,jdbcType=VARCHAR}
+      </if>
+      <if test="info != null and info != ''">
+        ,#{info,jdbcType=VARCHAR}
+      </if>
+      <if test="chk != null and chk != ''">
+        ,#{chk,jdbcType=VARCHAR}
+      </if>
+  	)
+  </insert>
+  
+  <!-- UPDATE -->
+  <update id="updateUseClause" parameterType="HashMap">
+  	update memb_agree
+		 <set>
+       memb_id = #{memb_id,jdbcType=VARCHAR}
+      <if test="idx != null and idx != ''">
+        ,idx = #{idx,jdbcType=INTEGER}
+      </if>
+      <if test="title != null and title != ''">
+        ,title = #{title,jdbcType=VARCHAR}
+      </if>
+      <if test="info != null and info != ''">
+        ,info = #{info,jdbcType=VARCHAR}
+      </if>
+      <if test="chk != null and chk != ''">
+        ,chk = #{chk,jdbcType=VARCHAR}
+      </if>
+		 </set>
+		 <where>
+		 		memb_id = #{memb_id_org,jdbcType=VARCHAR}
+		 </where>
+  </update>
+	
+</mapper>

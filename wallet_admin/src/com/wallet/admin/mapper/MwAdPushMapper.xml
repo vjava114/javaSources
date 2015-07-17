@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.admin.mapper.MwAdPushMapper" >
+  <resultMap id="BaseResultMap" type="com.wallet.admin.model.MwAdPush" >
+   <id column="idx" property="idx" jdbcType="INTEGER" />
+    <result column="stat" property="stat" jdbcType="VARCHAR" />
+    <result column="send_type" property="sendType" jdbcType="VARCHAR" />
+    <result column="res_date" property="resDate" jdbcType="VARCHAR" />
+    <result column="send_mode" property="sendMode" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="msg" property="msg" jdbcType="VARCHAR" />
+    <result column="os" property="os" jdbcType="VARCHAR" />
+    <result column="age" property="age" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="memb_id" property="membId" jdbcType="VARCHAR" />
+    <result column="send_dt" property="sendDt" jdbcType="VARCHAR" />
+    <result column="send_tm" property="sendTm" jdbcType="VARCHAR" />
+    <result column="send_cnt" property="sendCnt" jdbcType="INTEGER" />
+    <result column="reg_tm" property="regTm" jdbcType="VARCHAR" />
+    <result column="chg_tm" property="chgTm" jdbcType="VARCHAR" />
+  </resultMap>
+  
+	
+	<!-- Push  TB 조회 -->
+	<select id="selectPushList" parameterType="HashMap" resultMap="BaseResultMap">
+		select <if test="top != null and top != ''">
+							top ${top}
+					   </if> 
+					 idx
+		      ,stat
+		      ,send_type
+		      ,res_date
+		      ,send_mode
+		      ,title
+		      ,msg
+		      ,os
+		      ,age
+		      ,sex
+		      ,memb_id
+		      ,left(convert(varchar, convert(datetime, reg_tm, 120), 120), 16) reg_tm
+			  	,left(convert(varchar, convert(datetime, chg_tm, 120), 120), 16) chg_tm
+		  from mw_ws_push_list
+		  <where>
+			  <choose>
+					<when test="view.equals('dtl')">
+					 	idx = #{idx,jdbcType=INTEGER}
+					</when>
+				</choose>
+		  </where>
+	</select>
+
+	 <!-- Push TB 등록 INSERT -->
+  <insert id="insertPushReg" parameterType="HashMap">
+  	insert into mw_ws_push_list (
+  			send_type
+			<if test="title != null and title != ''">
+        ,title
+			</if>
+			<if test="send_mode != null and send_mode != ''">
+        ,send_mode
+			</if>
+			<if test="stat != null and stat != ''">
+        ,stat
+			</if>
+			<if test="res_date != null and res_date != ''">
+        ,res_date
+			</if>
+			<if test="msg != null and msg != ''">
+        ,msg
+			</if>
+			<if test="os != null and os != ''">
+        ,os
+			</if>
+			<if test="age != null and age != ''">
+        ,age
+			</if>
+			<if test="sex != null and sex != ''">
+        ,sex
+			</if>
+			<if test="memb_id != null and memb_id != ''">
+        ,memb_id
+			</if>
+			 ,reg_tm
+       ,chg_tm
+  	) values (
+  			#{send_type,jdbcType=VARCHAR}
+			<if test="title != null and title != ''">
+        ,#{title,jdbcType=VARCHAR}
+			</if>
+			<if test="send_mode != null and send_mode != ''">
+        ,#{send_mode,jdbcType=VARCHAR}
+			</if>
+			<if test="stat != null and stat != ''">
+        ,#{stat,jdbcType=VARCHAR}
+			</if>
+			<if test="res_date != null and res_date != ''">
+        ,#{res_date,jdbcType=VARCHAR}
+			</if>
+			<if test="msg != null and msg != ''">
+        ,#{msg,jdbcType=VARCHAR}
+			</if>
+			<if test="os != null and os != ''">
+        ,#{os,jdbcType=VARCHAR}
+			</if>
+			<if test="age != null and age != ''">
+        ,#{age,jdbcType=VARCHAR}
+			</if>
+			<if test="sex != null and sex != ''">
+        ,#{sex,jdbcType=VARCHAR}
+			</if>
+			<if test="memb_id != null and memb_id != ''">
+        ,#{memb_id,jdbcType=VARCHAR}
+			</if>
+			  ,GETDATE()
+        ,GETDATE()
+  	)
+  </insert>
+  
+  <!-- Push TB UPDATE -->
+	<update id="updatePushDtl" parameterType="HashMap">
+		update mw_ws_push_list
+		<set>
+			chg_tm = GETDATE()
+			<if test="send_type != null and send_type != ''">
+        ,send_type = #{send_type,jdbcType=VARCHAR}
+			</if>
+			<if test="title != null and title != ''">
+        ,title = #{title,jdbcType=VARCHAR}
+			</if>
+			<if test="send_mode != null and send_mode != ''">
+        ,send_mode = #{send_mode,jdbcType=VARCHAR}
+			</if>
+			<if test="stat != null and stat != ''">
+        ,stat = #{stat,jdbcType=VARCHAR}
+			</if>
+			<if test="res_date != null and res_date != ''">
+        ,res_date = #{res_date,jdbcType=VARCHAR}
+			</if>
+			<if test="msg != null and msg != ''">
+        ,msg = #{msg,jdbcType=VARCHAR}
+			</if>
+			<choose>
+			<when test="os != null and os != ''">
+        ,os = #{os,jdbcType=VARCHAR}
+			</when>
+			<otherwise>
+				,os = null
+			</otherwise>
+			</choose>
+			<choose>
+			<when test="age != null and age != ''">
+        ,age = #{age,jdbcType=VARCHAR}
+			</when>
+			<otherwise>
+				,age = null
+			</otherwise>
+			</choose>
+			<choose>
+			<when test="sex != null and sex != ''">
+        ,sex = #{sex,jdbcType=VARCHAR}
+			</when>
+			<otherwise>
+				,sex = null
+			</otherwise>
+			</choose>
+			<choose>
+			<when test="memb_id != null and memb_id != ''">
+        ,memb_id = #{memb_id,jdbcType=VARCHAR}
+			</when>
+			<otherwise>
+				,memb_id = null
+			</otherwise>
+			</choose>
+		</set>
+		<where>
+			idx = #{idx,jdbcType=INTEGER}
+		</where>
+  </update>
+  
+	<!-- Push TB DELETE -->
+	<delete id="deletePushDtl" parameterType="HashMap">
+		delete from mw_ws_push_list
+		<where>
+			idx = #{idx,jdbcType=INTEGER}
+		</where>
+  </delete>
+
+</mapper>

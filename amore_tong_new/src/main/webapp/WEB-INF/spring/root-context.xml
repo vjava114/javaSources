@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.4.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<!-- 데이터 소스 설정 -->	
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName"
+			value="${jdbc.driverClassName}">
+		</property>
+		<property name="url" value="${jdbc.url}"></property>
+		<property name="username" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		<property name="validationQuery" value="select 1"></property>
+	</bean>
+	
+	<!-- 프로퍼티 파일 읽기 -->
+	<context:property-placeholder location="classpath:jdbc.properties" />
+	
+	<!-- 트랜잭션 매니저 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- @Transactional 사용 -->
+	<tx:annotation-driven />
+	
+	<!-- MyBatis 설정 -->
+	<bean id="sqlSessionFactoryBean"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="typeAliasesPackage"
+			value="com.example.board.domain">
+		</property>
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.example.board.dao"></property>
+	</bean>
+	
+	<!-- 예외처리 -->
+	<bean id="exceptionHandler"
+		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<value>java.lang.Exception=error</value>
+		</property>
+	</bean>
+	
+	<!-- 스프링 시큐리티 기본 설정. 로그인 페이지의 url 및 로그아웃 페이지의 url, 쿠기 설정 -->
+	<security:http auto-config="true">
+		<security:form-login login-processing-url="/static/j_spring_security_check"
+			login-page="/login"
+			authentication-failure-url="/login?login_error=t"
+			default-target-url="/index" />
+		<security:logout logout-url="/static/j_spring_security_logout" />
+		<security:remember-me key="myKey" token-validity-seconds="241920" />
+		<security:intercept-url pattern="/view" access="ROLE_USER"/>
+	 	<security:intercept-url pattern="/edit" access="ROLE_USER"/>
+	 	<security:intercept-url pattern="/save" access="ROLE_USER"/>
+	 	<security:intercept-url pattern="/delete" access="ROLE_USER"/>
+	</security:http>
+	
+	<!-- 데이터베이스 인증 방식 -->
+	<security:jdbc-user-service data-source-ref="dataSource" id="userService"
+		users-by-username-query="select id as username, password, true as enabled from member where id=?"
+		authorities-by-username-query="select id as username, authority from member where id=?" />
+	
+	<!-- 인증 관리자 설정. 암호는 평문으로 저장되어 있음 -->	
+	<security:authentication-manager>
+		<security:authentication-provider user-service-ref="userService">
+			<security:password-encoder hash="plaintext"></security:password-encoder>
+		</security:authentication-provider>
+	</security:authentication-manager>
+	<context:component-scan base-package="com.example.board.service"></context:component-scan>
+</beans>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+		
+	<!-- 
+		web.xml에 servlet-mapping 을 등록하여 이쪽으로 넘어오게 되어있다.
+		앱서블릿들 외에, image 등 다른 url 호출은 여기를 올 필요가 없기 때문에
+		/resources 같은 예외 폴더는 이쪽에 오지 않도록 예외 처리 해주는 것이다.
+		
+		하지만 앱서블릿을 이용할것같은 url은,  servlet-mapping 에서 *.do 같은걸로 등록하여 사용하면
+		굳이 아래처럼 예외폴더를 추가 할 필요가 없다. 
+	 -->
+<!-- 	<resources mapping="/resources/**" location="/resources/" /> -->
+	
+
+	
+	<!-- @Controller 에서 리턴되어 나오는 이름 앞뒤로 /WEB-INF/views/test.jsp 붙여서 나오게 해준다. -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	
+	<!--
+		@Component		: 컴포넌트 클래스 
+		@Controller		: 컨트롤러 클래스
+		@Service		: 서비스 클래스
+		@Repository		: DAO 클래스
+		
+		위 어노테이션이 있는 클래스들을 base-package 에서 스캔해서 spring bean 으로 등록함. 
+	 -->
+	<context:component-scan base-package="com.rocomo" />
+	
+	
+	
+</beans:beans>

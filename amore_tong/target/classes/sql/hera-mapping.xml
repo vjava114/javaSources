@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="hera">
+    <typeAlias alias="UserVO" type="com.amore.domain.UserVO" />
+    <resultMap class="UserVO" id="UserList">
+        <result property="user_no" column="user_no" />
+        <result property="uphone" column="uphone" />
+        <result property="name" column="name" />
+        <result property="angel_code" column="angel_code" />
+        <result property="angel_name" column="angel_name" />
+        <result property="coupon_cnt" column="coupon_cnt" />
+        <result property="shop_name" column="shop_name" />
+        <result property="fdate" column="fdate" />
+        
+
+        <result property="eventVO.evt_code" column="evt_code" />
+        <result property="eventVO.brand" column="brand" />
+        <result property="eventVO.userno" column="userno" />
+        <result property="eventVO.phone" column="phone" />
+        <result property="eventVO.vcnt" column="vcnt" />
+        <result property="eventVO.rdate" column="rdate" />
+        <result property="eventVO.inst_dt" column="inst_dt" />
+        <result property="eventVO.inst_tm" column="inst_tm" />
+    </resultMap>
+    
+    <typeAlias alias="selbox" type="com.amore.domain.Evt_CodeVO"/>
+    <resultMap class="selbox" id="selboxList">
+        <result property="evt_code" column="evt_code"/>
+    </resultMap>
+    
+    
+    <select id="getSelboxData" resultMap="selboxList" parameterClass="String">
+	    <include refid="getSelboxDataQuery"/>
+    </select>
+
+
+
+	<!-- boardMaxCount 시작 -->
+	<select id="boardMaxCount-130308" resultClass="int" parameterClass="java.util.Map">
+        SELECT 
+        	count(*)
+        <include refid="heraQuery.from-130308"/>
+        <include refid="condition" /> <!--  where조건절 입니다. 아이바티스로 넘어온 param 값으로 비교하여 where절을 리턴함 -->
+        ORDER BY 
+           rdate DESC
+
+	</select>  
+
+	<select id="onePageData-130308" resultMap="UserList" parameterClass="java.util.Map">
+        <include refid="heraQuery.select-130308"/>
+        <include refid="heraQuery.from-130308"/>
+        <include refid="condition" />   <!--  where조건절 입니다. 아이바티스로 넘어온 param 값으로 비교하여 where절을 리턴함 -->
+		ORDER BY rdate DESC
+		
+		<isNotEmpty property="startNo">
+		LIMIT 
+			$startNo$
+			,$endNo$
+		</isNotEmpty>
+	</select>
+	<!-- onePageData 끝 -->
+	
+	<!-- boardMaxCount 시작 -->
+	<select id="boardMaxCount-130103" resultClass="int" parameterClass="java.util.Map">
+        SELECT 
+        	count(*)
+        <include refid="heraQuery.from-130103"/>
+        <include refid="condition" /> <!--  where조건절 입니다. 아이바티스로 넘어온 param 값으로 비교하여 where절을 리턴함 -->
+        ORDER BY 
+           rdate DESC
+
+	</select>  
+
+	<select id="onePageData-130103" resultMap="UserList" parameterClass="java.util.Map">
+        <include refid="heraQuery.select-130103"/>
+        <include refid="heraQuery.from-130103"/>
+        <include refid="condition" />   <!--  where조건절 입니다. 아이바티스로 넘어온 param 값으로 비교하여 where절을 리턴함 -->
+		ORDER BY rdate DESC
+		
+		<isNotEmpty property="startNo">
+		LIMIT 
+			$startNo$
+			,$endNo$
+		</isNotEmpty>
+	</select>
+	<!-- onePageData 끝 -->
+	
+	<!-- boardMaxCount 시작 -->
+	<select id="boardMaxCount-Other" resultClass="int" parameterClass="java.util.Map">
+        SELECT 
+        	count(*)
+        <include refid="heraQuery.from-Other"/>
+        <include refid="condition" /> <!--  where조건절 입니다. 아이바티스로 넘어온 param 값으로 비교하여 where절을 리턴함 -->
+        ORDER BY 
+           rdate DESC
+
+	</select>  
+
+	<select id="onePageData-Other" resultMap="UserList" parameterClass="java.util.Map">
+        <include refid="heraQuery.select-Other"/>
+        <include refid="heraQuery.from-Other"/>
+        <include refid="condition" />   <!--  where조건절 입니다. 아이바티스로 넘어온 param 값으로 비교하여 where절을 리턴함 -->
+		ORDER BY rdate DESC
+		
+		<isNotEmpty property="startNo">
+		LIMIT 
+			$startNo$
+			,$endNo$
+		</isNotEmpty>
+	</select>
+	<!-- onePageData 끝 -->
+
+
+
+    
+</sqlMap>

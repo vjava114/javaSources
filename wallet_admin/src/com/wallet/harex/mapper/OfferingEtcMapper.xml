@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wallet.harex.mapper.OfferingEtcMapper">   
+
+	<resultMap id="ResultOfferingS" type="com.wallet.harex.model.OfferingS"> 
+		<id column="SEQ" jdbcType="VARCHAR" property="seq"/>
+		<result column="ACPOS_TID" jdbcType="VARCHAR" property="acposTid"/>  
+		<result column="STATUS" jdbcType="VARCHAR" property="status"/>    
+		<result column="CUST_ID" jdbcType="VARCHAR" property="custId"/>  
+		<result column="PHONE_NO" jdbcType="VARCHAR" property="phoneNo"/>  
+		<result column="TCODE" jdbcType="VARCHAR" property="tcode"/>  
+		<result column="SERVICE_ID" jdbcType="VARCHAR" property="serviceId"/>  
+		<result column="K_SHOP_ID" jdbcType="VARCHAR" property="kShopId"/>
+		<result column="MOCAPAY_TID" jdbcType="VARCHAR" property="mocapayTid"/>  
+		<result column="MOCAPAY_TDATE" jdbcType="VARCHAR" property="mocapayTdate"/>	
+		<result column="MOCAPAY_TTIME" jdbcType="VARCHAR" property="mocapayTtime"/>	
+		<result column="REG_DTTM" jdbcType="VARCHAR" property="regDttm"/>  
+		<result column="LAST_DTTM" jdbcType="VARCHAR" property="lastDttm"/>  
+	</resultMap>
+
+	<resultMap id="ResultOfferingCpn" type="com.wallet.harex.model.OfferingCpn"> 
+		<id column="SEQ" property="seq" 	jdbcType="VARCHAR" />
+		<result column="OFFER_ID" property="offerId" jdbcType="VARCHAR"/>
+		<result column="CPN_ID" property="cpnId" jdbcType="VARCHAR"/>
+		<result column="CPN_NO" property="cpnNo" jdbcType="VARCHAR"/>
+		<result column="CPN_NAME" property="cpnName" jdbcType="VARCHAR"/>
+		<result column="VAL_SDATE" property="valSdate" jdbcType="VARCHAR"/>
+		<result column="VAL_EDATE" property="valEdate" jdbcType="VARCHAR"/>
+		<result column="DC_TYPE" property="dcType" jdbcType="VARCHAR"/>
+		<result column="MIN_PAY_PRICE" property="minPayPrice" jdbcType="INTEGER"/>
+		<result column="MAX_DC_PRICE" property="maxDcPrice" jdbcType="INTEGER"/>
+		<result column="DC_RATE" property="dcRate" jdbcType="INTEGER"/>
+		<result column="DC_PRICE" property="dcPrice" jdbcType="INTEGER"/>
+		<result column="CPN_DUP_USABLE_YN" property="cpnDupUsableYn" jdbcType="VARCHAR"/>
+		<result column="MEMB_DUP_USABLE_YN" property="membDupUsableYn" jdbcType="VARCHAR"/>
+		<result column="SHOP_ONLY_YN" property="shopOnlyYn" jdbcType="VARCHAR"/>
+		<result column="DC_UNIT" property="dcUnit" jdbcType="VARCHAR"/>
+		<result column="ROUND_TYPE" property="roundType" jdbcType="VARCHAR"/>
+		<result column="CPN_NOTI_URL" property="cpnNotiUrl" jdbcType="VARCHAR"/>
+		<result column="CALC_BASE_CD" property="calcBaseCd" jdbcType="VARCHAR"/>
+		<result column="CALC_BASE_PRICE" property="calcBasePrice" jdbcType="INTEGER"/>
+		<result column="EXP_DC_PRICE" property="expDcPrice" jdbcType="INTEGER"/>
+		<result column="REG_DTTM" property="regDttm" jdbcType="VARCHAR"/>
+		<result column="LAST_DTTM" property="lastDttm" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<resultMap id="ResultOfferingDtl" type="com.wallet.harex.model.OfferingDtl"> 
+		<id column="SEQ" property="seq" 	jdbcType="VARCHAR" />
+		<result column="OFFER_ID" property="offerId" jdbcType="VARCHAR"/>                   
+		<result column="STATUS" property="status" jdbcType="VARCHAR"/>
+		<result column="OFFER_ORDER" property="offerOrder" jdbcType="VARCHAR"/>
+		<result column="BANK_CODE" property="bankCode" jdbcType="VARCHAR"/>
+		<result column="ACPOS_TID" property="acposTid" jdbcType="VARCHAR"/>
+		<result column="TTL_PRICE" property="ttlPrice" jdbcType="INTEGER"/>
+		<result column="EXP_CPN_DC_PRICE" property="expCpnDcPrice" jdbcType="INTEGER"/>
+		<result column="EXP_MEMB_DC_PRICE" property="expMembDcPrice" jdbcType="INTEGER"/>
+		<result column="EXP_MEMB_USE_POINT" property="expMembUsePoint" jdbcType="INTEGER"/>
+		<result column="EXP_MEMB_SAVE_POINT" property="expMembSavePoint" jdbcType="INTEGER"/>
+		<result column="EXP_STAMP_SAVE_CNT" property="expStampSaveCnt" jdbcType="INTEGER"/>
+		<result column="EXP_PAY_PRICE" property="expPayPrice" jdbcType="INTEGER"/>
+		<result column="BANK_MIN_PRICE" property="bankMinPrice" jdbcType="INTEGER"/>
+		<result column="REG_DTTM" property="regDttm" jdbcType="VARCHAR"/>
+		<result column="LAST_DTTM" property="lastDttm" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="ResultOfferingMsDc" type="com.wallet.harex.model.OfferingMsDc"> 
+		<id column="SEQ" property="seq" 	jdbcType="VARCHAR" />
+		<result column="OFFER_ID" jdbcType="VARCHAR" property="offerId"/>      
+		<result column="MEMB_ID" jdbcType="VARCHAR" property="membId"/>       
+		<result column="MEMB_NAME" jdbcType="VARCHAR" property="membName"/>     
+		<result column="MEMB_CARD_NO" jdbcType="VARCHAR" property="membCardNo"/>   
+		<result column="SELF_MEM_YN" jdbcType="VARCHAR" property="selfMemYn"/>    
+		<result column="COMP_ID" jdbcType="VARCHAR" property="compId"/>       
+		<result column="BRD_ID" jdbcType="VARCHAR" property="brdId"/>        
+		<result column="MEMB_CLASS" jdbcType="VARCHAR" property="membClass"/>    
+		<result column="DC_RATE" jdbcType="INTEGER" property="dcRate"/>       
+		<result column="DC_UNIT" jdbcType="VARCHAR" property="dcUnit"/>       
+		<result column="ROUND_TYPE" jdbcType="VARCHAR" property="roundType"/>    
+		<result column="MIN_PAY_PRICE" jdbcType="INTEGER" property="minPayPrice"/>  
+		<result column="MAX_DC_PRICE" jdbcType="INTEGER" property="maxDcPrice"/>   
+		<result column="CALC_BASE_CD" jdbcType="VARCHAR" property="calcBaseCd"/>   
+		<result column="CALC_BASE_PRICE" jdbcType="INTEGER" property="calcBasePrice"/>
+		<result column="EXP_DC_PRICE" jdbcType="INTEGER" property="expDcPrice"/>   
+		<result column="MEMB_NOTI_URL" jdbcType="VARCHAR" property="membNotiUrl"/>  
+		<result column="IMG_HOST" jdbcType="VARCHAR" property="imgHost"/>      
+		<result column="IMG_URL" jdbcType="VARCHAR" property="imgUrl"/>       
+		<result column="ONOFF" jdbcType="VARCHAR" property="onoff"/>        
+		<result column="REG_DTTM" jdbcType="VARCHAR" property="regDttm"/>      
+		<result column="LAST_DTTM" jdbcType="VARCHAR" property="lastDttm"/> 
+	</resultMap>
+
+	<resultMap id="ResultOfferingMsSave" type="com.wallet.harex.model.OfferingMsSave"> 
+		<id column="SEQ" property="seq" 	jdbcType="VARCHAR" />
+		<result column="OFFER_ID" jdbcType="VARCHAR" property="offerId"/> 
+		<result column="MEMB_ID " jdbcType="VARCHAR" property="membId"/>
+		<result column="MEMB_NAME" jdbcType="VARCHAR" property="membName"/>
+		<result column="MEMB_CARD_NO" jdbcType="VARCHAR" property="membCardNo"/>
+		<result column="SAVE_TYPE" jdbcType="VARCHAR" property="saveType"/>
+		<result column="SELF_MEM_YN" jdbcType="VARCHAR" property="selfMemYn"/>
+		<result column="COMP_ID" jdbcType="VARCHAR" property="compId"/>
+		<result column="BRD_ID" jdbcType="VARCHAR" property="brdId"/>
+		<result column="MEMB_CLASS" jdbcType="VARCHAR" property="membClass"/>
+		<result column="SAVE_RATE_FIX_YN" jdbcType="VARCHAR" property="saveRateFixYn"/>
+		<result column="SAVE_RATE" jdbcType="INTEGER" property="saveRate"/>
+		<result column="ROUND_TYPE" jdbcType="VARCHAR" property="roundType"/>
+		<result column="SAVE_BASE_TYPE" jdbcType="VARCHAR" property="saveBaseType"/>
+		<result column="SAVE_NOTICE" jdbcType="VARCHAR" property="saveNotice"/>
+		<result column="MIN_PAY_PRICE" jdbcType="INTEGER" property="minPayPrice"/>
+		<result column="MAX_PAY_PRICE" jdbcType="INTEGER" property="maxPayPrice"/>
+		<result column="MAX_SAVE_POINT" jdbcType="INTEGER" property="maxSavePoint"/>
+		<result column="SAVE_UNIT" jdbcType="VARCHAR" property="saveUnit"/>
+		<result column="CALC_BASE_PRICE" jdbcType="INTEGER" property="calcBasePrice"/>
+		<result column="EXP_SAVE_POINT" jdbcType="INTEGER" property="expSavePoint"/>
+		<result column="MEMB_NOTI_URL" jdbcType="VARCHAR" property="membNotiUrl"/>
+		<result column="IMG_HOST" jdbcType="VARCHAR" property="imgHost"/>
+		<result column="IMG_URL" jdbcType="VARCHAR" property="imgUrl"/>
+		<result column="ONOFF" jdbcType="VARCHAR" property="onoff"/>
+		<result column="REG_DTTM" jdbcType="VARCHAR" property="regDttm"/>
+		<result column="LAST_DTTM" jdbcType="VARCHAR" property="lastDttm"/>
+		<result column="ACCUM_POINT" jdbcType="INTEGER" property="accumPoint"/> 
+		<result column="USABLE_POINT" jdbcType="INTEGER" property="usablePoint"/> 
+		<result column="MS_SAVE_SELF_YN" jdbcType="VARCHAR" property="msSaveSelfYn"/>
+	</resultMap>
+
+	<resultMap id="ResultOfferingMsStamp" type="com.wallet.harex.model.OfferingMsStamp"> 
+		<id column="SEQ" property="seq" 	jdbcType="VARCHAR" />
+		<result column="OFFER_ID" jdbcType="VARCHAR" property="offerId"/>       
+		<result column="MEMB_ID" jdbcType="VARCHAR" property="membId"/>        
+		<result column="MEMB_NAME" jdbcType="VARCHAR" property="membName"/>      
+		<result column="MEMB_CARD_NO" jdbcType="VARCHAR" property="membCardNo"/>    
+		<result column="SELF_MEM_YN" jdbcType="VARCHAR" property="selfMemYn"/>     
+		<result column="COMP_ID" jdbcType="VARCHAR" property="compId"/>        
+		<result column="BRD_ID" jdbcType="VARCHAR" property="brdId"/>         
+		<result column="STAMP_SVC_YN" jdbcType="VARCHAR" property="stampSvcYn"/>    
+		<result column="STAMP_SVC_TYPE" jdbcType="VARCHAR" property="stampSvcType"/>  
+		<result column="STAMP_UNIT" jdbcType="INTEGER" property="stampUnit"/>     
+		<result column="USABLE_STAMP_CNT" jdbcType="INTEGER" property="usableStampCnt"/>
+		<result column="ACCUM_STAMP_CNT" jdbcType="INTEGER" property="accumStampCnt"/> 
+		<result column="REG_DTTM" jdbcType="VARCHAR" property="regDttm"/>       
+		<result column="LAST_DTTM" jdbcType="VARCHAR" property="lastDttm"/>     
+	</resultMap>
+
+	<resultMap id="ResultOfferingMsUse" type="com.wallet.harex.model.OfferingMsUse"> 
+		<id column="SEQ" property="seq" 	jdbcType="VARCHAR" />
+		<result column="OFFER_ID" jdbcType="VARCHAR" property="offerId"/>      
+		<result column="MEMB_ID" jdbcType="VARCHAR" property="membId"/>       
+		<result column="MEMB_NAME" jdbcType="VARCHAR" property="membName"/>     
+		<result column="MEMB_CARD_NO" jdbcType="VARCHAR" property="membCardNo"/>   
+		<result column="OLLEH_YN" jdbcType="VARCHAR" property="ollehYn"/>      
+		<result column="SELF_MEM_YN" jdbcType="VARCHAR" property="selfMemYn"/>    
+		<result column="COMP_ID" jdbcType="VARCHAR" property="compId"/>       
+		<result column="BRD_ID" jdbcType="VARCHAR" property="brdId"/>        
+		<result column="USE_TYPE" jdbcType="VARCHAR" property="useType"/>      
+		<result column="USE_UNIT" jdbcType="VARCHAR" property="useUnit"/>      
+		<result column="ROUND_TYPE" jdbcType="VARCHAR" property="roundType"/>    
+		<result column="FIXED_RATE" jdbcType="INTEGER" property="fixedRate"/>    
+		<result column="MIN_PAY_PRICE" jdbcType="INTEGER" property="minPayPrice"/>  
+		<result column="MIN_USE_POINT" jdbcType="INTEGER" property="minUsePoint"/>  
+		<result column="MAX_USE_POINT" jdbcType="INTEGER" property="maxUsePoint"/>  
+		<result column="ACCUM_POINT" jdbcType="INTEGER" property="accumPoint"/>   
+		<result column="USABLE_POINT" jdbcType="INTEGER" property="usablePoint"/>  
+		<result column="CALC_BASE_CD" jdbcType="VARCHAR" property="calcBaseCd"/>   
+		<result column="CALC_BASE_PRICE" jdbcType="INTEGER" property="calcBasePrice"/>
+		<result column="EXP_USE_POINT" jdbcType="INTEGER" property="expUsePoint"/>  
+		<result column="MEMB_NOTI_URL" jdbcType="VARCHAR" property="membNotiUrl"/>  
+		<result column="IMG_HOST" jdbcType="VARCHAR" property="imgHost"/>      
+		<result column="IMG_URL" jdbcType="VARCHAR" property="imgUrl"/>       
+		<result column="ONOFF" jdbcType="VARCHAR" property="onoff"/>        
+		<result column="REG_DTTM" jdbcType="VARCHAR" property="regDttm"/>      
+		<result column="LAST_DTTM" jdbcType="VARCHAR" property="lastDttm"/> 
+	</resultMap>
+
+	<resultMap id="ResultOfferingOrder" type="com.wallet.harex.model.OfferingOrder"> 
+		<id column="SEQ" property="seq" 	jdbcType="VARCHAR" />
+		<result column="ACPOS_TID" jdbcType="VARCHAR" property="acposTid"/>  
+		<result column="OFFER_ORDER" jdbcType="VARCHAR" property="offerOrder"/>
+		<result column="OFFER_ID" jdbcType="VARCHAR" property="offerId"/>   
+		<result column="REG_DTTM" jdbcType="VARCHAR" property="regDttm"/>   
+		<result column="LAST_DTTM" jdbcType="VARCHAR" property="lastDttm"/>  
+	</resultMap>
+
+	<resultMap id="ResultOfferingPromo" type="com.wallet.harex.model.OfferingPromo"> 
+		<id column="SEQ" property="seq" 	jdbcType="VARCHAR" />
+		<result column="OFFER_ID " jdbcType="VARCHAR" property="offerId"/>
+		<result column="PROMO_CD " jdbcType="VARCHAR" property="promoCd"/>
+		<result column="DC_PRICE " jdbcType="INTEGER" property="dcPrice"/>
+		<result column="REG_DTTM " jdbcType="VARCHAR" property="regDttm"/>
+		<result column="LAST_DTTM" jdbcType="VARCHAR" property="lastDttm"/>
+	</resultMap>
+		
+	<!-- 복합결제 오퍼링 정보 -->
+ 	<select id="selectOfferingS" parameterType="HashMap" resultMap="ResultOfferingS">
+		SELECT *
+		FROM 
+			(
+				SELECT <if test='top!=null and top!=""'> top ${top} </if>
+						     row_number() over (order by REG_DTTM desc)  as SEQ
+						    ,ACPOS_TID
+					      ,STATUS
+					      ,CUST_ID
+					      ,PHONE_NO
+					      ,TCODE
+					      ,SERVICE_ID
+					      ,K_SHOP_ID
+					      ,MOCAPAY_TID
+					      ,MOCAPAY_TDATE
+					      ,MOCAPAY_TTIME
+					      ,REG_DTTM
+					      ,LAST_DTTM
+			     FROM MW_PS_OFFER_MST	 
+				WHERE 1=1
+				<if test="acpos_tid != null and acpos_tid != ''">
+				    AND ACPOS_TID		LIKE  '%' + #{acpos_tid} +  '%'
+				</if>
+				<if test="mocapay_tid != null and mocapay_tid != ''">
+	    			AND MOCAPAY_TID	LIKE  '%' + #{mocapay_tid} +  '%'	 
+				</if>
+    		 ) A
+    	WHERE 1=1
+	  <if test='startRow!=null and startRow!=""'>
+		<if test='rowsPerPage!=null and rowsPerPage!=""'>
+			AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+		</if>
+	 </if>
+	</select>
+  
+	<!-- 복합결제 오퍼링 정보 CNT-->
+	<select id="selectOfferingSCnt" resultType="java.lang.Integer">
+		SELECT 
+	 			   		count(*) AS CNT
+		FROM		MW_PS_OFFER_MST
+		WHERE 1=1
+	  	<if test="acpos_tid != null and acpos_tid != ''">
+		    AND ACPOS_TID		LIKE  '%' + #{acpos_tid} +  '%'
+		</if>
+		<if test="mocapay_tid != null and mocapay_tid != ''">
+	  			AND MOCAPAY_TID	LIKE  '%' + #{mocapay_tid} +  '%'	 
+		</if>
+  </select>
+  
+	<!-- 복합결제 오퍼링 쿠폰 상세정보 -->
+ 	<select id="selectOfferingCpn" parameterType="HashMap" resultMap="ResultOfferingCpn">
+		SELECT *
+		FROM 
+			(
+				SELECT <if test='top!=null and top!=""'> top ${top} </if>
+						    	row_number() over (order by REG_DTTM desc)  as SEQ
+							    ,OFFER_ID
+						      ,CPN_ID
+						      ,CPN_NO
+						      ,CPN_NAME
+						      ,VAL_SDATE
+						      ,VAL_EDATE
+						      ,DC_TYPE
+						      ,MIN_PAY_PRICE
+						      ,MAX_DC_PRICE
+						      ,DC_RATE
+						      ,DC_PRICE
+						      ,CPN_DUP_USABLE_YN
+						      ,MEMB_DUP_USABLE_YN
+						      ,SHOP_ONLY_YN
+						      ,DC_UNIT
+						      ,ROUND_TYPE
+						      ,CPN_NOTI_URL
+						      ,CALC_BASE_CD
+						      ,CALC_BASE_PRICE
+						      ,EXP_DC_PRICE
+						      ,REG_DTTM
+						      ,LAST_DTTM
+				  FROM MW_PS_OFFER_CPN
+				 WHERE 1=1
+				<if test="offer_id != null and offer_id != ''">
+				    AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+				</if>
+    		) A
+    	WHERE 1=1
+	  <if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+				AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+	 </if>
+	</select>
+  
+	<!-- 복합결제 오퍼링 쿠폰 상세정보 CNT-->
+	<select id="selectOfferingCpnCnt" resultType="java.lang.Integer">
+		SELECT 
+	 			   		count(*) AS CNT
+		FROM		MW_PS_OFFER_CPN
+		WHERE 1=1
+  	<if test="offer_id != null and offer_id != ''">
+			  AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+		</if>
+  </select>
+  
+	<!-- 복합결제 오퍼링 상세정보 -->
+ 	<select id="selectOfferingDtl" parameterType="HashMap" resultMap="ResultOfferingDtl">
+		SELECT *
+		FROM 
+			(
+				SELECT <if test='top!=null and top!=""'> top ${top} </if>
+						    	row_number() over (order by REG_DTTM desc)  as SEQ
+						    	,OFFER_ID
+						      ,STATUS
+						      ,OFFER_ORDER
+						      ,BANK_CODE
+						      ,ACPOS_TID
+						      ,TTL_PRICE
+						      ,EXP_CPN_DC_PRICE
+						      ,EXP_MEMB_DC_PRICE
+						      ,EXP_MEMB_USE_POINT
+						      ,EXP_MEMB_SAVE_POINT
+						      ,EXP_STAMP_SAVE_CNT
+						      ,EXP_PAY_PRICE
+						      ,BANK_MIN_PRICE
+						      ,REG_DTTM
+						      ,LAST_DTTM
+				  FROM MW_PS_OFFER_DTL
+				 WHERE 1=1
+				<if test="offer_id != null and offer_id != ''">
+				    AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+				</if>
+				<if test="acpos_tid != null and acpos_tid != ''">
+				    AND ACPOS_TID		LIKE  '%' + #{acpos_tid} +  '%'
+				</if>
+    		) A
+    	WHERE 1=1
+	  <if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+				AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+	 </if>
+	</select>
+  
+	<!-- 복합결제 오퍼링 상세정보 CNT-->
+	<select id="selectOfferingDtlCnt" resultType="java.lang.Integer">
+		SELECT 
+	 			   		count(*) AS CNT
+		FROM		MW_PS_OFFER_DTL
+		WHERE 1=1
+  	<if test="offer_id != null and offer_id != ''">
+			  AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+		</if>
+		<if test="acpos_tid != null and acpos_tid != ''">
+		    AND ACPOS_TID		LIKE  '%' + #{acpos_tid} +  '%'
+		</if>
+  </select>
+  
+  
+	<!-- 복합결제 오퍼링 멤버쉽할인 상세정보	 -->
+ 	<select id="selectOfferingMsDc" parameterType="HashMap" resultMap="ResultOfferingMsDc">
+		SELECT *
+		FROM 
+			(
+				SELECT <if test='top!=null and top!=""'> top ${top} </if>
+						    	row_number() over (order by REG_DTTM desc)  as SEQ
+						    	,OFFER_ID
+						      ,MEMB_ID
+						      ,MEMB_NAME
+						      ,MEMB_CARD_NO
+						      ,SELF_MEM_YN
+						      ,COMP_ID
+						      ,BRD_ID
+						      ,MEMB_CLASS
+						      ,DC_RATE
+						      ,DC_UNIT
+						      ,ROUND_TYPE
+						      ,MIN_PAY_PRICE
+						      ,MAX_DC_PRICE
+						      ,CALC_BASE_CD
+						      ,CALC_BASE_PRICE
+						      ,EXP_DC_PRICE
+						      ,MEMB_NOTI_URL
+						      ,IMG_HOST
+						      ,IMG_URL
+						      ,ONOFF
+						      ,REG_DTTM
+						      ,LAST_DTTM
+				  FROM MW_PS_OFFER_MS_DC
+				 WHERE 1=1
+				<if test="offer_id != null and offer_id != ''">
+				    AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+				</if>
+    		) A
+    	WHERE 1=1
+	  <if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+				AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+	 </if>
+	</select>
+  
+	<!-- 복합결제 오퍼링 멤버쉽할인 상세정보	 CNT-->
+	<select id="selectOfferingMsDcCnt" resultType="java.lang.Integer">
+		SELECT 
+	 			   		count(*) AS CNT
+		FROM		MW_PS_OFFER_MS_DC
+		WHERE 1=1
+  	<if test="offer_id != null and offer_id != ''">
+			  AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+		</if>
+  </select>
+  
+  
+	<!-- 복합결제 오퍼링 멤버쉽 적립정보	 -->
+ 	<select id="selectOfferingMsSave" parameterType="HashMap" resultMap="ResultOfferingMsSave">
+		SELECT *
+		FROM 
+			(
+				SELECT <if test='top!=null and top!=""'> top ${top} </if>
+						    	row_number() over (order by REG_DTTM desc)  as SEQ
+						    	,OFFER_ID
+						      ,MEMB_ID
+						      ,MEMB_NAME
+						      ,MEMB_CARD_NO
+						      ,SAVE_TYPE
+						      ,MEMB_CLASS
+						      ,SAVE_RATE_FIX_YN
+						      ,SAVE_RATE
+						      ,ROUND_TYPE
+						      ,SAVE_BASE_TYPE
+						      ,SAVE_NOTICE
+						      ,MIN_PAY_PRICE
+						      ,MAX_PAY_PRICE
+						      ,MAX_SAVE_POINT
+						      ,EXP_SAVE_POINT
+						      ,MEMB_NOTI_URL
+						      ,IMG_HOST
+						      ,IMG_URL
+						      ,ONOFF
+						      ,REG_DTTM
+						      ,LAST_DTTM
+						      ,MS_SAVE_SELF_YN
+						      ,SELF_MEM_YN
+						      ,COMP_ID
+						      ,BRD_ID
+						      ,SAVE_UNIT
+						      ,CALC_BASE_PRICE
+						      ,ACCUM_POINT
+						      ,USABLE_POINT
+				  FROM MW_PS_OFFER_MS_SAVE
+				 WHERE 1=1
+				<if test="offer_id != null and offer_id != ''">
+				    AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+				</if>
+    		) A
+    	WHERE 1=1
+	  <if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+				AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+	 </if>
+	</select>
+  
+	<!-- 복합결제 오퍼링 멤버쉽 적립정보	 CNT-->
+	<select id="selectOfferingMsSaveCnt" resultType="java.lang.Integer">
+		SELECT 
+	 			   		count(*) AS CNT
+		FROM		MW_PS_OFFER_MS_SAVE
+		WHERE 1=1
+  	<if test="offer_id != null and offer_id != ''">
+			  AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+		</if>
+  </select>
+  
+	<!-- 복합결제 오퍼링 멤버쉽 스탬프정보	 -->
+ 	<select id="selectOfferingMsStamp" parameterType="HashMap" resultMap="ResultOfferingMsStamp">
+		SELECT *
+		FROM 
+			(
+				SELECT <if test='top!=null and top!=""'> top ${top} </if>
+						    	row_number() over (order by REG_DTTM desc)  as SEQ
+						    	,OFFER_ID
+						      ,MEMB_ID
+						      ,MEMB_NAME
+						      ,MEMB_CARD_NO
+						      ,STAMP_SVC_YN
+						      ,STAMP_SVC_TYPE
+						      ,STAMP_UNIT
+						      ,USABLE_STAMP_CNT
+						      ,ACCUM_STAMP_CNT
+						      ,REG_DTTM
+						      ,LAST_DTTM
+						      ,SELF_MEM_YN
+						      ,COMP_ID
+						      ,BRD_ID
+				  FROM MW_PS_OFFER_MS_STAMP
+				 WHERE 1=1
+				<if test="offer_id != null and offer_id != ''">
+				    AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+				</if>
+    		) A
+    	WHERE 1=1
+	  <if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+				AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+	 </if>
+	</select>
+  
+	<!-- 복합결제 오퍼링 멤버쉽 스탬프정보	 CNT-->
+	<select id="selectOfferingMsStampCnt" resultType="java.lang.Integer">
+		SELECT 
+	 			   		count(*) AS CNT
+		FROM		MW_PS_OFFER_MS_STAMP
+		WHERE 1=1
+  	<if test="offer_id != null and offer_id != ''">
+			  AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+		</if>
+  </select>
+  
+	<!-- 복합결제 오퍼링 멤버쉽 사용정보		 -->
+ 	<select id="selectOfferingMsUse" parameterType="HashMap" resultMap="ResultOfferingMsUse">
+		SELECT *
+		FROM 
+			(
+				SELECT <if test='top!=null and top!=""'> top ${top} </if>
+						    	row_number() over (order by REG_DTTM desc)  as SEQ
+						      ,OFFER_ID
+						      ,MEMB_ID
+						      ,MEMB_NAME
+						      ,MEMB_CARD_NO
+						      ,OLLEH_YN
+						      ,SELF_MEM_YN
+						      ,COMP_ID
+						      ,BRD_ID
+						      ,USE_TYPE
+						      ,USE_UNIT
+						      ,ROUND_TYPE
+						      ,FIXED_RATE
+						      ,MIN_PAY_PRICE
+						      ,MIN_USE_POINT
+						      ,MAX_USE_POINT
+						      ,ACCUM_POINT
+						      ,USABLE_POINT
+						      ,CALC_BASE_CD
+						      ,CALC_BASE_PRICE
+						      ,EXP_USE_POINT
+						      ,MEMB_NOTI_URL
+						      ,IMG_HOST
+						      ,IMG_URL
+						      ,ONOFF
+						      ,REG_DTTM
+						      ,LAST_DTTM
+				  FROM MW_PS_OFFER_MS_USE
+				 WHERE 1=1
+				<if test="offer_id != null and offer_id != ''">
+				    AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+				</if>
+    		) A
+    	WHERE 1=1
+	  <if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+				AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+	 </if>
+	</select>
+  
+	<!-- 복합결제 오퍼링 멤버쉽 사용정보	 CNT-->
+	<select id="selectOfferingMsUseCnt" resultType="java.lang.Integer">
+		SELECT 
+	 			   		count(*) AS CNT
+		FROM		MW_PS_OFFER_MS_USE
+		WHERE 1=1
+  	<if test="offer_id != null and offer_id != ''">
+			  AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+		</if>
+  </select>
+  
+	<!-- 복합결제 오퍼링 순위 정보			 -->
+ 	<select id="selectOfferingOrder" parameterType="HashMap" resultMap="ResultOfferingOrder">
+		SELECT *
+		FROM 
+			(
+				SELECT <if test='top!=null and top!=""'> top ${top} </if>
+						    	row_number() over (order by REG_DTTM desc)  as SEQ
+						      ,ACPOS_TID
+						      ,OFFER_ORDER
+						      ,OFFER_ID
+						      ,REG_DTTM
+						      ,LAST_DTTM
+				  FROM MW_PS_OFFER_ORDER
+				 WHERE 1=1
+				<if test="offer_id != null and offer_id != ''">
+				    AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+				</if>
+				<if test="acpos_tid != null and acpos_tid != ''">
+				    AND ACPOS_TID		LIKE  '%' + #{acpos_tid} +  '%'
+				</if>
+    		) A
+    	WHERE 1=1
+	  <if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+				AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+	 </if>
+	</select>
+  
+	<!-- 복합결제 오퍼링 순위 정보		 CNT-->
+	<select id="selectOfferingOrderCnt" resultType="java.lang.Integer">
+		SELECT 
+	 			   		count(*) AS CNT
+		FROM		MW_PS_OFFER_ORDER
+		WHERE 1=1
+  	<if test="offer_id != null and offer_id != ''">
+			  AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+		</if>
+		<if test="acpos_tid != null and acpos_tid != ''">
+		    AND ACPOS_TID		LIKE  '%' + #{acpos_tid} +  '%'
+		</if>
+  </select>
+  
+	<!-- 복합결제 오퍼링 프로모션정보			 -->
+ 	<select id="selectOfferingPromo" parameterType="HashMap" resultMap="ResultOfferingPromo">
+		SELECT *
+		FROM 
+			(
+				SELECT <if test='top!=null and top!=""'> top ${top} </if>
+						    	row_number() over (order by REG_DTTM desc)  as SEQ
+						    	,OFFER_ID
+						      ,PROMO_CD
+						      ,DC_PRICE
+						      ,REG_DTTM
+						      ,LAST_DTTM
+				  FROM MW_PS_OFFER_PROMO
+				 WHERE 1=1
+				<if test="offer_id != null and offer_id != ''">
+				    AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+				</if>
+				<if test="promo_cd != null and promo_cd != ''">
+				    AND PROMO_CD		LIKE  '%' + #{promo_cd} +  '%'
+				</if>
+    		) A
+    	WHERE 1=1
+	  <if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+				AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+	 </if>
+	</select>
+  
+	<!-- 복합결제 오퍼링 프로모션정보		 CNT-->
+	<select id="selectOfferingPromoCnt" resultType="java.lang.Integer">
+		SELECT 
+	 			   		count(*) AS CNT
+		FROM		MW_PS_OFFER_PROMO
+		WHERE 1=1
+  	<if test="offer_id != null and offer_id != ''">
+			  AND OFFER_ID		LIKE  '%' + #{offer_id} +  '%'
+		</if>
+		<if test="promo_cd != null and promo_cd != ''">
+		    AND PROMO_CD		LIKE  '%' + #{promo_cd} +  '%'
+		</if>
+  </select>
+  
+</mapper>

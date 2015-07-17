@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wallet.harex.mapper.StatsMapper">   
+
+	<resultMap id="ResultStatsListComp" type="com.wallet.harex.model.StatsListComp"> 
+		<id column="SEQ" property="seq" 	jdbcType="VARCHAR" />
+		<result column="COMP_NAME"				jdbcType="VARCHAR"    property="compName" />
+		<result column="BRAND_NAME"				jdbcType="VARCHAR"    property="brandName" />
+		<result column="REGION_TYPE"			jdbcType="VARCHAR"    property="regionType" />
+		<result column="REGION_NAME"			jdbcType="VARCHAR"    property="regionName" />
+		<result column="SHOP_NAME"				jdbcType="VARCHAR"    property="shopName" />
+		<result column="TR_DATE"					jdbcType="VARCHAR"    property="trDate" />		
+		<result column="K_SHOP_ID"				jdbcType="VARCHAR"    property="kShopId" />
+		<result column="TTL_CNT"					jdbcType="INTEGER"    property="ttlCnt" />
+		<result column="SUCCESS_CNT"			jdbcType="INTEGER"    property="successCnt"	/>
+		<result column="FAIL_CNT"					jdbcType="INTEGER"    property="failCnt" />
+		<result column="TTL_PRICE"				jdbcType="VARCHAR"    property="ttlPrice" />
+		<result column="REQ_TTL_PROCE"		jdbcType="VARCHAR"    property="reqTtlPrice" />
+		<result column="CPN_CNT"					jdbcType="VARCHAR"    property="cpnCnt" />
+		<result column="MS_DC_CNT"				jdbcType="VARCHAR"    property="msDcCnt" />
+		<result column="MS_USE_CNT"				jdbcType="VARCHAR"    property="msUseCnt" />
+		<result column="MS_SAVE_CNT"			jdbcType="VARCHAR"    property="msSaveCnt" />
+		<result column="MS_STAMP_CNT"			jdbcType="VARCHAR"    property="msStampCnt"	/>
+		<result column="CPN_AMT"					jdbcType="VARCHAR"    property="cpnAmt" />
+		<result column="MS_DC_AMT"				jdbcType="VARCHAR"    property="msDcAmt" />
+		<result column="MS_USE_AMT"				jdbcType="VARCHAR"    property="msUseAmt" />
+		<result column="MS_SAVE_AMT"			jdbcType="VARCHAR"    property="msSaveAmt" />
+		<result column="MS_STAMP_AMT"			jdbcType="VARCHAR"    property="msStampAmt"	/>
+	</resultMap>
+	
+	<resultMap id="ResultReport" type="com.wallet.harex.model.StatsReport"> 
+		<result column="COMP_NAME"		  jdbcType="VARCHAR"    property="compName" />
+		<result column="BRAND_NAME"		  jdbcType="VARCHAR"    property="brandName" />
+		<result column="REGION_TYPE"    jdbcType="VARCHAR"    property="regionType" />
+		<result column="REGION_NAME"    jdbcType="VARCHAR"    property="regionName" />
+		<result column="SHOP_NAME"		  jdbcType="VARCHAR"    property="shopName" />
+		<result column="TR_DATE"		   	jdbcType="VARCHAR"    property="trDate" />		
+		<result column="K_SHOP_ID"		  jdbcType="VARCHAR"    property="kShopId" />
+		<result column="TTL_CNT"		   	jdbcType="INTEGER"    property="ttlCnt" />
+		<result column="SUCCESS_CNT"	  jdbcType="INTEGER"    property="successCnt" />
+		<result column="FAIL_CNT"		  	jdbcType="INTEGER"    property="failCnt" />
+		<result column="REQ_TTL_PROCE"  jdbcType="VARCHAR"    property="reqTtlPrice" />
+		<result column="CPN_CNT"		   	jdbcType="VARCHAR"    property="cpnCnt" />
+		<result column="MS_DC_CNT"		  jdbcType="VARCHAR"    property="msDcCnt" />
+		<result column="MS_USE_CNT"		  jdbcType="VARCHAR"    property="msUseCnt" />
+		<result column="MS_SAVE_CNT"	  jdbcType="VARCHAR"    property="msSaveCnt" />
+		<result column="MS_STAMP_CNT"	  jdbcType="VARCHAR"    property="msStampCnt"	/>
+		<result column="CPN_AMT"		   	jdbcType="VARCHAR"    property="cpnAmt" />
+		<result column="MS_DC_AMT"		  jdbcType="VARCHAR"    property="msDcAmt" />
+		<result column="MS_USE_AMT"		  jdbcType="VARCHAR"    property="msUseAmt" />
+		<result column="MS_SAVE_AMT"	  jdbcType="VARCHAR"    property="msSaveAmt" />
+		<result column="MS_STAMP_AMT"	  jdbcType="VARCHAR"    property="msStampAmt" />
+  </resultMap>
+
+	<!-- 통계 관리 -->
+	<select id="selectStatsListComp" parameterType="HashMap" resultMap="ResultStatsListComp">
+		SELECT *
+		FROM (
+			SELECT <if test='top!=null and top!=""'> top ${top} </if>
+			  ROW_NUMBER() OVER (ORDER BY y.trDate desc)  AS SEQ
+		    , c.comp_name   as COMP_NAME
+		    , b.comp_name   as BRAND_NAME
+		    , ISNULL(s.region_type,'') as REGION_TYPE
+		    , ISNULL(dbo.GET_CODE_NM('0027', s.REGION_TYPE),'') AS REGION_NAME
+		    , s.comp_name   as SHOP_NAME
+		    , Y.trDate      AS TR_DATE			
+		    , Y.kShopId     AS K_SHOP_ID		
+		    , Y.ttlCnt      AS TTL_CNT			
+		    , Y.successCnt  AS SUCCESS_CNT	
+		    , Y.failCnt     AS FAIL_CNT		  
+		    , Y.ttl_price 	AS TTL_PRICE
+		    , Y.reqTtlPrice AS REQ_TTL_PROCE
+		    , Y.cpnCnt      AS CPN_CNT			
+		    , Y.msDcCnt     AS MS_DC_CNT		
+		    , Y.msUseCnt    AS MS_USE_CNT		
+		    , Y.msSaveCnt   AS MS_SAVE_CNT	
+		    , Y.msStampCnt  AS MS_STAMP_CNT	
+		    , Y.cpnAmt      AS CPN_AMT			
+		    , Y.msDcAmt     AS MS_DC_AMT		
+		    , Y.msUseAmt    AS MS_USE_AMT		
+		    , Y.msSaveAmt   AS MS_SAVE_AMT	
+		    , Y.msStampAmt  AS MS_STAMP_AMT	
+		from
+		(
+		    select
+		          x.tr_date            as trDate
+		        , x.k_shop_id          as kShopId
+		        , sum(ttlCnt)          as ttlCnt
+		        , sum(successCnt)      as successCnt
+		        , sum(failCnt)         as failCnt
+		        , sum(ttl_price)       as ttl_price
+		        , sum(reqTtlPrice)     as reqTtlPrice
+		        , sum(cpnCnt)          as cpnCnt
+		        , sum(msDcCnt)         as msDcCnt
+		        , sum(msUseCnt)        as msUseCnt
+		        , sum(msSaveCnt)       as msSaveCnt
+		        , sum(msStampCnt)      as msStampCnt
+		        , sum(cpnAmt)          as cpnAmt
+		        , sum(msDcAmt)         as msDcAmt
+		        , sum(msUseAmt)        as msUseAmt
+		        , sum(msSaveAmt)       as msSaveAmt
+		        , sum(msStampAmt)      as msStampAmt
+		    from
+		    (						    
+		        select
+		              a.tr_date
+		            , a.k_shop_id   as K_shop_id
+		            , a.tr_fg
+		            , a.cstatus
+		            , a.pstatus
+		            , a.tr_status                                          
+		            , count(a.ACPOS_TID)                                   as ttlCnt
+		            , case when a.PSTATUS = 'PS' then count(*) else 0 end  as successCnt
+		            , case when a.PSTATUS != 'PS' then count(*) else 0 end as failCnt
+		            , sum(isNull(a.TTL_PRICE,0))                       		 as ttl_price
+		            , sum(isNull(a.EXP_TTL_PRICE,0))                       as reqTtlPrice
+		            , count(b.ACPOS_TID)                                   as cpnCnt
+		            , count(c.ACPOS_TID)                                   as msDcCnt
+		            , count(d.ACPOS_TID)                                   as msUseCnt
+		            , count(e.ACPOS_TID)                                   as msSaveCnt
+		            , count(f.ACPOS_TID)                                   as msStampCnt
+		            , sum(isNull(a.REAL_CPN_DC_PRICE,0))                   as cpnAmt
+		            , sum(isNull(a.REAL_MEMB_DC_PRICE,0))                  as msDcAmt
+		            , sum(isNull(a.REAL_MEMB_USE_POINT,0))                 as msUseAmt
+		            , sum(isNull(a.REAL_MEMB_SAVE_POINT,0))                as msSaveAmt
+		            , sum(isNull(a.REAL_STAMP_SAVE_CNT,0))                 as msStampAmt
+		        from 
+					mw_ps_trns_mst a 
+					left outer join  mw_ps_trns_cpn as b      on a.acpos_tid 	= b.acpos_tid
+					left outer join  mw_ps_trns_ms_dc as c    on a.acpos_tid 	= c.acpos_tid
+					left outer join  mw_ps_trns_ms_use as d   on a.acpos_tid 	= d.acpos_tid
+					left outer join  mw_ps_trns_ms_save as e  on a.acpos_tid 	= e.acpos_tid
+					left outer join  mw_ps_trns_ms_stamp as f on a.acpos_tid 	= f.acpos_tid
+		
+				where 
+						1 = 1
+					and a.tr_fg = '0' 
+					and a.CSTATUS = '0' 
+					and a.PSTATUS = 'PS' 
+					 
+ 				<if test="tCode != ''" >
+					and a.TCODE = #{tCode}         
+				</if>  
+				<![CDATA[   
+					and a.tr_date >= #{sDate} and a.tr_date <= #{eDate}
+				]]>			
+		        group by a.tr_date, a.k_shop_id, a.tr_fg, a.cstatus, a.pstatus, a.tr_status
+		    ) X
+		    group by x.tr_date, x.k_shop_id
+		) Y,  MW_CM_COMPANY S, MW_CM_COMPANY b, MW_CM_COMPANY c
+		where 
+				1 = 1
+		    and y.kShopId =  s.comp_id
+		    and s.COMP_LEVEL_TYPE = '03'
+		    and s.UPPER_COMP_ID = b.COMP_ID
+		    and b.UPPER_COMP_ID = c.COMP_ID
+		<if test="shopId != ''" >
+		    and s.COMP_ID = #{shopId}
+		</if>
+		<if test="regionType != ''" >
+		    and s.REGION_TYPE = #{regionType}
+		</if>
+		<if test="brandId != ''" >
+		    and b.COMP_ID = #{brandId}
+		</if>
+		<if test="compId != ''" >
+		    and c.COMP_ID = #{compId}
+		</if>
+		--order by  TR_DATE DESC
+		) AA
+		WHERE 1=1
+		<if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+ 				AND AA.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+	</select>
+
+	<!-- 통계 관리 > 카운트-->
+	<select id="selectStatsListCompCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		select
+			count(*)
+		from
+		(
+		    select
+		          x.tr_date            as trDate
+		        , x.k_shop_id          as kShopId
+		        , sum(ttlCnt)          as ttlCnt
+		        , sum(successCnt)      as successCnt
+		        , sum(failCnt)         as failCnt
+		        , sum(reqTtlPrice)     as reqTtlPrice
+		        , sum(cpnCnt)          as cpnCnt
+		        , sum(msDcCnt)         as msDcCnt
+		        , sum(msUseCnt)        as msUseCnt
+		        , sum(msSaveCnt)       as msSaveCnt
+		        , sum(msStampCnt)      as msStampCnt
+		        , sum(cpnAmt)          as cpnAmt
+		        , sum(msDcAmt)         as msDcAmt
+		        , sum(msUseAmt)        as msUseAmt
+		        , sum(msSaveAmt)       as msSaveAmt
+		        , sum(msStampAmt)      as msStampAmt
+		    from
+		    (						    
+		        select
+		              a.tr_date
+		            , a.k_shop_id   as K_shop_id
+		            , a.tr_fg
+		            , a.cstatus
+		            , a.pstatus
+		            , a.tr_status
+		            , count(a.ACPOS_TID)                     as ttlCnt
+		            , case when a.PSTATUS = 'PS' then count(*) else 0 end as successCnt
+		            , case when a.PSTATUS != 'PS' then count(*) else 0 end as failCnt
+		            , sum(isNull(a.EXP_TTL_PRICE,0))        as reqTtlPrice
+		            , count(b.ACPOS_TID)                     as cpnCnt
+		            , count(c.ACPOS_TID)                     as msDcCnt
+		            , count(d.ACPOS_TID)                     as msUseCnt
+		            , count(e.ACPOS_TID)                     as msSaveCnt
+		            , count(f.ACPOS_TID)                     as msStampCnt
+		            , sum(isNull(a.REAL_CPN_DC_PRICE,0))     as cpnAmt
+		            , sum(isNull(a.REAL_MEMB_DC_PRICE,0))    as msDcAmt
+		            , sum(isNull(a.REAL_MEMB_USE_POINT,0))   as msUseAmt
+		            , sum(isNull(a.REAL_MEMB_SAVE_POINT,0))  as msSaveAmt
+		            , sum(isNull(a.REAL_STAMP_SAVE_CNT,0))   as msStampAmt
+		        from 
+					mw_ps_trns_mst a 
+					left outer join  mw_ps_trns_cpn as b      on a.acpos_tid 	= b.acpos_tid
+					left outer join  mw_ps_trns_ms_dc as c    on a.acpos_tid 	= c.acpos_tid
+					left outer join  mw_ps_trns_ms_use as d   on a.acpos_tid 	= d.acpos_tid
+					left outer join  mw_ps_trns_ms_save as e  on a.acpos_tid 	= e.acpos_tid
+					left outer join  mw_ps_trns_ms_stamp as f on a.acpos_tid 	= f.acpos_tid
+		
+				where 
+						1 = 1
+					and a.tr_fg = '0' 
+					and a.CSTATUS = '0' 
+					and a.PSTATUS = 'PS' 
+					
+ 				<if test="tCode != ''" >
+					and a.TCODE = #{tCode}         
+				</if>  
+				<![CDATA[   
+					and a.tr_date >= #{sDate} and a.tr_date <= #{eDate}
+				]]>			
+		        group by a.tr_date, a.k_shop_id, a.tr_fg, a.cstatus, a.pstatus, a.tr_status
+		    ) X
+		    group by x.tr_date, x.k_shop_id
+		) Y,  MW_CM_COMPANY S, MW_CM_COMPANY b, MW_CM_COMPANY c
+		where 
+				1 = 1
+		    and y.kShopId =  s.comp_id
+		    and s.COMP_LEVEL_TYPE = '03'
+		    and s.UPPER_COMP_ID = b.COMP_ID
+		    and b.UPPER_COMP_ID = c.COMP_ID
+		<if test="shopId != ''" >
+		    and s.COMP_ID = #{shopId}
+		</if>
+		<if test="regionType != ''" >
+		    and s.REGION_TYPE = #{regionType}
+		</if>
+		<if test="brandId != ''" >
+		    and b.COMP_ID = #{brandId}
+		</if>
+		<if test="compId != ''" >
+		    and c.COMP_ID = #{compId}
+		</if>
+	</select>
+
+	<!-- 리포팅 제휴사 (금월/전월) -->
+  <select id="selectStatsReportCmon" parameterType="HashMap" resultMap="ResultReport">
+		select
+						  MAX(AA.TR_DATE) as TR_DATE 
+					<if test="part == 'comp'" >
+					  , AA.COMP_NAME  as COMP_NAME
+						, MAX('') as BRAND_NAME
+						, MAX('') as SHOP_NAME
+						, MAX('')  as K_SHOP_ID
+					</if>	
+					<if test="part == 'brd'" >
+					  , MAX(AA.COMP_NAME)  as COMP_NAME
+						, AA.BRAND_NAME as BRAND_NAME
+						, MAX('') as SHOP_NAME
+						, MAX('')  as K_SHOP_ID
+					</if>
+					<if test="part == 'shop'" >
+					  , MAX(AA.COMP_NAME)  as COMP_NAME
+						, MAX(AA.BRAND_NAME) as BRAND_NAME
+						, AA.SHOP_NAME as SHOP_NAME
+						, AA.K_SHOP_ID  as K_SHOP_ID
+					</if>
+						, max(AA.REGION_TYPE) as REGION_TYPE
+						, max(AA.REGION_NAME) as REGION_NAME		
+						, sum(AA.ttlCnt) as TTL_CNT 
+						, sum(AA.successCnt) as SUCCESS_CNT 
+						, sum(AA.failCnt) as FAIL_CNT 
+						, sum(AA.reqTtlPrice) as REQ_TTL_PROCE
+						, sum(AA.cpnCnt) as CPN_CNT 
+						, sum(AA.msDcCnt) as MS_DC_CNT 
+						, sum(AA.msUseCnt) as MS_USE_CNT 
+						, sum(AA.msSaveCnt) as MS_SAVE_CNT 
+						, sum(AA.msStampCnt) as MS_STAMP_CNT 
+						, sum(AA.cpnAmt) as CPN_AMT 
+						, sum(AA.msDcAmt) as MS_DC_AMT 
+						, sum(AA.msUseAmt) as MS_USE_AMT 
+						, sum(AA.msSaveAmt) as MS_SAVE_AMT 
+						, sum(AA.msStampAmt) as MS_STAMP_AMT 
+				from
+					(
+						select
+										  A.tr_date 
+										, isNull((select upper_comp_id from mw_cm_company d where d.comp_id = (select upper_comp_id from mw_cm_company e where e.comp_id = A.K_shop_id)), '') AS COMP_ID
+										, dbo.GET_COMP_NM(isNull((select upper_comp_id from mw_cm_company d where d.comp_id = (select upper_comp_id from mw_cm_company e where e.comp_id = A.K_shop_id)),'')) as COMP_NAME				
+										, isNull((select upper_comp_id from mw_cm_company c where c.comp_id = A.K_shop_id),'') AS BRAND_ID
+										, dbo.GET_COMP_NM(isNull((select upper_comp_id from mw_cm_company c where c.comp_id = A.K_shop_id), '')) as BRAND_NAME
+										, A.K_shop_id AS K_SHOP_ID 				
+										, dbo.GET_COMP_NM(A.K_shop_id) AS SHOP_NAME
+										, isNull((select REGION_TYPE from mw_cm_company e where e.comp_id = A.K_shop_id), '') as REGION_TYPE
+										, isNull(dbo.GET_CODE_NM('0027', isNull((select REGION_TYPE from mw_cm_company e where e.comp_id = A.K_shop_id), '')), '') as REGION_NAME				
+										, A.tr_fg 
+										, A.cstatus 
+										, A.pstatus 			
+										, A.ttlCnt 
+										, A.successCnt 
+										, A.failCnt 
+										, A.reqTtlPrice 
+										, A.cpnCnt 
+										, A.msDcCnt 
+										, A.msUseCnt 
+										, A.msSaveCnt 
+										, A.msStampCnt 
+										, A.cpnAmt 
+										, A.msDcAmt 
+										, A.msUseAmt 
+										, A.msSaveAmt 
+										, A.msStampAmt  
+						from
+							(
+								select 
+												LEFT(a.tr_date, 6) as tr_date 
+												, a.k_shop_id as K_shop_id 
+												, a.tr_fg 
+												, a.cstatus 
+												, a.pstatus 
+												
+												, count(a.ACPOS_TID) as ttlCnt 
+												, case when a.PSTATUS = 'PS' then count(*) else 0 end as successCnt 
+												, case when a.PSTATUS != 'PS' then count(*) else 0 end as failCnt 
+												, sum(isNull(a.EXP_TTL_PRICE,0)) as reqTtlPrice 
+												, count(b.ACPOS_TID) as cpnCnt 
+												, count(c.ACPOS_TID) as msDcCnt 
+												, count(d.ACPOS_TID) as msUseCnt 
+												, count(e.ACPOS_TID) as msSaveCnt 
+												, count(f.ACPOS_TID) as msStampCnt 
+												, sum(isNull(a.REAL_CPN_DC_PRICE,0)) as cpnAmt 
+												, sum(isNull(a.REAL_MEMB_DC_PRICE,0)) as msDcAmt 
+												, sum(isNull(a.REAL_MEMB_USE_POINT,0)) as msUseAmt 
+												, sum(isNull(a.REAL_MEMB_SAVE_POINT,0)) as msSaveAmt 
+												, sum(isNull(a.REAL_STAMP_SAVE_CNT,0)) as msStampAmt 
+								from		mw_ps_trns_mst a 
+									left outer join mw_ps_trns_cpn as b on a.acpos_tid = b.acpos_tid 
+									left outer join mw_ps_trns_ms_dc as c on a.acpos_tid = c.acpos_tid 
+									left outer join mw_ps_trns_ms_use as d on a.acpos_tid = d.acpos_tid 
+									left outer join mw_ps_trns_ms_save as e on a.acpos_tid = e.acpos_tid 
+									left outer join mw_ps_trns_ms_stamp as f on a.acpos_tid = f.acpos_tid 
+								where 1 = 1 
+								  and a.tr_fg = '0' 
+								  and a.CSTATUS = '0' 
+								  and a.PSTATUS = 'PS'	
+								<if test="tCode != ''" >
+									and a.TCODE = #{tCode}         
+								</if>  
+								<if test="sMonth != ''" >
+								    and LEFT(a.tr_date, 6) = #{sMonth}
+								</if>
+								<if test="pMonth != ''" >
+								    and LEFT(a.tr_date, 6) = #{pMonth}
+								</if>
+								group by LEFT(a.tr_date, 6), a.k_shop_id, a.tr_fg, a.cstatus, a.pstatus
+							)A
+					)AA
+				where 1=1
+					<if test="shopId != ''" >
+					    and AA.K_SHOP_ID= #{shopId}
+					</if>
+					<if test="regionType != ''" >
+					    and AA.REGION_TYPE = #{regionType}
+					</if>
+					<if test="brandId != ''" >
+					    and AA.BRAND_ID = #{brandId}
+					</if>
+					<if test="compId != ''" >
+					    and AA.COMP_ID = #{compId}
+					</if>	
+				group by
+						 
+					<if test="part == 'comp'" >
+					  AA.COMP_NAME  				
+					</if>	
+					<if test="part == 'brd'" >
+						AA.BRAND_NAME
+					</if>
+					<if test="part == 'shop'" >	
+						AA.K_SHOP_ID, AA.SHOP_NAME
+					</if>
+  </select>
+</mapper>

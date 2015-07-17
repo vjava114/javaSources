@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!--
+ 쿼리 원문을 관리하는 곳 입니다.
+ 이곳에서 원문을 추가한 뒤, ServiceImpl 에서도 내용을 추가해 줘야 Other가 제대로 인식됩니다.
+ -->
+
+<sqlMap namespace="lkQuery">
+    <sql  id="select-Other">
+            SELECT
+            event.*,
+            '' user_no,					<!-- 원본 쿼리에도 이런식으로 되어있음. -->
+            lk.phone uphone,
+            lk.name,
+            '' shop_code,
+            shop_name,
+            shop_phone,
+            '-' angel_code,
+            '-' angel_name,
+            
+            ( SELECT count(*) FROM vb_coupon WHERE event.evt_code = evt_code AND
+            event.brand = brand AND event.userno = userno ) coupon_cnt,
+            date_format(rdate,'%y-%m-%d %H:%i') fdate
+    </sql> 
+    <sql id="from-Other">
+            FROM
+            hera_event event
+            LEFT JOIN lk_user lk ON event.userno = lk.user_no
+    </sql> 
+
+    <sql  id="select-130101">
+            SELECT
+            event.*,
+            lk2_no user_no,					<!-- 원본 쿼리에도 이런식으로 되어있음. -->
+            lk.phone uphone,
+            lk.name,
+            '' shop_code,
+            shop_name,
+            shop_phone,
+            '-' angel_code,
+            '-' angel_name,
+            
+            ( SELECT count(*) FROM vb_coupon WHERE event.evt_code = evt_code AND
+            event.brand = brand AND event.userno = userno ) coupon_cnt,
+            date_format(rdate,'%y-%m-%d %H:%i') fdate
+    </sql> 
+    <sql id="from-130101">
+            FROM
+            hera_event event
+            LEFT JOIN lk2_user lk ON event.userno = lk.user_no
+    </sql> 
+
+        
+    <sql  id="select-130103">
+            SELECT
+            event.*,
+            lk.lk3_no  user_no,
+            lk.phone uphone,
+            lk.name,
+            '' shop_code,
+            shop_name,
+            shop_phone,
+            '-' angel_code,
+            '-' angel_name,
+            
+            ( SELECT count(*) FROM vb_coupon WHERE event.evt_code = evt_code AND
+            event.brand = brand AND event.userno = userno ) coupon_cnt,
+            date_format(rdate,'%y-%m-%d %H:%i') fdate
+    </sql> 
+    <sql id="from-130103">
+            FROM
+            hera_event event
+            LEFT JOIN lk3_user lk ON event.userno = lk.user_no
+    </sql> 
+    
+    <sql  id="select-130110">
+            SELECT
+            event.*,
+            lk.lk2_no  user_no,
+            lk.phone uphone,
+            lk.name,
+            '' shop_code,
+            shop_name,
+            shop_phone,
+            '-' angel_code,
+            '-' angel_name,
+            
+            ( SELECT count(*) FROM vb_coupon WHERE event.evt_code = evt_code AND
+            event.brand = brand AND event.userno = userno ) coupon_cnt,
+            date_format(rdate,'%y-%m-%d %H:%i') fdate
+    </sql> 
+    <sql id="from-130110">
+            FROM
+            hera_event event
+            LEFT JOIN lk2_user lk ON event.userno = lk.user_no
+    </sql> 
+    
+    <sql  id="select-130109">
+            SELECT
+            event.*,
+            lk.lk2_no  user_no,
+            lk.phone uphone,
+            lk.name,
+            '' shop_code,
+            shop_name,
+            shop_phone,
+            '-' angel_code,
+            '-' angel_name,
+            
+            ( SELECT count(*) FROM vb_coupon WHERE event.evt_code = evt_code AND
+            event.brand = brand AND event.userno = userno ) coupon_cnt,
+            date_format(rdate,'%y-%m-%d %H:%i') fdate
+    </sql> 
+    <sql id="from-130109">
+            FROM
+            hera_event event
+            LEFT JOIN lk2_user lk ON event.userno = lk.user_no
+    </sql> 
+    
+    <sql  id="select-130114">
+            SELECT
+            event.*,
+            lk.lk4_no  user_no,
+            lk.phone uphone,
+            lk.name,
+            '' shop_code,
+            shop_name,
+            shop_phone,
+            '-' angel_code,
+            '-' angel_name,
+            
+            ( SELECT count(*) FROM vb_coupon WHERE event.evt_code = evt_code AND
+            event.brand = brand AND event.userno = userno ) coupon_cnt,
+            date_format(rdate,'%y-%m-%d %H:%i') fdate
+    </sql> 
+    <sql id="from-130114">
+            FROM
+            hera_event event
+            LEFT JOIN lk4_user lk ON event.userno = lk.user_no
+    </sql> 
+    
+    
+    
+  
+    <sql  id="select-130205">
+            SELECT
+            event.*,
+            lk.no user_no,
+            lk.phone uphone,
+            lk.name,
+            '' shop_code,
+            shop_name,
+            shop_phone,
+            '-' angel_code,
+            '-' angel_name,
+            
+            ( SELECT count(*) FROM vb_coupon WHERE event.evt_code = evt_code AND
+            event.brand = brand AND event.userno = userno ) coupon_cnt,
+            date_format(rdate,'%y-%m-%d %H:%i') fdate
+    </sql> 
+    <sql id="from-130205">
+            FROM
+            hera_event event
+            LEFT JOIN lk5_user lk ON event.userno = lk.user_no
+    </sql> 
+
+    
+    
+    <sql  id="select-130314">
+            SELECT
+            event.*,
+            lk.no user_no,
+            lk.phone uphone,
+            lk.name,
+            '' shop_code,
+            shop_name,
+            shop_phone,
+            '-' angel_code,
+            '-' angel_name,
+            
+            ( SELECT count(*) FROM vb_coupon WHERE event.evt_code = evt_code AND
+            event.brand = brand AND event.userno = userno ) coupon_cnt,
+            date_format(rdate,'%y-%m-%d %H:%i') fdate
+    </sql> 
+    <sql id="from-130314">
+            FROM
+            hera_event event
+            LEFT JOIN lk6_user lk ON event.userno = lk.user_no
+    </sql> 
+    
+    
+
+    
+    
+    
+  
+    
+</sqlMap>

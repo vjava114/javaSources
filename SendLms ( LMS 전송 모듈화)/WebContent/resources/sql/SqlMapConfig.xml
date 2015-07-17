@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN" 
+				"http://ibatis.apache.org/dtd/sql-map-config-2.dtd" >
+
+<!--
+SqlMapConfig.xml :: iBATIS Framework 의 핵심 환경설정화일 (MetaData) 아래의 :: 설정을 할 수 있다.
+	- properties 파일관리 : 애플리케이션 배포시 공통부분, 각 환경별 다른 값들은 Properties 파일에 독립적으로 관리 할 수 있다.
+	- Class Name 관리 : FQCN(Full Qualified Class Name) 을 별칭(Alias)관리
+	- 기타 설정 : 트랜잭션처리, 커넥션풀 설정, SQL 등 여러 환경설정을 등록,설정...
+-->
+<sqlMapConfig>
+	<properties resource="config/jdbc.properties"/>
+	<settings useStatementNamespaces="true"
+						lazyLoadingEnabled="true"
+						cacheModelsEnabled="true"
+						enhancementEnabled="true"
+						maxRequests="32"
+						maxSessions="8"
+						maxTransactions="2"/>
+    
+	<sqlMap resource="sendlist-mappinig.xml"/>
+	
+
+	
+	
+	
+	
+	
+	
+	
+</sqlMapConfig>

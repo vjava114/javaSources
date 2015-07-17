@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans SYSTEM "applicationContext.dtd">
+<beans>
+
+	<!-- 파싱할때 class 정보가 없다면 파싱이 안된다.. 따라서 모델이 존재해야만 제대로된 파싱이 가능. -->
+	<bean jsp="view/list.jsp" class="my.model.ListModel" id="list" />
+	
+	
+
+<!--
+	<bean jsp="view/insert.jsp" class="my.model.InsertModel" id="insert" />
+ 
+	<bean jsp="view/list.jsp" class="my.model.DeleteModel" id="delete" />
+	
+	<bean jsp="view/list.jsp" class="my.model.InsertOkModel" id="insert_ok" />
+	
+	<bean jsp="view/content.jsp" class="my.model.ContentModel" id="content" />
+	
+	<bean jsp="view/update.jsp" class="my.model.UpdateModel" id="update" />
+
+	<bean jsp="view/content.jsp" class="my.model.UpdateOkModel" id="update_ok" />
+
+ -->	
+
+</beans>

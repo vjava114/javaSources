@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wallet.admin.mapper.MwAdEventMapper">
+	
+	<resultMap id="BaseResultMap" type="com.wallet.admin.model.MwAdEvent">
+		<id column="idx" property="idx" jdbcType="INTEGER" />
+    <result column="stat" property="stat" jdbcType="CHAR" />
+    <result column="os" property="os" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="evt_mode" property="evtMode" jdbcType="VARCHAR" />
+    <result column="sday" property="sday" jdbcType="VARCHAR" />
+    <result column="eday" property="eday" jdbcType="VARCHAR" />
+    <result column="msg_mode" property="msgMode" jdbcType="VARCHAR" />
+    <result column="img_host" property="imgHost" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="msg" property="msg" jdbcType="VARCHAR" />
+    <result column="reg_tm" property="regTm" jdbcType="VARCHAR" />
+    <result column="chg_tm" property="chgTm" jdbcType="VARCHAR" />
+    <result column="row_num" property="rowNum" jdbcType="INTEGER" />
+    <result column="evt_img" property="evtImg" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 이벤트/공지사항  TB 조회 -->
+	<select id="selectEventList" parameterType="HashMap" resultMap="BaseResultMap">
+		select a.row_num 
+					,a.idx
+				  ,a.stat
+				  ,a.os
+				  ,a.title
+				  ,a.evt_mode
+				  ,a.sday
+				  ,a.eday
+				  ,a.msg_mode
+				  ,a.url
+				  ,a.msg
+				  ,a.reg_tm
+				  ,a.chg_tm
+				  ,a.evt_img
+				  ,a.img_host
+			from (
+			select <if test="top != null and top != ''">
+							top ${top}
+					   </if> 
+								Row_Number()OVER(order by reg_tm desc, convert(varchar, idx))as row_num
+							  ,idx
+							  ,stat
+							  ,os
+							  ,title
+							  ,evt_mode
+							  ,LEFT(CONVERT(VARCHAR, CONVERT(datetime, sday, 120), 120), 10) sday
+							  ,LEFT(CONVERT(VARCHAR, CONVERT(datetime, eday, 120), 120), 10) eday
+							  ,msg_mode
+							  ,url
+							  ,msg
+							  ,LEFT(CONVERT(VARCHAR, CONVERT(datetime, reg_tm, 120), 120), 16) reg_tm
+							  ,LEFT(CONVERT(VARCHAR, CONVERT(datetime, chg_tm, 120), 120), 16) chg_tm
+							  ,evt_img
+							  ,img_host
+						from mw_ws_event
+						where 1=1
+						<choose>
+							<when test="view.equals('dtl')">
+							 	and idx = #{idx,jdbcType=VARCHAR}
+							 	and (os = #{os,jdbcType=VARCHAR}  or os = 'common' )
+							</when>
+							<otherwise>
+								<if test="os != null and os != ''">
+					        and (os = #{os,jdbcType=VARCHAR}  or os = 'common' )
+					    	</if>
+							</otherwise>
+						</choose>
+
+			) a
+				where 1=1
+			<if test="start_row != null and start_row != ''">
+        and row_num BETWEEN #{start_row,jdbcType=INTEGER} AND #{end_row,jdbcType=INTEGER}
+      </if>
+	</select>
+	
+	<!-- 이벤트/공지사항 total count 조회 -->
+	<select id="selectEventListTotalCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		select count(idx) total_count
+		from mw_ws_event
+		where 1=1
+      <if test="os != null and os != ''">
+        and (os = #{os,jdbcType=VARCHAR} or os = 'common') 
+      </if>
+	</select>
+	
+	<!-- 이벤트/공지사항 insert -->
+	<insert id="insertEventReg" parameterType="HashMap">
+		insert into mw_ws_event (
+         reg_tm
+        ,chg_tm
+			<if test="stat != null and stat != ''">
+        ,stat
+      </if>
+      <if test="os != null and os != ''">
+        ,os
+      </if>
+      <if test="title != null and title != ''">
+        ,title
+      </if>
+      <if test="evt_mode != null and evt_mode != ''">
+        ,evt_mode
+      </if>
+      <if test="sday != null and sday != ''">
+        ,sday
+      </if>
+      <if test="eday != null and eday != ''">
+        ,eday
+      </if>
+      <if test="msg_mode != null and msg_mode != ''">
+       ,msg_mode
+      </if>
+       <if test="img_host != null and img_host != ''">
+        ,img_host
+      </if>
+      <if test="url != null and url != ''">
+        ,url
+      </if>
+      <if test="msg != null and msg != ''">
+        ,msg
+      </if>
+      <if test="evt_img != null and evt_img != ''">
+        ,evt_img
+      </if>
+		) values (
+				GETDATE()
+				,GETDATE()
+			<if test="stat != null and stat != ''">
+        ,#{stat,jdbcType=VARCHAR}
+      </if>
+      <if test="os != null and os != ''">
+        ,#{os,jdbcType=VARCHAR}
+      </if>
+      <if test="title != null and title != ''">
+        ,#{title,jdbcType=VARCHAR}
+      </if>
+      <if test="evt_mode != null and evt_mode != ''">
+        ,#{evt_mode,jdbcType=VARCHAR}
+      </if>
+      <if test="sday != null and sday != ''">
+        ,#{sday,jdbcType=VARCHAR}
+      </if>
+      <if test="eday != null and eday != ''">
+        ,#{eday,jdbcType=VARCHAR}
+      </if>
+      <if test="msg_mode != null and msg_mode != ''">
+       ,#{msg_mode,jdbcType=VARCHAR}
+      </if>
+      <if test="img_host != null and img_host != ''">
+        ,#{img_host,jdbcType=VARCHAR}
+      </if>
+      <if test="url != null and url != ''">
+        ,#{url,jdbcType=VARCHAR}
+      </if>
+      <if test="msg != null and msg != ''">
+        ,#{msg,jdbcType=VARCHAR}
+      </if>
+      <if test="evt_img != null and evt_img != ''">
+        ,#{evt_img,jdbcType=VARCHAR}
+      </if>
+		)
+	</insert>
+	
+	<!-- 이벤트/공지사항 update -->
+	<update id="updateEventDtl" parameterType="HashMap">
+		 update mw_ws_event
+	    <set>
+	    	chg_tm = GETDATE()
+	    <if test="stat != null and stat != ''">
+        ,stat = #{stat,jdbcType=VARCHAR}
+      </if>
+      <if test="os != null and os != ''">
+        ,os = #{os,jdbcType=VARCHAR}
+      </if>
+      <if test="title != null and title != ''">
+        ,title = #{title,jdbcType=VARCHAR}
+      </if>
+      <if test="evt_mode != null and evt_mode != ''">
+        ,evt_mode = #{evt_mode,jdbcType=VARCHAR}
+      </if>
+      <if test="sday != null and sday != ''">
+        ,sday = #{sday,jdbcType=VARCHAR}
+      </if>
+      <if test="eday != null and eday != ''">
+        ,eday = #{eday,jdbcType=VARCHAR}
+      </if>
+      <if test="msg_mode != null and msg_mode != ''">
+       ,msg_mode = #{msg_mode,jdbcType=VARCHAR}
+      </if>
+      <if test="evt_img != null and evt_img != ''">
+       ,evt_img = #{evt_img,jdbcType=VARCHAR}
+      </if>
+      ,msg = #{msg,jdbcType=VARCHAR}
+      ,url = #{url,jdbcType=VARCHAR}
+	    </set>
+	    where idx = #{idx,jdbcType=INTEGER}
+	    and os = #{os_org,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 이벤트/공지사항 delete -->
+	<delete id="deleteEventDtl" parameterType="HashMap">
+  	delete from mw_ws_event
+    where idx = #{idx,jdbcType=INTEGER}
+    <if test="os != null and os != ''">
+        and os = #{os,jdbcType=VARCHAR}
+    </if>
+  </delete>
+	
+</mapper>

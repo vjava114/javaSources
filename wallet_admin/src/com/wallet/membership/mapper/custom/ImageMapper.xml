@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.membership.mapper.custom.ImageMapper" >
+
+	<resultMap id="BaseResultMap" type="com.wallet.membership.model.custom.Image" >
+		<result column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="OS_TYPE" property="osType" jdbcType="VARCHAR" />
+		<result column="USE_TYPE" property="useType" jdbcType="VARCHAR" />
+		<result column="LEVEL" property="level" jdbcType="VARCHAR" />
+		<result column="IMAGE_HOST" property="imageHost" jdbcType="VARCHAR" />
+		<result column="IMAGE_URL" property="imageUrl" jdbcType="VARCHAR" />
+		<result column="REG_USER" property="regUser" jdbcType="VARCHAR" />
+		<result column="REG_DTM" property="regDtm" jdbcType="VARCHAR" />
+		<result column="REG_USER_NM" property="regUserNm" jdbcType="VARCHAR" />
+		<result column="CHG_DTM" property="chgUser" jdbcType="VARCHAR" />
+		<result column="CHG_DTM" property="chgDtm" jdbcType="VARCHAR" />
+		<result column="CHG_USER_NM" property="chgUserNm" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="selectImageList" parameterType="HashMap" resultMap="BaseResultMap" >
+		SELECT 
+			S.ID 
+			, S.OS_TYPE 
+			, S.USE_TYPE
+			, S.LEVEL
+			, S.IMAGE_HOST 
+			, S.IMAGE_URL 
+			, S.REG_USER
+			, CONVERT(VARCHAR(10), S.REG_DTM, 120) as REG_DTM 
+			, S.CHG_USER
+			, CONVERT(VARCHAR(10), S.CHG_DTM, 120) as CHG_DTM
+		FROM MW_CM_IMAGE S/*, USER_DESC U1, USER_DESC U2*/
+		WHERE 1=1
+		/*
+		AND U1.USER_ID = S.REG_USER
+		AND U2.USER_ID = S.CHG_USER
+		*/
+		<if test='id != null and id != ""'>
+			AND S.ID = #{id}
+		</if>
+		<if test='osType != null and osType != ""'>
+			AND S.OS_TYPE = #{osType}
+		</if>
+		<if test='useType != null and useType != ""'>
+			AND S.USE_TYPE = #{useType}
+		</if>
+		<if test='level != null and level != ""' >
+			AND S.LEVEL = #{level}
+		</if>
+		<if test='level == null or level == ""' >
+			AND S.LEVEL = ''
+		</if>
+	</select>
+	
+	<select id="selectImageListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS CNT
+		FROM(
+			SELECT 
+				S.ID 
+				, S.OS_TYPE 
+				, S.USE_TYPE
+				, S.LEVEL
+				, S.IMAGE_HOST 
+				, S.IMAGE_URL 
+				, S.REG_USER
+				, CONVERT(VARCHAR(10), S.REG_DTM, 120) as REG_DTM 
+				, S.CHG_USER
+				, CONVERT(VARCHAR(10), S.CHG_DTM, 120) as CHG_DTM
+			FROM MW_CM_IMAGE S/*, USER_DESC U1, USER_DESC U2*/
+			WHERE 1=1
+			/*
+			AND U1.USER_ID = S.REG_USER
+			AND U2.USER_ID = S.CHG_USER
+			*/
+			<if test='id != null and id != ""'>
+				AND S.ID = #{id}
+			</if>
+			<if test='osType != null and osType != ""'>
+				AND S.OS_TYPE = #{osType}
+			</if>
+			<if test='useType != null and useType != ""'>
+				AND S.USE_TYPE = #{useType}
+			</if>
+			<if test='level != null and level != ""' >
+				AND S.LEVEL = #{level}
+			</if>
+			<if test='level == null or level == ""' >
+				AND S.LEVEL = ''
+			</if>
+		)
+	</select>
+	
+	
+	<select id="selectImageInfo" parameterType="HashMap" resultMap="BaseResultMap" >
+		SELECT 
+				S.ID 
+				, S.OS_TYPE 
+				, S.USE_TYPE
+				, S.LEVEL
+				, S.IMAGE_HOST 
+				, S.IMAGE_URL 
+				, S.REG_USER
+				, CONVERT(VARCHAR(10), S.REG_DTM, 120) as REG_DTM 
+				, S.CHG_USER
+				, CONVERT(VARCHAR(10), S.CHG_DTM, 120) as CHG_DTM
+			FROM MW_CM_IMAGE S/*, USER_DESC U1, USER_DESC U2*/
+			WHERE 1=1
+			/*
+			AND U1.USER_ID = S.REG_USER
+			AND U2.USER_ID = S.CHG_USER
+			*/
+			AND S.ID = #{id}
+			AND S.OS_TYPE = #{osType}
+			AND S.USE_TYPE = #{useType}
+			AND S.LEVEL = #{level}
+	</select>
+	
+	<insert id="insertImage" parameterType="HashMap">
+		INSERT INTO MW_CM_IMAGE
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			ID, 
+			OS_TYPE, 
+			USE_TYPE,
+			LEVEL, 
+			IMAGE_HOST, 
+			IMAGE_URL, 
+			REG_USER, 
+			REG_DTM, 
+		</trim>
+		<trim prefix="VALUES(" suffix=")" suffixOverrides="," >
+			#{id}, 
+			#{osType}, 
+			#{useType},
+		<if test='level != null and level != ""' >
+			#{level},
+		</if>
+		<if test='level == null or level == ""' >
+			'',
+		</if>
+			#{imageHost}, 
+			#{imageUrl}, 
+			#{regUser}, 
+			GETDATE(), 
+		</trim>
+	</insert>
+	
+	<delete id="deleteImage" parameterType="HashMap">
+		DELETE
+		FROM MW_CM_IMAGE
+		WHERE 1=1
+		<if test='id != null and id != ""'>
+			AND ID = #{id}
+		</if>
+		<if test='osType != null and osType != ""'>
+			AND OS_TYPE = #{osType}
+		</if>
+		<if test='useType != null and useType != ""'>
+			AND USE_TYPE = #{useType}
+		</if>
+		<!--if test='level != "" and  level != null'  -->
+			AND LEVEL = #{level}
+		<!--</if> -->
+	</delete>
+</mapper>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!--
+ 쿼리 원문을 관리하는 곳 입니다.
+ 이곳에서 원문을 추가한 뒤, ServiceImpl 에서도 내용을 추가해 줘야 Other가 제대로 인식됩니다.
+ -->
+
+<sqlMap namespace="swQuery">
+
+
+	<sql id="select-Other">
+		SELECT
+		event.*,
+		sw.sw_no  user_no,
+		sw.phone uphone,
+		sw.name,
+		shop_name,
+		shop_phone,
+		'-' angel_code,
+		'-' angel_name,
+		( SELECT count(*) FROM vb_coupon WHERE event.evt_code = evt_code AND
+		event.brand = brand AND event.userno = userno ) coupon_cnt,
+		date_format(rdate,'%y-%m-%d %H:%i') fdate
+	</sql>
+	<sql id="from-Other">
+		FROM
+		hera_event event
+		LEFT JOIN
+		sw_user sw
+		ON
+		event.userno = sw.user_no
+	</sql>
+	
+	
+	<sql id="select-130308">
+		SELECT
+		event.*,
+		sw.sw_no  user_no,
+		sw.phone uphone,
+		sw.name,
+		shop_name,
+		shop_phone,
+		'-' angel_code,
+		'-' angel_name,
+		( SELECT count(*) FROM sw3_coupon WHERE event.evt_code = evt_code AND
+		event.brand = brand AND event.userno = userno ) coupon_cnt,
+		date_format(rdate,'%y-%m-%d %H:%i') fdate
+	</sql>
+	<sql id="from-130308">
+		FROM
+		hera_event event
+		LEFT JOIN
+		sw3_user sw
+		ON
+		event.userno = sw.user_no
+	</sql>
+
+	<sql id="select-130227">
+		SELECT
+		event.*,
+		sw.no user_no,
+		sw.phone uphone,
+		sw.name,
+		shop_name,
+		shop_phone,
+		'-' angel_name,
+		( SELECT img_cnt FROM sw3_coupon WHERE event.evt_code = evt_code AND
+		event.brand = brand AND event.userno = userno) angel_code,
+		( SELECT btn_cnt FROM sw3_coupon WHERE event.evt_code = evt_code AND
+		event.brand = brand AND event.userno = userno ) coupon_cnt,
+		date_format(rdate,'%y-%m-%d %H:%i') fdate
+	</sql>
+	<sql id="from-130227">
+		FROM
+		hera_event event
+		LEFT JOIN
+		sw3_user sw
+		ON
+		event.userno = sw.user_no
+	</sql>
+
+
+	<sql id="select-130404">
+		SELECT
+		event.*,
+		sw.no user_no,
+		sw.phone uphone,
+		sw.name,
+		shop_name,
+		shop_phone,
+		'-' angel_name,
+		( SELECT btn_cnt FROM sw0404_coupon WHERE event.evt_code = evt_code AND
+		event.brand = brand AND event.userno = userno ) coupon_cnt,
+		date_format(rdate,'%y-%m-%d %H:%i') fdate
+	</sql>
+	<sql id="from-130404">
+		FROM
+		hera_event event
+		LEFT JOIN
+		sw0404_user sw
+		ON
+		event.userno = sw.user_no
+	</sql>
+
+	<sql id="select-130131">
+		SELECT
+		event.*,
+		sw.no user_no,
+		sw.phone uphone,
+		sw.name,
+		shop_name,
+		shop_phone,
+		'-' angel_code,
+		'-' angel_name,
+		( SELECT count(*) FROM vb_coupon WHERE event.evt_code = evt_code AND
+		event.brand = brand AND event.userno = userno ) coupon_cnt,
+		date_format(rdate,'%y-%m-%d %H:%i') fdate
+	</sql>
+	<sql id="from-130131">
+		FROM
+		hera_event event
+		LEFT JOIN
+		sw2_user sw
+		ON
+		event.userno = sw.user_no
+	</sql>
+
+</sqlMap>

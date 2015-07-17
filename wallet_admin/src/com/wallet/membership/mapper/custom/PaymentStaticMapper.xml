@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.membership.mapper.custom.PaymentStaticMapper" >
+	<resultMap id="BaseResultMap" type="com.wallet.membership.model.custom.PaymentStatic" >
+		<result column="PAYCOMP_ID" property="payCompId" jdbcType="VARCHAR" />
+		<result column="PAYCOMP_NAME" property="paymentCompName" jdbcType="VARCHAR" />
+		<result column="CPN_ID" property="cpnId" jdbcType="VARCHAR" />
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="STAT_DAY" property="statDay" jdbcType="VARCHAR" />
+		<result column="DOWN_CNT" property="downCnt" jdbcType="INTEGER" />
+		<result column="DEL_CNT" property="delCnt" jdbcType="INTEGER" />
+		<result column="AUTH_CNT" property="authCnt" jdbcType="INTEGER" />
+		<result column="AUTH_CANCEL_CNT" property="authCancelCnt" jdbcType="INTEGER" />
+	</resultMap>
+
+	<!-- 조회조건에 대한 결제사 목록 -->
+	<select id="selectPaymentStaticDayList" parameterType="HashMap" resultMap="BaseResultMap" >
+		SELECT
+		  D.PAYCOMP_ID
+		  , E.PAYCOMP_NAME
+		  , A.CPN_ID
+		  , B.NAME
+		  , SUBSTRING(A.STAT_DAY,0,5)+'-'+SUBSTRING(A.STAT_DAY,5,2)+'-'+SUBSTRING(A.STAT_DAY,7,2) as STAT_DAY
+		  , SUM(A.DOWN_CNT) AS DOWN_CNT
+		  , SUM(A.DEL_CNT) AS DEL_CNT
+		  , SUM(A.AUTH_CNT) AS AUTH_CNT
+		  , SUM(A.AUTH_CANCEL_CNT) AS AUTH_CANCEL_CNT
+	  FROM MW_CS_CPN_DAY_STAT A
+ 		       INNER JOIN CPN_LIST B ON A.CPN_ID = B.CPN_ID
+  		       INNER JOIN MW_CS_CPN_LIST C ON A.CPN_ID = C.CPN_ID
+  		       INNER JOIN MW_CS_CPN_PAYCOMP D ON A.CPN_ID = D.CPN_ID
+  		       INNER JOIN MW_CM_PAYCOMPANY E ON D.PAYCOMP_ID = E.PAYCOMP_ID
+		  WHERE B.COMP_PAY_YN = 'Y' 
+		  AND C.PAYCOM_SVC_LIST = 'Y' 
+		
+		<if test='payCompId != null and payCompId != ""'>
+			AND D.PAYCOMP_ID = '${payCompId}'
+		</if>
+		<if test="name != null">
+			AND B.NAME LIKE '%${name}%'
+		</if>
+		<if test='paycompName != null and paycompName != ""'>
+			AND E.PAYCOMP_NAME LIKE '%${paycompName}%'
+		</if>
+		<if test='sdate != null and sdate != ""'>
+			<![CDATA[
+			AND A.STAT_DAY >= REPLACE(#{sdate}, '-', '')
+			]]>
+		</if>
+		<if test='edate != null and edate != ""'>
+			<![CDATA[
+			AND A.STAT_DAY <= REPLACE(#{edate}, '-', '')
+			]]>
+		</if>
+		  GROUP BY D.PAYCOMP_ID , E.PAYCOMP_NAME , A.CPN_ID , B.NAME, A.STAT_DAY
+	</select>
+	
+	<!-- 다이나믹으로 돌려야 할때 사용하는 부분 -->
+	<resultMap type="hashMap" id="dataMap">
+		<result property="contents" column="contents" jdbcType="CLOB" javaType="java.lang.String" />
+	</resultMap>
+	
+	<select id="selectPaymentStaticMonthList" parameterType="map" resultMap="dataMap">
+		SELECT		
+			  D.PAYCOMP_ID
+			, E.PAYCOMP_NAME
+			, A.CPN_ID
+			, B.NAME
+			, CASE WHEN STAT_TYPE='11' THEN  '다운로드 ' WHEN STAT_TYPE='12' THEN '삭제' WHEN STAT_TYPE='13' THEN '승인' WHEN STAT_TYPE='14' THEN '승인취소' END AS STAT_TYPE
+			${subQuery}
+			/*
+			, SUM(CASE WHEN STAT_MONTH = '201209' THEN ISNULL(A.USER_CNT,0) ELSE 0 END) AS CNT1 -- 기간만큼 필요
+			, SUM(CASE WHEN STAT_MONTH = SUBSTRING( REPLACE(CONVERT(VARCHAR(50),DATEADD(M,+1,CONVERT(datetime,'201209'+'01')),120),'-',''),1,6) THEN ISNULL(A.USER_CNT,0) ELSE 0 END) AS CNT2
+			, SUM(CASE WHEN STAT_MONTH = SUBSTRING( REPLACE(CONVERT(VARCHAR(50),DATEADD(M,+2,CONVERT(datetime,'201209'+'01')),120),'-',''),1,6) THEN ISNULL(A.USER_CNT,0) ELSE 0 END) AS CNT3
+			, SUM(CASE WHEN STAT_MONTH = SUBSTRING( REPLACE(CONVERT(VARCHAR(50),DATEADD(M,+3,CONVERT(datetime,'201209'+'01')),120),'-',''),1,6) THEN ISNULL(A.USER_CNT,0) ELSE 0 END) AS CNT4
+			, SUM(ISNULL(A.USER_CNT,0)) AS SUM_CNT -- 합계
+			*/
+
+		FROM MW_CS_CPN_MONTH_STAT A
+			       INNER JOIN CPN_LIST B ON A.CPN_ID = B.CPN_ID
+			       INNER JOIN MW_CS_CPN_LIST C ON A.CPN_ID = C.CPN_ID
+			       INNER JOIN MW_CS_CPN_PAYCOMP D ON A.CPN_ID = D.CPN_ID
+			       INNER JOIN MW_CM_PAYCOMPANY E ON D.PAYCOMP_ID = E.PAYCOMP_ID
+			WHERE B.COMP_PAY_YN = 'Y' -- 복합결제이고
+			AND C.PAYCOM_SVC_LIST = 'Y' -- 결제사제한사용'Y'인 경우
+			AND A.STAT_TYPE NOT IN ('15','16')
+
+		<if test='payCompId != null and payCompId != ""'>
+			AND D.PAYCOMP_ID = '${payCompId}'
+		</if>
+		<if test="name != null">
+			AND B.NAME LIKE '%${name}%'
+		</if>
+		<if test='sdate != null and sdate != ""'>
+			<![CDATA[
+			AND A.STAT_MONTH  >= LEFT(REPLACE(#{sdate}, '-', ''), 6)
+			]]>
+		</if>
+		<if test='edate != null and edate != ""'>
+			<![CDATA[
+			AND A.STAT_MONTH  <= LEFT(REPLACE(#{edate}, '-', ''), 6)
+			]]>
+		</if>
+			GROUP BY D.PAYCOMP_ID, E.PAYCOMP_NAME , A.CPN_ID , B.NAME , STAT_TYPE
+	</select>
+	
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wallet.admin.mapper.MwAdMenuMapper">
+  <resultMap id="BaseResultMap" type="com.wallet.admin.model.MwAdMenu">
+  	<id column="code" jdbcType="VARCHAR" property="code" />
+  	<result column="admin_level" jdbcType="VARCHAR" property="adminLevel" />
+    <result column="upper_code" jdbcType="VARCHAR" property="upperCode" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="RG_DAY" jdbcType="NVARCHAR" property="rgDay" />
+    <result column="CH_USID" jdbcType="VARCHAR" property="chUsid" />
+    <result column="CH_DAY" jdbcType="NVARCHAR" property="chDay" />
+    <result column="URL" jdbcType="VARCHAR" property="url" />
+    <result column="USE_YN" jdbcType="VARCHAR" property="useYn" />
+    <result column="EXPS_YN" jdbcType="VARCHAR" property="expsYn" />
+    <result column="EXPS_MDC" jdbcType="VARCHAR" property="expsMdc" />
+    <result column="ODRER_SEQ" jdbcType="INTEGER" property="odrerSeq" />
+    <result column="MENU_DPH" jdbcType="INTEGER" property="menuDph" />
+  </resultMap>
+ 
+ 
+ 	<!-- 메뉴  TB 조회 -->
+	<select id="selectMenuList" parameterType="HashMap" resultMap="BaseResultMap">
+		select code
+					,admin_level
+		      ,name
+		      ,rg_day
+		      ,ch_usid
+		      ,ch_day
+		      ,url
+		      ,use_yn
+		      ,exps_yn
+		      ,exps_mdc
+		      ,odrer_seq
+		      ,menu_dph
+		  from mw_ad_menu_top
+		  <where>
+		  	<if test="use_yn != null and use_yn != ''">
+		        and use_yn = #{use_yn,jdbcType=VARCHAR}
+				</if>
+		  	<if test="menu_dph != null and menu_dph != ''">
+		        and menu_dph = #{menu_dph,jdbcType=VARCHAR}
+				</if>
+				<if test="admin_level != null and admin_level != ''">
+		        and admin_level = #{admin_level,jdbcType=VARCHAR}
+				</if>
+		  </where>
+		  order by odrer_seq asc
+	</select>
+	
+	<!-- SUB 메뉴  TB 조회 -->
+	<select id="selectSubMenuList" parameterType="HashMap" resultMap="BaseResultMap">
+		select code
+					,admin_level
+					,upper_code
+		      ,name
+		      ,rg_day
+		      ,ch_usid
+		      ,ch_day
+		      ,url
+		      ,use_yn
+		      ,exps_yn
+		      ,exps_mdc
+		      ,odrer_seq
+		      ,menu_dph
+		  from mw_ad_menu
+		  <where>
+		  	<if test="use_yn != null and use_yn != ''">
+		        and use_yn = #{use_yn,jdbcType=VARCHAR}
+				</if>
+		  	<if test="menu_dph != null and menu_dph != ''">
+		        and menu_dph = #{menu_dph,jdbcType=VARCHAR}
+				</if>
+				<if test="url != null and url != ''">
+		        and url = #{url,jdbcType=VARCHAR}
+				</if>
+				<if test="admin_level != null and admin_level != ''">
+		        and admin_level = #{admin_level,jdbcType=VARCHAR}
+				</if>
+		  </where>
+		  order by odrer_seq asc
+	</select>
+	
+</mapper>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.admin.mapper.MwAdUserMapper" >
+  <resultMap id="BaseResultMap" type="com.wallet.admin.model.MwAdUser" >
+    <result column="MGR_ID" property="mgrId" jdbcType="VARCHAR" />
+    <result column="passwd" property="passwd" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="part" property="part" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="RG_DAY" property="rgDay" jdbcType="NVARCHAR" />
+    <result column="CH_USID" property="chUsid" jdbcType="VARCHAR" />
+    <result column="CH_DAY" property="chDay" jdbcType="NVARCHAR" />
+    <result column="stat" property="stat" jdbcType="VARCHAR" />
+    <result column="retry_cnt" property="retryCnt" jdbcType="INTEGER" />
+    <result column="exp_date" property="expDate" jdbcType="VARCHAR" />
+    <result column="pwd_end_day" property="pwdEndDay" jdbcType="VARCHAR" />
+    <result column="ipaddress" property="ipaddress" jdbcType="VARCHAR" />
+    <result column="lev" property="lev" jdbcType="VARCHAR" />
+  </resultMap>
+  
+	
+	<!-- TB select -->
+	<select id="selectUserList" parameterType="HashMap" resultMap="BaseResultMap">
+		select <if test="top != null and top != ''">
+							top ${top}
+					</if>
+					 mgr_id
+		      ,passwd
+		      ,name
+		      ,part
+		      ,phone
+		      ,email
+		      ,rg_day
+		      ,ch_usid
+		      ,ch_day
+		      ,stat
+		      ,retry_cnt
+		      ,lev
+		      ,convert(varchar, convert(datetime, exp_date, 112), 112) exp_date
+		      ,DATEDIFF ( day , GETDATE() , exp_date ) pwd_end_day
+		      ,ipaddress
+		  from mw_ad_user_mgr
+		  <where>
+		  	<choose>
+					<when test="view.equals('dtl')">
+					 	and mgr_id = #{mgr_id,jdbcType=VARCHAR}
+					 	
+					 	<if test="passwd != null and passwd != ''">
+			        and passwd = #{passwd,jdbcType=VARCHAR}
+						</if>
+					</when>
+				</choose>
+		  </where>
+		  order by mgr_id asc
+	</select>
+
+	 <!-- INSERT -->
+  <insert id="insertUserReg" parameterType="HashMap">
+  	insert into mw_ad_user_mgr (
+  			rg_day
+  		 ,ch_day
+  		 ,exp_date
+  		 ,login_date
+			<if test="mgr_id != null and mgr_id != ''">
+        ,mgr_id
+			</if>
+			<if test="passwd != null and passwd != ''">
+        ,passwd
+			</if>
+			<if test="name != null and name != ''">
+        ,name
+			</if>
+			<if test="part != null and part != ''">
+        ,part
+			</if>
+			<if test="phone != null and phone != ''">
+        ,phone
+			</if>
+			<if test="email != null and email != ''">
+        ,email
+			</if>
+			<if test="ch_usid != null and ch_usid != ''">
+        ,ch_usid
+			</if>
+			<if test="stat != null and stat != ''">
+        ,stat
+			</if>
+			<if test="retry_cnt != null and retry_cnt != ''">
+        ,retry_cnt
+			</if>
+			<if test="lev != null and lev != ''">
+        ,lev
+			</if>
+		)	VALUES  (
+			 GETDATE()
+			,GETDATE()
+			,DATEADD(MONTH,3,GETDATE()) 
+			,GETDATE()
+			<if test="mgr_id != null and mgr_id != ''">
+        ,#{mgr_id,jdbcType=VARCHAR}
+			</if>
+			<if test="passwd != null and passwd != ''">
+        ,#{passwd,jdbcType=VARCHAR}
+			</if>
+			<if test="name != null and name != ''">
+        ,#{name,jdbcType=VARCHAR}
+			</if>
+			<if test="part != null and part != ''">
+        ,#{part,jdbcType=VARCHAR}
+			</if>
+			<if test="phone != null and phone != ''">
+        ,#{phone,jdbcType=VARCHAR}
+			</if>
+			<if test="email != null and email != ''">
+        ,#{email,jdbcType=VARCHAR}
+			</if>
+			<if test="ch_usid != null and ch_usid != ''">
+        ,#{ch_usid,jdbcType=VARCHAR}
+			</if>
+			<if test="stat != null and stat != ''">
+        ,#{stat,jdbcType=VARCHAR}
+			</if>
+			<if test="retry_cnt != null and retry_cnt != ''">
+        ,#{retry_cnt,jdbcType=INTEGER}
+			</if>
+			<if test="lev != null and lev != ''">
+        ,#{lev,jdbcType=VARCHAR}
+			</if>
+		)
+  </insert>
+  
+  <!-- TB UPDATE -->
+	<update id="updateUserDtl" parameterType="HashMap">
+		update mw_ad_user_mgr
+		<set>
+				ch_day = GETDATE()
+			<if test="mgr_id != null and mgr_id != ''">
+        ,mgr_id = #{mgr_id,jdbcType=VARCHAR}
+			</if>
+			<if test="passwd != null and passwd != ''">
+        ,passwd = #{passwd,jdbcType=VARCHAR}
+			</if>
+			<if test="name != null and name != ''">
+        ,name = #{name,jdbcType=VARCHAR}
+			</if>
+			<if test="part != null and part != ''">
+        ,part = #{part,jdbcType=VARCHAR}
+			</if>
+			<if test="phone != null and phone != ''">
+        ,phone = #{phone,jdbcType=VARCHAR}
+			</if>
+			<if test="email != null and email != ''">
+        ,email = #{email,jdbcType=VARCHAR}
+			</if>
+			<if test="ch_usid != null and ch_usid != ''">
+        ,ch_usid = #{ch_usid,jdbcType=VARCHAR}
+			</if>
+			<if test="stat != null and stat != ''">
+        ,stat = #{stat,jdbcType=VARCHAR}
+			</if>
+			<if test="retry_cnt != null and retry_cnt != ''">
+        ,retry_cnt = #{retry_cnt,jdbcType=INTEGER}
+			</if>
+			<if test="lev != null and lev != ''">
+        ,lev = #{lev,jdbcType=VARCHAR}
+			</if>
+			<if test="end_day != null and end_day != ''">
+				,exp_date = DATEADD(day,#{end_day,jdbcType=INTEGER},GETDATE())
+			</if>
+		</set>
+		<where>
+			and mgr_id = #{mgr_id_org,jdbcType=INTEGER}
+		</where>
+  </update>
+  
+  <!-- UPDATE -->
+	<update id="updateUserPasswd" parameterType="HashMap">
+		update mw_ad_user_mgr
+		<set>
+				ch_day = GETDATE()
+			 ,exp_date = DATEADD(MONTH,3,GETDATE())
+			 ,retry_cnt = 0 
+			<if test="passwd != null and passwd != ''">
+        ,passwd = #{passwd,jdbcType=VARCHAR}
+			</if>
+			<if test="ch_usid != null and ch_usid != ''">
+        ,ch_usid = #{ch_usid,jdbcType=VARCHAR}
+			</if>
+		</set>
+		<where>
+			and mgr_id = #{mgr_id,jdbcType=INTEGER}
+		</where>
+  </update>
+  
+	<!-- TB DELETE -->
+	<delete id="deleteUserDtl" parameterType="HashMap">
+		delete from mw_ad_user_mgr
+		<where>
+			mgr_id = #{mgr_id,jdbcType=INTEGER}
+		</where>
+  </delete>
+
+</mapper>

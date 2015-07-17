@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.admin.mapper.MwAdFaqMapper" >
+  <resultMap id="BaseResultMap" type="com.wallet.admin.model.MwAdFaq" >
+    <id column="idx" property="idx" jdbcType="INTEGER" />
+    <result column="part" property="part" jdbcType="VARCHAR" />
+    <result column="reg_tm" property="regTm" jdbcType="VARCHAR" />
+    <result column="chg_tm" property="chgTm" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+     <result column="answer" property="answer" jdbcType="VARCHAR" />
+     <result column="os" property="os" jdbcType="VARCHAR" />
+  </resultMap>
+  
+
+	<!-- FAQ TB 조회 -->
+	<select id="selectFaqList" parameterType="HashMap" resultMap="BaseResultMap">
+		select a.row_num
+		      ,a.idx
+	        ,part
+				  ,title
+				  ,answer
+				  ,os
+				  ,LEFT(CONVERT(VARCHAR, CONVERT(datetime, reg_tm, 120), 120), 10) reg_tm
+				  ,LEFT(CONVERT(VARCHAR, CONVERT(datetime, chg_tm, 120), 120), 10) chg_tm
+			from (
+					select	<if test="top != null and top != ''">
+											top ${top}
+									</if>   
+									Row_Number()OVER(order by idx desc,reg_tm desc, convert(varchar, idx))as row_num
+					 				,*
+					from mw_ws_faq
+					<where>
+						<choose>
+							<when test="view.equals('dtl')">
+							 and idx = #{idx,jdbcType=VARCHAR}
+							</when>
+						</choose>
+					</where>
+			) a
+			<where>
+				<if test="start_row != null and start_row != ''">
+        	row_num BETWEEN #{start_row,jdbcType=INTEGER} AND #{end_row,jdbcType=INTEGER}
+      	</if>
+			</where>
+	</select>
+	
+	<!-- FAQtotal count 조회 -->
+	<select id="selectFaqListTotalCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		select count(idx) total_count
+		from mw_ws_faq
+	</select>
+
+	 <!-- FAQ 등록 INSERT -->
+  <insert id="insertFaqReg" parameterType="HashMap">
+  	insert into mw_ws_faq (
+  				reg_tm
+				,chg_tm
+  		<if test="part != null and part != ''">
+        ,part
+			</if>
+			<if test="title != null and title != ''">
+        ,title
+			</if>
+			<if test="answer != null and answer != ''">
+        ,answer
+			</if>
+			<if test="os != null and os != ''">
+        ,os
+			</if>
+		)	VALUES  (
+				 GETDATE()
+				,GETDATE()
+			<if test="part != null and part != ''">
+        ,#{part,jdbcType=VARCHAR}
+			</if>
+			<if test="title != null and title != ''">
+        ,#{title,jdbcType=VARCHAR}
+			</if>
+			<if test="answer != null and answer != ''">
+        ,#{answer,jdbcType=VARCHAR}
+			</if>
+			<if test="os != null and os != ''">
+        ,#{os,jdbcType=VARCHAR}
+			</if>
+		)
+  </insert>
+  
+  <!-- FAQ TB UPDATE -->
+	<update id="updateFaqDtl" parameterType="HashMap">
+		update mw_ws_faq
+		<set>
+				chg_tm = GETDATE()
+			<if test="part != null and part != ''">
+        ,part = #{part,jdbcType=VARCHAR}
+			</if>
+			<if test="title != null and title != ''">
+        ,title = #{title,jdbcType=VARCHAR}
+			</if>
+			<if test="answer != null and answer != ''">
+        ,answer = #{answer,jdbcType=VARCHAR}
+			</if>
+			<if test="os != null and os != ''">
+        ,os = #{os,jdbcType=VARCHAR}
+			</if>
+		</set>
+		<where>
+			idx = #{idx,jdbcType=VARCHAR}
+		</where>
+  </update>
+  
+	<!-- FAQ TB DELETE -->
+	<delete id="deleteFaqDtl" parameterType="HashMap">
+		delete from mw_ws_faq
+		<where>
+			idx = #{idx,jdbcType=INTEGER}
+		</where>
+  </delete>
+
+	
+</mapper>

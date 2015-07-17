@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wallet.harex.mapper.TransMstMapper">   
+
+	<resultMap id="ResultTransMst" type="com.wallet.harex.model.TransMst"> 
+		<id column="SEQ" property="seq" 	jdbcType="VARCHAR" />
+		<result column="ACPOS_TID" jdbcType="VARCHAR" property="acposTid"/> 
+		<result column="TR_FG" jdbcType="VARCHAR" property="trFg"/>
+		<result column="CSTATUS" jdbcType="VARCHAR" property="cstatus"/>
+		<result column="PSTATUS" jdbcType="VARCHAR" property="pstatus"/>
+		<result column="TR_STATUS" jdbcType="VARCHAR" property="trStatus"/> 
+		<result column="OFFER_ID" jdbcType="VARCHAR" property="offerId"/>
+		<result column="CUST_ID" jdbcType="VARCHAR" property="custId"/> 
+		<result column="PHONE_NO" jdbcType="VARCHAR" property="phoneNo"/>
+		<result column="TCODE" jdbcType="VARCHAR" property="tcode"/>
+		<result column="SERVICE_ID" jdbcType="VARCHAR" property="serviceId"/>
+		<result column="K_SHOP_ID" jdbcType="VARCHAR" property="kShopId"/>
+		<result column="MOCAPAY_TID" jdbcType="VARCHAR" property="mocapayTid"/> 
+		<result column="MOCAPAY_TDATE" jdbcType="VARCHAR" property="mocapayTdate"/>
+		<result column="MOCAPAY_TTIME" jdbcType="VARCHAR" property="mocapayTtime"/>
+		<result column="TTL_PRICE" jdbcType="INTEGER" property="ttlPrice"/>
+		<result column="EXP_TTL_PRICE" jdbcType="INTEGER" property="expTtlPrice"/>
+		<result column="REAL_TTL_PRICE" jdbcType="INTEGER" property="realTtlPrice"/> 
+		<result column="EXP_CPN_DC_PRICE" jdbcType="INTEGER" property="expCpnDcPrice"/>
+		<result column="EXP_MEMB_DC_PRICE" jdbcType="INTEGER" property="expMembDcPrice"/> 
+		<result column="EXP_MEMB_USE_POINT" jdbcType="INTEGER" property="expMembUsePoint"/>
+		<result column="EXP_MEMB_SAVE_POINT" jdbcType="INTEGER" property="expMembSavePoint"/> 
+		<result column="EXP_STAMP_SAVE_CNT" jdbcType="INTEGER" property="expStampSaveCnt"/>
+		<result column="REAL_CPN_DC_PRICE" jdbcType="INTEGER" property="realCpnDcPrice"/> 
+		<result column="REAL_MEMB_DC_PRICE" jdbcType="INTEGER" property="realMembDcPrice"/>
+		<result column="REAL_MEMB_USE_POINT" jdbcType="INTEGER" property="realMembUsePoint"/> 
+		<result column="REAL_MEMB_SAVE_POINT" jdbcType="INTEGER" property="realMembSavePoint"/>
+		<result column="REAL_STAMP_SAVE_CNT" jdbcType="INTEGER" property="realStampSaveCnt"/> 
+		<result column="ORG_ACPOS_TID" jdbcType="VARCHAR" property="orgAcposTid"/>
+		<result column="ORG_ACPOS_TDATE" jdbcType="VARCHAR" property="orgAcposTdate"/> 
+		<result column="ORG_MOCAPAY_TID" jdbcType="VARCHAR" property="orgMocapayTid"/> 
+		<result column="ORG_MOCAPAY_TDATE" jdbcType="VARCHAR" property="orgMocapayTdate"/> 
+		<result column="TR_DATE" jdbcType="VARCHAR" property="trDate"/> 
+		<result column="MP_BRANCH" jdbcType="VARCHAR" property="mpBranch"/> 
+		<result column="MP_SEQ" jdbcType="VARCHAR" property="mpSeq"/>
+		<result column="REG_DTTM" jdbcType="VARCHAR" property="regDttm"/>
+		<result column="LAST_DTTM" jdbcType="VARCHAR" property="lastDttm"/> 
+		<result column="NCANCEL_YN" jdbcType="VARCHAR" property="ncancelYn"/>   
+	</resultMap>
+	
+	<resultMap id="ResultTransMstCpn" type="com.wallet.harex.model.TransMstCpn"> 
+		<id column="SEQ" property="seq" 	jdbcType="VARCHAR" />
+		<result column="ACPOS_TID" jdbcType="VARCHAR" property="acposTid"/>          
+		<result column="CPN_ID" jdbcType="VARCHAR" property="cpnId"/>              
+		<result column="PSTATUS" jdbcType="VARCHAR" property="pstatus"/>           
+		<result column="CODE" jdbcType="VARCHAR" property="code"/>           
+		<result column="MSG" jdbcType="VARCHAR" property="msg"/>          
+		<result column="CPN_NO" jdbcType="VARCHAR" property="cpnNo"/>           
+		<result column="EXP_DC_PRICE" jdbcType="VARCHAR" property="expDcPrice"/>            
+		<result column="REAL_DC_PRICE" jdbcType="VARCHAR" property="realDcPrice"/>           
+		<result column="CALC_BASE_PRICE" jdbcType="VARCHAR" property="calcBasePrice"/>             
+		<result column="APPR_NO" jdbcType="VARCHAR" property="apprNo"/>         
+		<result column="APPR_DATE" jdbcType="VARCHAR" property="apprDate"/>           
+		<result column="APPR_TIME" jdbcType="VARCHAR" property="apprTime"/>        
+		<result column="ORG_APPR_NO" jdbcType="VARCHAR" property="orgApprNo"/>      
+		<result column="TR_DATE" jdbcType="VARCHAR" property="trDate"/>      
+		<result column="REG_DTTM" jdbcType="VARCHAR" property="regDttm"/>         
+		<result column="LAST_DTTM" jdbcType="VARCHAR" property="lastDttm"/>      
+	</resultMap>
+	
+	<resultMap id="ResultTransMstMsDc" type="com.wallet.harex.model.TransMstMsDc"> 
+		<id column="SEQ" property="seq" 	jdbcType="VARCHAR" />
+		<result column="ACPOS_TID" jdbcType="VARCHAR" property="acposTid" />       
+		<result column="MEMB_ID" jdbcType="VARCHAR" property="membId" />         
+		<result column="PSTATUS" jdbcType="VARCHAR" property="pstatus" />        
+		<result column="CODE" jdbcType="VARCHAR" property="code" />           
+		<result column="MSG" jdbcType="VARCHAR" property="msg" />            
+		<result column="MEMB_CARD_NO" jdbcType="VARCHAR" property="membCardNo" />      
+		<result column="EXP_MEMB_DC_PRICE" jdbcType="INTEGER" property="expMembDcPrice" />  
+		<result column="REAL_MEMB_DC_PRICE" jdbcType="INTEGER" property="realMembDcPrice" /> 
+		<result column="CALC_BASE_PRICE" jdbcType="INTEGER" property="calcBasePrice" />   
+		<result column="APPR_NO" jdbcType="VARCHAR" property="apprNo" />          
+		<result column="APPR_DATE" jdbcType="VARCHAR" property="apprDate" />        
+		<result column="APPR_TIME" jdbcType="VARCHAR" property="apprTime" />        
+		<result column="ORG_APPR_NO" jdbcType="VARCHAR" property="orgApprNo" />       
+		<result column="TR_DATE" jdbcType="VARCHAR" property="trDate" />          
+		<result column="SELF_MEMB_YN" jdbcType="VARCHAR" property="selfMembYn" />      
+		<result column="COMP_ID" jdbcType="VARCHAR" property="compId" />          
+		<result column="BRAND_ID" jdbcType="VARCHAR" property="brandId" />         
+		<result column="REG_DTTM" jdbcType="VARCHAR" property="regDttm" />         
+		<result column="LAST_DTTM" jdbcType="VARCHAR" property="lastDttm" />
+	</resultMap>
+
+	<resultMap id="ResultTransMstMsUse" type="com.wallet.harex.model.TransMstMsUse"> 
+		<id column="SEQ" property="seq" 	jdbcType="VARCHAR"/>
+		<result column="ACPOS_TID" jdbcType="VARCHAR" property="acposTid"/>
+		<result column="MEMB_ID" jdbcType="VARCHAR" property="membId"/>
+		<result column="PSTATUS" jdbcType="VARCHAR" property="pstatus"/>
+		<result column="CODE" jdbcType="VARCHAR" property="code"/>
+		<result column="MSG" jdbcType="VARCHAR" property="msg"/>
+		<result column="MEMB_CARD_NO" jdbcType="VARCHAR" property="membCardNo"/>
+		<result column="REQ_USE_POINT" jdbcType="INTEGER" property="reqUsePoint"/>
+		<result column="REAL_USE_POINT" jdbcType="INTEGER" property="realUsePoint"/>
+		<result column="CALC_BASE_PRICE" jdbcType="INTEGER" property="calcBasePrice"/>
+		<result column="ACCUM_POINT" jdbcType="INTEGER" property="accumPoint"/>
+		<result column="USABLE_POINT" jdbcType="INTEGER" property="usablePoint"/>
+		<result column="APPR_NO" jdbcType="VARCHAR" property="apprNo"/>
+		<result column="APPR_DATE" jdbcType="VARCHAR" property="apprDate"/>
+		<result column="APPR_TIME" jdbcType="VARCHAR" property="apprTime"/>
+		<result column="ORG_APPR_NO" jdbcType="VARCHAR" property="orgApprNo"/>
+		<result column="TR_DATE" jdbcType="VARCHAR" property="trDate"/>
+		<result column="SELF_MEM_YN" jdbcType="VARCHAR" property="selfMemYn"/>
+		<result column="COMP_ID" jdbcType="VARCHAR" property="compId"/>
+		<result column="BRD_ID" jdbcType="VARCHAR" property="brdId"/>
+		<result column="REG_DTTM" jdbcType="VARCHAR" property="regDttm"/>                                     
+		<result column="LAST_DTTM" jdbcType="VARCHAR" property="lastDttm"/>
+	</resultMap>
+
+	<resultMap id="ResultTransMstSave" type="com.wallet.harex.model.TransMstSave"> 
+		<id column="SEQ" property="seq" 	jdbcType="VARCHAR" />
+		<result column="ACPOS_TID" jdbcType="VARCHAR" property="acposTid" />                       
+		<result column="MEMB_ID" jdbcType="VARCHAR" property="membId" />       
+		<result column="CODE" jdbcType="VARCHAR" property="code" />         
+		<result column="PSTATUS" jdbcType="VARCHAR" property="pstatus" />                         
+		<result column="MSG" jdbcType="VARCHAR" property="msg" />                             
+		<result column="MEMB_CARD_NO" jdbcType="VARCHAR" property="membCardNo" />                      
+		<result column="EXP_SAVE_POINT" jdbcType="INTEGER" property="expSavePoint" />                    
+		<result column="REAL_SAVE_POINT" jdbcType="INTEGER" property="realSavePoint" />                   
+		<result column="ACCUM_POINT" jdbcType="INTEGER" property="accumPoint" />                      
+		<result column="USABLE_POINT" jdbcType="INTEGER" property="usablePoint" />                     
+		<result column="APPR_NO" jdbcType="VARCHAR" property="apprNo" />                          
+		<result column="APPR_DATE" jdbcType="VARCHAR" property="apprDate" />                        
+		<result column="APPR_TIME" jdbcType="VARCHAR" property="apprTime" />                        
+		<result column="ORG_APPR_NO" jdbcType="VARCHAR" property="orgApprNo" />                       
+		<result column="TR_DATE" jdbcType="VARCHAR" property="trDate" />                          
+		<result column="SELF_MEM_YN" jdbcType="VARCHAR" property="selfMemYn" />                       
+		<result column="COMP_ID" jdbcType="VARCHAR" property="compId" />                          
+		<result column="BRD_ID" jdbcType="VARCHAR" property="brdId" />                           
+		<result column="REG_DTTM" jdbcType="VARCHAR" property="regDttm" />                         
+		<result column="LAST_DTTM" jdbcType="VARCHAR" property="lastDttm" />      
+	</resultMap>
+	
+	<resultMap id="ResultTransMstStamp" type="com.wallet.harex.model.TransMstStamp"> 
+		<id column="SEQ" property="seq" 	jdbcType="VARCHAR" />
+		<result column="ACPOS_TID" jdbcType="VARCHAR" property="acposTid"/>                                      
+		<result column="MEMB_ID" jdbcType="VARCHAR" property="membId"/>         
+		<result column="PSTATUS" jdbcType="VARCHAR" property="pstatus"/>        
+		<result column="CODE" jdbcType="VARCHAR" property="code"/>                      
+		<result column="MSG" jdbcType="VARCHAR" property="msg"/>                   
+		<result column="MEMB_CARD_NO" jdbcType="VARCHAR" property="membCardNo"/>                     
+		<result column="EXP_SAVE_CNT" jdbcType="INTEGER" property="expSavePoint"/>                     
+		<result column="REAL_SAVE_CNT" jdbcType="INTEGER" property="realSavePoint"/>                     
+		<result column="ACCUM_STAMP_CNT" jdbcType="INTEGER" property="accumStampCnt"/>               
+		<result column="APPR_NO" jdbcType="VARCHAR" property="apprNo"/>                         
+		<result column="APPR_DATE" jdbcType="VARCHAR" property="apprDate"/>                  
+		<result column="APPR_TIME" jdbcType="VARCHAR" property="apprTime"/>                    
+		<result column="ORG_APPR_NO" jdbcType="VARCHAR" property="orgApprNo"/>                   
+		<result column="TR_DATE" jdbcType="VARCHAR" property="trDate"/>                        
+		<result column="SELF_MEM_YN" jdbcType="VARCHAR" property="selfMemYn"/>                 
+		<result column="COMP_ID" jdbcType="VARCHAR" property="compId"/>                        
+		<result column="BRD_ID" jdbcType="VARCHAR" property="brdId"/>                     
+		<result column="REG_DTTM" jdbcType="VARCHAR" property="regDttm"/>                  
+		<result column="LAST_DTTM" jdbcType="VARCHAR" property="lastDttm"/>      
+	</resultMap>
+		
+	<!-- 거래내역조회 -->
+ 	<select id="selectTransMst" parameterType="HashMap" resultMap="ResultTransMst">
+	  	SELECT 
+	  				*
+	  	  FROM
+	  	  		(
+			  	SELECT 
+			  			   <if test='top!=null and top!=""'> top ${top} </if> 
+			  			   row_number() over (order by tr_date desc)  as SEQ
+			  			  ,ACPOS_TID                  
+					      ,TR_FG                      
+					      ,CSTATUS                    
+					      ,PSTATUS                    
+					      ,TR_STATUS                  
+					      ,OFFER_ID                   
+					      ,CUST_ID                    
+					      ,PHONE_NO                   
+					      ,TCODE                      
+					      ,SERVICE_ID                 
+					      ,K_SHOP_ID                  
+					      ,MOCAPAY_TID                
+					      ,MOCAPAY_TDATE              
+					      ,MOCAPAY_TTIME              
+					      ,TTL_PRICE                  
+					      ,EXP_TTL_PRICE              
+					      ,REAL_TTL_PRICE             
+					      ,EXP_CPN_DC_PRICE           
+					      ,EXP_MEMB_DC_PRICE          
+					      ,EXP_MEMB_USE_POINT         
+					      ,EXP_MEMB_SAVE_POINT        
+					      ,EXP_STAMP_SAVE_CNT         
+					      ,REAL_CPN_DC_PRICE          
+					      ,REAL_MEMB_DC_PRICE         
+					      ,REAL_MEMB_USE_POINT        
+					      ,REAL_MEMB_SAVE_POINT       
+					      ,REAL_STAMP_SAVE_CNT        
+					      ,ORG_ACPOS_TID              
+					      ,ORG_ACPOS_TDATE            
+					      ,ORG_MOCAPAY_TID            
+					      ,ORG_MOCAPAY_TDATE          
+					      ,TR_DATE                    
+					      ,MP_BRANCH                  
+					      ,MP_SEQ                     
+					      ,REG_DTTM                   
+					      ,LAST_DTTM                  
+					      ,NCANCEL_YN                 
+					FROM	MW_PS_TRNS_MST
+					WHERE 1=1
+				<![CDATA[
+				    AND TR_DATE >= #{sdate} and TR_DATE <= #{edate}
+				]]>
+				  <if test="acpos_tid != ''">
+				    AND ACPOS_TID LIKE '%'+ #{acpos_tid} +'%'
+				  </if> 
+			)A
+		WHERE 1=1		  
+	  <if test='startRow!=null and startRow!=""'>
+		<if test='rowsPerPage!=null and rowsPerPage!=""'>
+			AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+		</if>
+	 </if>
+		
+  </select>
+  
+	<!-- 거래내역조회 CNT-->
+ 	<select id="selectTransMstCnt" resultType="java.lang.Integer">
+	  	SELECT 
+	  			   count(*) AS CNT
+			FROM	MW_PS_TRNS_MST
+			WHERE 1=1
+		<![CDATA[
+		    AND TR_DATE >= #{sdate} and TR_DATE <= #{edate}
+		]]>
+		  <if test="acpos_tid != ''">
+		    AND ACPOS_TID LIKE '%'+ #{acpos_tid} +'%'
+		  </if> 
+  </select>
+  
+	<!-- 거래내역조회 - 쿠폰 -->
+ 	<select id="selectTransMstCpn" parameterType="HashMap" resultMap="ResultTransMstCpn">
+		SELECT 
+	  				*
+	  	  FROM
+	  	  		(
+			  	SELECT 
+			  			   <if test='top!=null and top!=""'> top ${top} </if> 
+			  			   row_number() over (order by tr_date desc)  as SEQ
+			  			  ,ACPOS_TID
+					      ,CPN_ID
+					      ,PSTATUS
+					      ,CODE
+					      ,MSG
+					      ,CPN_NO
+					      ,EXP_DC_PRICE
+					      ,REAL_DC_PRICE
+					      ,CALC_BASE_PRICE
+					      ,APPR_NO
+					      ,APPR_DATE
+					      ,APPR_TIME
+					      ,ORG_APPR_NO
+					      ,TR_DATE
+					      ,REG_DTTM
+					      ,LAST_DTTM
+					  FROM MW_PS_TRNS_CPN
+					WHERE 1=1
+				<![CDATA[
+				    AND TR_DATE >= #{sdate} and TR_DATE <= #{edate}
+				]]>
+				  <if test="acpos_tid != ''">
+				    AND ACPOS_TID LIKE '%'+ #{acpos_tid} +'%'
+				  </if> 
+			)A
+		WHERE 1=1		  
+	  <if test='startRow!=null and startRow!=""'>
+		<if test='rowsPerPage!=null and rowsPerPage!=""'>
+			AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+		</if>
+	 </if>
+ 	</select>
+ 	
+	<!-- 거래내역조회 - 쿠폰  CNT-->
+ 	<select id="selectTransMstCpnCnt" resultType="java.lang.Integer">
+ 			SELECT 
+	  			   count(*) AS CNT
+			FROM	MW_PS_TRNS_CPN
+			WHERE 1=1
+		<![CDATA[
+		    AND TR_DATE >= #{sdate} and TR_DATE <= #{edate}
+		]]>
+		  <if test="acpos_tid != ''">
+		    AND ACPOS_TID LIKE '%'+ #{acpos_tid} +'%'
+		  </if> 
+ 	</select>
+  
+	<!-- 거래내역조회_멤버십할인 -->
+ 	<select id="selectTransMstMsDc" parameterType="HashMap" resultMap="ResultTransMstMsDc">
+		SELECT 
+ 				*
+	  	  FROM
+	  	  		(
+			  	SELECT 
+			  			   <if test='top!=null and top!=""'> top ${top} </if> 
+			  			   row_number() over (order by tr_date desc)  as SEQ
+			  			  ,ACPOS_TID
+					      ,MEMB_ID
+					      ,PSTATUS
+					      ,CODE
+					      ,MSG
+					      ,MEMB_CARD_NO
+					      ,EXP_MEMB_DC_PRICE
+					      ,REAL_MEMB_DC_PRICE
+					      ,CALC_BASE_PRICE
+					      ,APPR_NO
+					      ,APPR_DATE
+					      ,APPR_TIME
+					      ,ORG_APPR_NO
+					      ,TR_DATE
+					      ,SELF_MEMB_YN
+					      ,COMP_ID
+					      ,BRAND_ID
+					      ,REG_DTTM
+					      ,LAST_DTTM
+				  FROM MW_PS_TRNS_MS_DC
+				WHERE 1=1
+				<![CDATA[
+				    AND TR_DATE >= #{sdate} and TR_DATE <= #{edate}
+				]]>
+				  <if test="acpos_tid != ''">
+				    AND ACPOS_TID LIKE '%'+ #{acpos_tid} +'%'
+				  </if> 
+			)A
+		WHERE 1=1		  
+	  <if test='startRow!=null and startRow!=""'>
+		<if test='rowsPerPage!=null and rowsPerPage!=""'>
+			AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+		</if>
+	 </if>
+ 	</select>
+ 	
+	<!-- 거래내역조회_멤버십할인  CNT-->
+ 	<select id="selectTransMstMsDcCnt" resultType="java.lang.Integer">
+ 			SELECT 
+	  			   count(*) AS CNT
+			FROM	MW_PS_TRNS_MS_DC
+			WHERE 1=1
+		<![CDATA[
+		    AND TR_DATE >= #{sdate} and TR_DATE <= #{edate}
+		]]>
+		  <if test="acpos_tid != ''">
+		    AND ACPOS_TID LIKE '%'+ #{acpos_tid} +'%'
+		  </if> 
+ 	</select>
+  
+	<!-- 거래내역조회_멤버십포인트 -->
+ 	<select id="selectTransMstMsUse" parameterType="HashMap" resultMap="ResultTransMstMsUse">
+ 		  	SELECT 
+	  					*
+		  	  FROM
+		  	  		(
+				  	SELECT 
+				  			   <if test='top!=null and top!=""'> top ${top} </if> 
+				  			   row_number() over (order by tr_date desc)  as SEQ
+				  			  ,ACPOS_TID
+						      ,MEMB_ID
+						      ,PSTATUS
+						      ,CODE
+						      ,MSG
+						      ,MEMB_CARD_NO
+						      ,REQ_USE_POINT
+						      ,REAL_USE_POINT
+						      ,CALC_BASE_PRICE
+						      ,ACCUM_POINT
+						      ,USABLE_POINT
+						      ,APPR_NO
+						      ,APPR_DATE
+						      ,APPR_TIME
+						      ,ORG_APPR_NO
+						      ,TR_DATE
+						      ,SELF_MEM_YN
+						      ,COMP_ID
+						      ,BRD_ID
+						      ,REG_DTTM
+						      ,LAST_DTTM
+					  FROM MW_PS_TRNS_MS_USE
+					WHERE 1=1
+					<![CDATA[
+					    AND TR_DATE >= #{sdate} and TR_DATE <= #{edate}
+					]]>
+					  <if test="acpos_tid != ''">
+					    AND ACPOS_TID LIKE '%'+ #{acpos_tid} +'%'
+					  </if> 
+				)A
+			WHERE 1=1		  
+		  <if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+				AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		 </if>
+ 	</select>
+ 	
+	<!-- 거래내역조회_멤버십포인트  CNT-->
+ 	<select id="selectTransMstMsUseCnt" resultType="java.lang.Integer">
+ 			SELECT 
+	  			   count(*) AS CNT
+			FROM	MW_PS_TRNS_MS_USE
+			WHERE 1=1
+		<![CDATA[
+		    AND TR_DATE >= #{sdate} and TR_DATE <= #{edate}
+		]]>
+		  <if test="acpos_tid != ''">
+		    AND ACPOS_TID LIKE '%'+ #{acpos_tid} +'%'
+		  </if> 
+ 	</select>
+  
+	<!-- 거래내역조회_멤버십적립 -->
+ 	<select id="selectTransMstMsSave" parameterType="HashMap" resultMap="ResultTransMstSave">
+ 		  	SELECT 
+	  					*
+		  	  FROM
+		  	  		(
+				  	SELECT 
+				  			   <if test='top!=null and top!=""'> top ${top} </if> 
+				  			   row_number() over (order by tr_date desc)  as SEQ
+				  			  ,ACPOS_TID
+						      ,MEMB_ID
+						      ,CODE
+						      ,PSTATUS
+						      ,MSG
+						      ,MEMB_CARD_NO
+						      ,EXP_SAVE_POINT
+						      ,REAL_SAVE_POINT
+						      ,ACCUM_POINT
+						      ,USABLE_POINT
+						      ,APPR_NO
+						      ,APPR_DATE
+						      ,APPR_TIME
+						      ,ORG_APPR_NO
+						      ,TR_DATE
+						      ,SELF_MEM_YN
+						      ,COMP_ID
+						      ,BRD_ID
+						      ,REG_DTTM
+						      ,LAST_DTTM
+					  FROM MW_PS_TRNS_MS_SAVE
+					WHERE 1=1
+					<![CDATA[
+					    AND TR_DATE >= #{sdate} and TR_DATE <= #{edate}
+					]]>
+					  <if test="acpos_tid != ''">
+					    AND ACPOS_TID LIKE '%'+ #{acpos_tid} +'%'
+					  </if> 
+				)A
+			WHERE 1=1		  
+		  <if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+				AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		 </if>
+ 	</select>
+ 	
+	<!-- 거래내역조회_멤버십적립  CNT-->
+ 	<select id="selectTransMstMsSaveCnt" resultType="java.lang.Integer">
+ 			SELECT 
+	  			   count(*) AS CNT
+			FROM	MW_PS_TRNS_MS_SAVE
+			WHERE 1=1
+		<![CDATA[
+		    AND TR_DATE >= #{sdate} and TR_DATE <= #{edate}
+		]]>
+		  <if test="acpos_tid != ''">
+		    AND ACPOS_TID LIKE '%'+ #{acpos_tid} +'%'
+		  </if> 
+ 	</select>
+  
+	<!-- 거래내역조회_스탬프 -->
+ 	<select id="selectTransMstStamp" parameterType="HashMap" resultMap="ResultTransMstStamp">
+ 		  	SELECT 
+	  					*
+		  	  FROM
+		  	  		(
+				  	SELECT 
+				  			   <if test='top!=null and top!=""'> top ${top} </if> 
+				  			   row_number() over (order by tr_date desc)  as SEQ
+				  			  ,ACPOS_TID
+						      ,MEMB_ID
+						      ,PSTATUS
+						      ,CODE
+						      ,MSG
+						      ,MEMB_CARD_NO
+						      ,EXP_SAVE_CNT
+						      ,REAL_SAVE_CNT
+						      ,ACCUM_STAMP_CNT
+						      ,APPR_NO
+						      ,APPR_DATE
+						      ,APPR_TIME
+						      ,ORG_APPR_NO
+						      ,TR_DATE
+						      ,SELF_MEM_YN
+						      ,COMP_ID
+						      ,BRD_ID
+						      ,REG_DTTM
+						      ,LAST_DTTM
+						  FROM MW_PS_TRNS_MS_STAMP
+						WHERE 1=1
+					<![CDATA[
+					    AND TR_DATE >= #{sdate} and TR_DATE <= #{edate}
+					]]>
+					  <if test="acpos_tid != ''">
+					    AND ACPOS_TID LIKE '%'+ #{acpos_tid} +'%'
+					  </if> 
+				)A
+			WHERE 1=1		  
+		  <if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+				AND A.SEQ BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		 </if>
+ 	</select>
+ 	
+	<!-- 거래내역조회_스탬프  CNT-->
+ 	<select id="selectTransMstStampCnt" resultType="java.lang.Integer">
+ 			SELECT 
+	  			   count(*) AS CNT
+			FROM	MW_PS_TRNS_MS_STAMP
+			WHERE 1=1
+		<![CDATA[
+		    AND TR_DATE >= #{sdate} and TR_DATE <= #{edate}
+		]]>
+		  <if test="acpos_tid != ''">
+		    AND ACPOS_TID LIKE '%'+ #{acpos_tid} +'%'
+		  </if> 
+ 	</select>
+</mapper>

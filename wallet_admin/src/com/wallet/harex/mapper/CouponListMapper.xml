@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.harex.mapper.CouponListMapper" >
+  <resultMap id="BaseResultMap" type="com.wallet.harex.model.CouponList" >
+    <id column="cpn_id" property="cpnId" jdbcType="VARCHAR" />
+    <result column="cpn_name" property="cpnName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="selectByCoupon" parameterType="HashMap" resultMap="BaseResultMap">
+    SELECT ISNULL(a.CPN_ID,'') + '|' + ISNULL(a.CPN_DISC_TYPE,'') AS CPN_ID, 
+    			 x.NAME AS CPN_NAME
+		FROM MW_CS_CPN_LIST a, 
+				 CPN_LIST x, 
+				 MW_CM_COMPANY b, 
+				 MW_CM_COMPANY c
+		WHERE 1 = 1
+    AND a.CPN_ID = x.CPN_ID
+    AND a.COMP_ID = b.COMP_ID
+    AND b.COMP_ID = c.UPPER_COMP_ID
+    AND c.COMP_ID = #{shopSel,jdbcType=VARCHAR}
+  </select>
+</mapper>

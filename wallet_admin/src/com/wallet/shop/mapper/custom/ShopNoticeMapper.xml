@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.shop.mapper.custom.ShopNoticeMapper" >
+	<resultMap id="BaseResultMap" type="com.wallet.shop.model.custom.ShopNotice" >
+		<result column="IDX" property="idx" jdbcType="VARCHAR" />
+		<result column="NOTICE_ID" property="noticeId" jdbcType="VARCHAR"/> 
+		<result column="NOTICE_TITLE" property="noticeTitle" jdbcType="VARCHAR"/> 
+		<result column="BBS_TYPE" property="bbsType" jdbcType="VARCHAR"/> 
+		<result column="SDAY" property="sDay" jdbcType="VARCHAR"/> 
+		<result column="EDAY" property="eDay" jdbcType="VARCHAR"/> 
+		<result column="CONT_TYPE" property="contType" jdbcType="VARCHAR"/> 
+		<result column="NOTICE_URL" property="noticeURL" jdbcType="VARCHAR"/>
+		
+		<result column="NOTICE_IMG_3GS" property="noticeImg_i3GS" jdbcType="VARCHAR" />
+		<result column="NOTICE_IMG_4S" property="noticeImg_i4S" jdbcType="VARCHAR" />
+		<result column="NOTICE_IMG_ANDROID" property="noticeImg_android" jdbcType="VARCHAR" />
+		<result column="NOTICE_IMG_COMMOS" property="noticeImg_commOs" jdbcType="VARCHAR" /> 
+		
+		<result column="TOP_YN" property="topYN" jdbcType="VARCHAR"/> 
+		<result column="SHOW_YN" property="showYN" jdbcType="VARCHAR"/> 
+		<result column="REG_USER" property="regUser" jdbcType="VARCHAR" />
+		<result column="REG_USER_NM" property="regUserNm" jdbcType="VARCHAR" />
+		<result column="REG_DTM" property="regDtm" jdbcType="VARCHAR" />
+		<result column="CHG_USER" property="chgUser" jdbcType="VARCHAR" />
+		<result column="CHG_USER_NM" property="chgUserNm" jdbcType="VARCHAR" />
+		<result column="CHG_DTM" property="chgDtm" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 조회조건에 대한 모카샵_이벤트/공지사항 목록 -->
+	<select id="selectShopNoticeList" parameterType="HashMap" resultMap="BaseResultMap" >
+		SELECT <if test='top !=null and top !=""'> top ${top}</if>
+			ROW_NUMBER() OVER (ORDER BY N.REG_DTM DESC) AS IDX
+			, N.NOTICE_ID
+			, N.NOTICE_TITLE
+			, N.BBS_TYPE
+			, LEFT(N.SDAY, 4) + '-' + RIGHT(LEFT(N.SDAY, 6), 2) + '-' + RIGHT(N.SDAY, 2) AS SDAY
+			, LEFT(N.EDAY, 4) + '-' + RIGHT(LEFT(N.EDAY, 6), 2) + '-' + RIGHT(N.EDAY, 2) AS EDAY
+			, N.CONT_TYPE
+			, N.NOTICE_URL
+			, N.TOP_YN
+			, N.SHOW_YN
+			, N.REG_USER
+			, CONVERT(VARCHAR(10), N.REG_DTM, 120) as REG_DTM
+			, N.CHG_USER
+			, CONVERT(VARCHAR(10), N.CHG_DTM, 120) as CHG_DTM
+		FROM MS_CS_SHOP_NOTICE N
+		WHERE 1=1
+		<if test='noticeId != null and noticeId !=""'>
+			AND N.NOTICE_ID = #{noticeId}
+		</if>
+		<if test='noticeTitle != null and noticeTitle !=""'>
+			AND N.NOTICE_TITLE LIKE '%${noticeTitle}%'
+		</if>
+		<if test='bbsType != null and bbsType !=""'>
+			AND N.BBS_TYPE = #{bbsType}
+		</if>
+		<if test='contType != null and contType !=""'>
+			AND N.CONT_TYPE = #{contType}
+		</if>			
+		<if test='topYN != null and topYN !=""'>
+			AND N.TOP_YN = #{topYN}
+		</if>			
+		<if test='showYN != null and showYN !=""'>
+			AND N.SHOW_YN = #{showYN}
+		</if>
+		<if test='ra_searchTerm != null and ra_searchTerm != ""'>
+			<if test='sdate != null and sdate != ""'>
+				<if test='se_termOpt == "reg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), N.REG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+				<if test='se_termOpt == "chg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), N.CHG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+			</if>
+			<if test='edate != null and edate != ""'>
+				<if test='se_termOpt == "reg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), N.REG_DTM, 120) <=	#{edate}
+					]]>
+				</if>
+				<if test='se_termOpt == "chg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), N.CHG_DTM, 120) <=	#{edate}
+					]]>
+				</if>
+			</if>
+		</if>
+		<if test='today != null and today !=""'>
+			AND #{today} BETWEEN N.SDAY AND N.EDAY
+		</if>
+	</select>
+	
+	<!-- 조회조건에 대한 모카샵_이벤트/공지사항 목록 -->
+	<select id="selectShopNoticeListCnt" parameterType="HashMap" resultMap="BaseResultMap" >
+		SELECT COUNT(*) AS CNT
+		FROM MS_CS_SHOP_NOTICE N
+		WHERE 1=1
+		<if test='noticeId != null and noticeId !=""'>
+			AND N.NOTICE_ID = #{noticeId}
+		</if>
+		<if test='noticeTitle != null and noticeTitle !=""'>
+			AND N.NOTICE_TITLE LIKE '%${noticeTitle}%'
+		</if>
+		<if test='bbsType != null and bbsType !=""'>
+			AND N.BBS_TYPE = #{bbsType}
+		</if>
+		<if test='contType != null and contType !=""'>
+			AND N.CONT_TYPE = #{contType}
+		</if>			
+		<if test='topYN != null and topYN !=""'>
+			AND N.TOP_YN = #{topYN}
+		</if>			
+		<if test='showYN != null and showYN !=""'>
+			AND N.SHOW_YN = #{showYN}
+		</if>
+		<if test='ra_searchTerm != null and ra_searchTerm != ""'>
+			<if test='sdate != null and sdate != ""'>
+				<if test='se_termOpt == "reg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), N.REG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+				<if test='se_termOpt == "chg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), N.CHG_DTM, 120) >=	#{sdate}
+					]]>
+				</if>
+			</if>
+			<if test='edate != null and edate != ""'>
+				<if test='se_termOpt == "reg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), N.REG_DTM, 120) <=	#{edate}
+					]]>
+				</if>
+				<if test='se_termOpt == "chg_date"'>
+					<![CDATA[
+						AND CONVERT(VARCHAR(10), N.CHG_DTM, 120) <=	#{edate}
+					]]>
+				</if>
+			</if>
+		</if>
+		<if test='today != null and today !=""'>
+			AND #{today} BETWEEN N.SDAY AND N.EDAY
+		</if>
+	</select>
+
+	<select id="selectAShopNoticeInfo" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT N.NOTICE_ID
+			, N.NOTICE_TITLE
+			, N.BBS_TYPE
+			, LEFT(N.SDAY, 4) + '-' + RIGHT(LEFT(N.SDAY, 6), 2) + '-' + RIGHT(N.SDAY, 2) AS SDAY
+			, LEFT(N.EDAY, 4) + '-' + RIGHT(LEFT(N.EDAY, 6), 2) + '-' + RIGHT(N.EDAY, 2) AS EDAY
+			, N.CONT_TYPE
+			, N.NOTICE_URL
+			, N.TOP_YN
+			, N.SHOW_YN
+			, N.REG_USER
+			, CONVERT(VARCHAR(10), N.REG_DTM, 120) as REG_DTM
+			, N.CHG_USER
+			, CONVERT(VARCHAR(10), N.CHG_DTM, 120) as CHG_DTM
+			, I.NOTICE_IMG_COMMOS
+		FROM MS_CS_SHOP_NOTICE N
+		LEFT OUTER JOIN
+		(
+			SELECT ID
+			, MAX(CASE WHEN I.OS_TYPE='00' AND I.USE_TYPE='16' THEN I.IMAGE_URL END) AS NOTICE_IMG_COMMOS
+			FROM MW_CM_IMAGE I
+			GROUP BY ID
+		) AS I
+		ON I.ID = N.NOTICE_ID
+		WHERE 1=1
+		<if test='noticeId != null and noticeId !=""'>
+			AND N.NOTICE_ID = #{noticeId}
+		</if>
+	</select>
+	
+	<insert id="insertShopNotice" parameterType="HashMap">
+		INSERT INTO MS_CS_SHOP_NOTICE
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			NOTICE_ID,
+			<if test='noticeTitle != null and noticeTitle != ""' >NOTICE_TITLE,</if>
+			<if test='bbsType != null and bbsType != ""' >BBS_TYPE,</if>
+			<if test='sDay != null and sDay != ""' >SDAY,</if>
+			<if test='eDay != null and eDay != ""' >EDAY,</if>
+			<if test='contType != null and contType != ""' >CONT_TYPE,</if>
+			<if test='noticeURL != null and noticeURL != ""' >NOTICE_URL,</if>
+			<if test='topYN != null and topYN != ""' >TOP_YN,</if>
+			<if test='showYN != null and showYN != ""' >SHOW_YN,</if>
+			REG_USER,
+			REG_DTM,
+		</trim>
+		<trim prefix="" suffix="" suffixOverrides="," >
+			SELECT 'NTC'+SUBSTRING(REPLICATE('0',9),0,10-LEN(ISNULL(RIGHT(MAX(NOTICE_ID),9),0)+1))+LTRIM(STR((ISNULL(RIGHT(MAX(NOTICE_ID),9),0)+1))) AS NOTICE_ID,
+			<if test='noticeTitle != null and noticeTitle != ""' >#{noticeTitle},</if>
+			<if test='bbsType != null and bbsType != ""' >#{bbsType},</if>
+			<if test='sDay != null and sDay != ""' >#{sDay},</if>
+			<if test='eDay != null and eDay != ""' >#{eDay},</if>
+			<if test='contType != null and contType != ""' >#{contType},</if>
+			<if test='noticeURL != null and noticeURL != ""' >#{noticeURL},</if>
+			<if test='topYN != null and topYN != ""' >#{topYN},</if>
+			<if test='showYN != null and showYN != ""' >#{showYN},</if>
+				#{regUser},
+				GETDATE(),
+		</trim>
+			FROM MS_CS_SHOP_NOTICE
+	</insert>
+
+	<update id="updateShopNotice" parameterType="HashMap">
+		UPDATE MS_CS_SHOP_NOTICE
+		<set>
+		<trim prefix="" suffix="" suffixOverrides="," >
+			<if test='noticeTitle != null' >NOTICE_TITLE = #{noticeTitle},</if>
+			<if test='bbsType != null' >BBS_TYPE = #{bbsType},</if>
+			<if test='sDay != null' >SDAY = #{sDay},</if>
+			<if test='eDay != null ' >EDAY = #{eDay},</if>
+			<if test='contType != null' >CONT_TYPE = #{contType},</if>
+			<if test='noticeURL != null' >NOTICE_URL = #{noticeURL},</if>
+			<if test='topYN != null' >TOP_YN = #{topYN},</if>
+			<if test='showYN != null' >SHOW_YN = #{showYN},</if>
+				CHG_USER = #{chgUser},
+				CHG_DTM = GETDATE(),
+		</trim>
+		</set>
+		WHERE NOTICE_ID = #{noticeId}
+	</update>
+	
+	<!-- 노출정보가 노출인 이벤트/공지사항 게시물 수를 조회 -->
+	<select id="selectShowNoticeListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS CNT
+		FROM MS_CS_SHOP_NOTICE
+		WHERE BBS_TYPE = #{bbsType}
+		AND SHOW_YN='Y'
+	</select>
+	
+	<select id="selectLastNoticeId" parameterType="HashMap" resultType="java.lang.String">
+		SELECT MAX(NOTICE_ID) AS NOTICE_ID
+		FROM MS_CS_SHOP_NOTICE
+		WHERE NOTICE_ID LIKE 'NTC%'
+	</select>
+	
+	<delete id="deleteShopNotice" parameterType="HashMap">
+		DELETE
+		FROM MS_CS_SHOP_NOTICE
+		WHERE NOTICE_ID=#{noticeId}
+	</delete>
+</mapper>

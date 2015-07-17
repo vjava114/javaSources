@@ -1,0 +1,1183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.membership.mapper.custom.CouponMapper" >
+	<resultMap id="BaseResultMap" type="com.wallet.membership.model.custom.Coupon" >
+	<result column="ROW_NUM" property="rowNum" jdbcType="INTEGER" />
+		<result column="CPN_ID" property="cpnId" jdbcType="VARCHAR"/>
+		<result column="PART_V" property="partV" jdbcType="VARCHAR"/>
+		<result column="PART_V_NM" property="partVNm" jdbcType="VARCHAR"/>
+		<result column="COMP_ID" property="compId" jdbcType="VARCHAR"/>
+		<result column="COMP_NAME" property="compName" jdbcType="VARCHAR"/>
+		<result column="CPN_NAME" property="cpnName" jdbcType="VARCHAR"/>
+		<result column="REG_DAY" property="regDay" jdbcType="VARCHAR"/>
+		<result column="BAR_ISSUE_TYPE" property="barIssueType" jdbcType="VARCHAR"/>
+		<result column="BAR_ISSUE_TYPE_NM" property="barIssueTypeNm" jdbcType="VARCHAR"/>
+		<result column="BAR_CONF_TYPE" property="barConfType" jdbcType="VARCHAR"/>
+		<result column="BAR_CONF_TYPE_NM" property="barConfTypeNm" jdbcType="VARCHAR"/>
+		<result column="VALID_YN_NM" property="validYnNm" jdbcType="VARCHAR"/>
+		<result column="CPN_ISSUE_STAT" property="cpnIssueStat" jdbcType="VARCHAR"/>
+		<result column="CPN_ISSUE_STAT_NM" property="cpnIssueStatNm" jdbcType="VARCHAR"/>
+		<result column="MAIN_DISPLAY" property="mainDisplay" jdbcType="VARCHAR"/>
+		<result column="MAIN_DISPLAY_NM" property="mainDisplayNm" jdbcType="VARCHAR"/>
+		<result column="SDAY" property="sday" jdbcType="VARCHAR"/>
+		<result column="EDAY" property="eday" jdbcType="VARCHAR"/>
+		<result column="VAL_SDAY" property="valSday" jdbcType="VARCHAR"/>
+		<result column="VAL_EDAY" property="valEday" jdbcType="VARCHAR"/>
+		<result column="CHG_DAY" property="chgDay" jdbcType="VARCHAR"/>
+		<result column="CPN_STAT" property="cpnStat" jdbcType="CHAR" />
+		<result column="CPN_STAT_NM" property="cpnStatNm" jdbcType="VARCHAR" />
+		<result column="IS_TARGET_CPN" property="isTargetCpn" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 조회조건에 대한 쿠폰 목록 -->
+	<select id="selectCouponList" parameterType="HashMap" resultMap="BaseResultMap" >
+		SELECT *
+		FROM (
+		
+			SELECT <if test='top!=null and top!=""'> top ${top} </if>
+				ROW_NUMBER() OVER(ORDER BY C.REG_DAY DESC) AS ROW_NUM 
+				, C.CPN_ID AS CPN_ID
+				, C.PART_V
+				, dbo.GET_CODE_NM('0030',C.PART_V) AS PART_V_NM
+				, M.COMP_ID
+				, dbo.GET_COMP_NM(M.COMP_ID) AS COMP_NAME
+				, C.NAME AS CPN_NAME
+				, CONVERT(VARCHAR(10),CONVERT(datetime, C.REG_DAY, 120),120) AS REG_DAY
+				, M.BAR_ISSUE_TYPE
+				, dbo.GET_CODE_NM('0019',M.BAR_ISSUE_TYPE) AS BAR_ISSUE_TYPE_NM
+				, M.BAR_CONF_TYPE
+				, dbo.GET_CODE_NM('0020',M.BAR_CONF_TYPE) AS BAR_CONF_TYPE_NM
+				<!--, CASE WHEN GETDATE() BETWEEN CONVERT(datetime, C.val_sday, 120) AND CONVERT(datetime, C.val_eday, 120) THEN '유효' -->
+				, CASE WHEN  convert(varchar(8), GETDATE(), 112) between C.val_sday AND C.val_eday THEN '유효'
+								ELSE '비유효' END AS VALID_YN_NM
+				, M.CPN_ISSUE_STAT
+				, dbo.GET_CODE_NM('0025',M.CPN_ISSUE_STAT) AS CPN_ISSUE_STAT_NM
+				, C.MAIN_DISPLAY
+				, CASE WHEN C.MAIN_DISPLAY='Y' THEN '전시'
+					ELSE '비전시'
+				END MAIN_DISPLAY_NM
+				, CONVERT(VARCHAR(10), C.SDAY, 120) AS SDAY
+				, CONVERT(VARCHAR(10), C.EDAY, 120) AS EDAY
+				, CONVERT(VARCHAR(10), C.VAL_SDAY, 120) AS VAL_SDAY
+				, CONVERT(VARCHAR(10), C.VAL_EDAY, 120) AS VAL_EDAY
+				, CONVERT(VARCHAR(10), C.CHG_DAY, 120) AS CHG_DAY
+				, M.CPN_STAT
+				, dbo.GET_CODE_NM('0017', M.CPN_STAT) AS CPN_STAT_NM
+				, C.USE_NAME
+				, M.IS_TARGET_CPN
+			FROM CPN_LIST C 
+				INNER JOIN MW_CS_CPN_LIST M ON C.CPN_ID = M.CPN_ID
+				LEFT OUTER JOIN MW_CM_COMPANY P ON M.COMP_ID = P.COMP_ID
+			WHERE 1=1
+			AND M.CPN_STAT IN ('01','02','03','04','05')
+			<if test='cpnIssueType != null and cpnIssueType == "01"'>
+				AND M.CPN_STAT = '01'
+			</if>
+			<if test='partV != null and partV != ""'>
+				AND PART_V LIKE #{partV}
+			</if>
+			<if test='compName != null and compName != ""'>
+				AND P.COMP_NAME LIKE '%${compName}%'
+			</if>
+			<if test='cpnName != null and cpnName != ""'>
+				AND C.NAME LIKE '%${cpnName}%'
+			</if>
+			<if test='barIssueType != null and barIssueType != ""'>
+				AND M.BAR_ISSUE_TYPE LIKE #{barIssueType}
+			</if>
+			<if test='barConfType != null and barConfType != ""'>
+				AND M.BAR_CONF_TYPE LIKE #{barConfType}
+			</if>
+			<if test='cpnValidYn == "Y"'>
+<!--			AND GETDATE() BETWEEN CONVERT(DATETIME, C.VAL_SDAY, 120) AND CONVERT(DATETIME, C.VAL_EDAY, 120) -->
+				AND convert(varchar(8), GETDATE(), 112) BETWEEN C.VAL_SDAY and C.VAL_EDAY
+			</if>
+			<if test='cpnValidYn == "N"'>
+<!--			AND GETDATE() NOT BETWEEN CONVERT(DATETIME, C.VAL_SDAY, 120) AND CONVERT(DATETIME, C.VAL_EDAY, 120) -->
+				AND convert(varchar(8), GETDATE(), 112) NOT BETWEEN C.VAL_SDAY AND C.VAL_EDAY
+			</if>
+			<if test='cpnIssueStat != null and cpnIssueStat != ""'>
+				AND M.CPN_ISSUE_STAT LIKE #{cpnIssueStat}
+			</if>
+			<if test='mainDisplay != null and mainDisplay != ""'>
+				AND C.MAIN_DISPLAY LIKE #{mainDisplay}
+			</if>
+			<if test='ra_searchTerm!=null and ra_searchTerm!="" and ra_searchTerm!="all"'>
+				<![CDATA[
+					AND CONVERT(VARCHAR(10), C.REG_DAY, 120) >= REPLACE(#{sdate}, '-', '')
+				]]>
+				<![CDATA[
+					AND CONVERT(VARCHAR(10), C.REG_DAY, 120) <= REPLACE( #{edate}, '-', '')
+				]]>
+			</if>
+			<if test='cpnIssueType != null and cpnIssueType != ""'>
+				AND M.CPN_ISSUE_TYPE = #{cpnIssueType}
+			</if>
+				
+		) AA
+		WHERE 1=1
+		<if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+ 				AND AA.ROW_NUM BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+			
+	</select>
+	
+	
+	<!-- 조회조건에 대한 쿠폰 총수 -->
+	<select id="selectCouponListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS CNT
+		FROM CPN_LIST C 
+				INNER JOIN MW_CS_CPN_LIST M ON C.CPN_ID = M.CPN_ID
+			LEFT OUTER JOIN MW_CM_COMPANY P ON M.COMP_ID = P.COMP_ID
+		WHERE 1=1
+		AND M.CPN_STAT IN ('01','02','03','04','05')
+		<if test='cpnIssueType != null and cpnIssueType == "01"'>
+			AND M.CPN_STAT = '01'
+		</if>
+		<if test='partV != null and partV != ""'>
+			AND PART_V LIKE #{partV}
+		</if>
+		<if test='compName != null and compName != ""'>
+			AND P.COMP_NAME LIKE '%${compName}%'
+		</if>
+		<if test='cpnName != null and cpnName != ""'>
+			AND C.NAME LIKE '%${cpnName}%'
+		</if>
+		<if test='barIssueType != null and barIssueType != ""'>
+			AND M.BAR_ISSUE_TYPE LIKE #{barIssueType}
+		</if>
+		<if test='barConfType != null and barConfType != ""'>
+			AND M.BAR_CONF_TYPE LIKE #{barConfType}
+		</if>
+		<if test='cpnValidYn == "Y"'>
+<!-- 		AND GETDATE() BETWEEN CONVERT(DATETIME, C.VAL_SDAY, 120) AND CONVERT(DATETIME, C.VAL_EDAY, 120) -->
+			AND convert(varchar(8), GETDATE(), 112) BETWEEN C.VAL_SDAY AND C.VAL_EDAY
+		</if>
+		<if test='cpnValidYn == "N"'>
+<!-- 		AND GETDATE() NOT BETWEEN CONVERT(DATETIME, C.VAL_SDAY, 120) AND CONVERT(DATETIME, C.VAL_EDAY, 120) -->
+			AND convert(varchar(8), GETDATE(), 112) NOT BETWEEN C.VAL_SDAY AND C.VAL_EDAY
+		</if>
+		<if test='cpnIssueStat != null and cpnIssueStat != ""'>
+			AND M.CPN_ISSUE_STAT LIKE #{cpnIssueStat}
+		</if>
+		<if test='mainDisplay != null and mainDisplay != ""'>
+			AND C.MAIN_DISPLAY LIKE #{mainDisplay}
+		</if>
+		<if test='ra_searchTerm!=null and ra_searchTerm!="" and ra_searchTerm!="all"'>
+			<![CDATA[
+				AND CONVERT(VARCHAR(10), C.REG_DAY, 120) >= REPLACE(#{sdate}, '-', '')
+			]]>
+			<![CDATA[
+				AND CONVERT(VARCHAR(10), C.REG_DAY, 120) <= REPLACE(#{edate}, '-', '')
+			]]>
+		</if>
+		<if test='cpnIssueType != null and cpnIssueType != ""'>
+			AND M.CPN_ISSUE_TYPE = #{cpnIssueType}
+		</if>
+			
+	</select>
+	
+	
+	
+
+	<resultMap id="CpnIssueListMap" type="com.wallet.membership.model.custom.CouponIssue" >
+		<result column="ROW_NUM" property="rowNum" jdbcType="INTEGER" />
+		<result column="PART_V" property="partV" jdbcType="VARCHAR"/>
+		<result column="PART_V_NM" property="partVNm" jdbcType="VARCHAR"/>
+		<result column="COMP_ID" property="compId" jdbcType="VARCHAR"/>
+		<result column="COMP_NAME" property="compName" jdbcType="VARCHAR"/>
+		<result column="CPN_NAME" property="cpnName" jdbcType="VARCHAR"/>
+		<result column="CPN_ID" property="cpnId" jdbcType="VARCHAR"/>
+		<result column="BARCODE" property="barcode" jdbcType="VARCHAR"/>
+		<result column="REG_DAY" property="regDay" jdbcType="VARCHAR"/>
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR"/>
+		<result column="PHONE" property="phone" jdbcType="VARCHAR"/>
+		<result column="ISSUE_YN" property="issueYn" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<!-- 쿠폰발행정보 -->
+	<select id="selectCouponIssueList" parameterType="HashMap" resultMap="CpnIssueListMap" >
+		SELECT *
+		FROM (
+		
+			SELECT <if test='top!=null and top!=""'> top ${top} </if>
+				ROW_NUMBER() OVER(ORDER BY C.REG_DAY DESC) AS ROW_NUM
+				, C.PART_V /*쿠폰구분*/
+				, dbo.GET_CODE_NM('0030',C.PART_V) AS PART_V_NM
+				, E.COMP_ID
+				, DBO.GET_COMP_NM(E.COMP_ID) AS COMP_NAME /*제휴사명*/
+				, C.NAME AS CPN_NAME /*쿠폰명 */
+				, B.CPN_ID
+				, B.BARCODE
+				, CONVERT(VARCHAR(10),CONVERT(DATETIME, B.REG_DAY, 120),120) AS REG_DAY
+				, B.USER_ID
+				, D.AUTH_NAME AS USER_NAME
+			FROM  MY_CPN B
+				INNER JOIN CPN_LIST C ON B.CPN_ID = C.CPN_ID
+				INNER JOIN USER_DESC D ON B.USER_ID = D.USER_ID
+				INNER JOIN MW_CS_CPN_LIST E ON B.CPN_ID = E.CPN_ID
+			WHERE B.CPN_ID = #{cpnId}
+			) AA
+		WHERE 1=1
+		<if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+				AND AA.ROW_NUM BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+		
+	</select>
+	
+	
+	<!-- 쿠폰발행정보 총수 -->
+	<select id="selectCouponIssueListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS CNT
+		FROM  MY_CPN B
+			INNER JOIN CPN_LIST C ON B.CPN_ID = C.CPN_ID
+			INNER JOIN USER_DESC D ON B.USER_ID = D.USER_ID
+			INNER JOIN MW_CS_CPN_LIST E ON B.CPN_ID = E.CPN_ID
+		WHERE B.CPN_ID = #{cpnId}
+	</select>
+	
+	
+	<insert id="insertCouponList" parameterType="HashMap">
+		INSERT INTO CPN_LIST
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			CPN_ID, MEMB_ID, PART_V, NAME, PAY_FREE_YN, USIM_MODE, USIM_ID
+			, COMP_PAY_YN, MAIN_DISPLAY, SDAY, EDAY, VAL_SDAY, VAL_EDAY
+			, INFO, MEMO, REG_DAY, REG_USER, DISP_ORDER, RECOMM_SEQ, USE_NAME,
+		</trim>
+	
+		<choose>
+			<when test='manualCpnId!=null and manualCpnId!="" and isDupCpnId =="0"'>
+				values(
+					#{manualCpnId}
+					, #{membId}, #{partV}, #{cpnName}, #{payFreeYn}, #{usimMode}
+					, #{usimId}, #{compPayYn}, #{mainDisplay}, #{sday}, #{eday}
+					, #{valSday}, #{valEday}, #{memo}, #{info}
+					, CONVERT(VARCHAR(8), GETDATE() , 112) 
+					, #{regUser}
+					, '0', 0, #{useName}
+				)
+			</when>
+			<otherwise>
+				SELECT 'CPN'+SUBSTRING(REPLICATE('0',9),0,10-LEN(ISNULL(RIGHT(MAX(CPN_ID),9),0)+1))+LTRIM(STR((ISNULL(RIGHT(MAX(CPN_ID),9),0)+1))) AS CPN_ID
+					<!--   	, #{membId}, #{partV}, #{cpnName}, #{payFreeYn}, #{usimMode}, #{usimId}, #{compPayYn}, #{mainDisplay}, #{sday}, #{eday}, #{valSday}, #{valEday}, #{info}, #{memo} -->
+					, #{membId}, #{partV}, #{cpnName}, #{payFreeYn}, #{usimMode}
+					, #{usimId}, #{compPayYn}, #{mainDisplay}, #{sday}, #{eday}
+					, #{valSday}, #{valEday}, #{memo}, #{info}
+					, CONVERT(VARCHAR(8), GETDATE() , 112) AS REG_DAY
+					, #{regUser}
+					, '0', 0, #{useName}
+				FROM CPN_LIST
+				WHERE CPN_ID LIKE 'CPN%' /*--TODO 운영 적용시 제거.. 기존 테스트용 데이트때문에 임시로 조건줌*/
+			</otherwise>
+		</choose> 
+	</insert>
+		
+	
+	<insert id="insertMwCsCouponList" parameterType="HashMap">
+		INSERT INTO MW_CS_CPN_LIST
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+		CPN_ID, CPN_STAT, BAR_CONF_TYPE, CPN_ISSUE_TYPE, MEMB_COMPULSORY_YN, USIM_COMP_ID, USIM_BRAN_ID, AUTO_ISSUE_TARGET, AUTO_ISSUE_SDAY, AUTO_ISSUE_EDAY, BAR_ISSUE_TYPE, CM_CONF_BARCD, CPN_MAX_ISSUE_CNT, CPN_MAX_USE_CNT
+		, USABLE_CNT_YN, YEAR_USABLE_CNT, MONTH_USABLE_CNT, DAY_USABLE_CNT, DAY_ISSUE_YN, DAY_ISSUE_MAX_CNT, DAY_ISSUE_STIME, DAY_ISSUE_ETIME, ONOFF_TYPE
+		, ONLINE_URL, CALCUL_YN, REG_USER, REG_DTM, CPN_ISSUE_STAT, COMP_ID, BRAN_ID, RECOVER_YN, IS_TARGET_CPN
+		</trim>
+		
+		<choose>
+			<when test='manualCpnId!=null and manualCpnId!="" and isDupCpnId =="0"'>
+			values(
+				#{manualCpnId}
+				, '03'/*-- 신청*/
+				, #{barConfType}, #{cpnIssueType}, #{membCompulsoryYn}, #{usimCompId}, #{usimBranId}, #{autoIssueTarget}, #{autoIssueSday}, #{autoIssueEday}, #{barIssueType}, #{cmConfBarcd}
+				, #{cpnMaxIssueCnt}, #{cpnMaxUseCnt}, #{usableCntYn}, #{yearUsableCnt}, #{monthUsableCnt}, #{dayUsableCnt}, #{dayIssueYn}, #{dayIssueMaxCnt}
+				, #{dayIssueStime}, #{dayIssueEtime}, #{onoffType}, #{onlineUrl}, #{calculYn}, #{regUser}
+				, GETDATE(), '01', #{compId}, #{branId}, #{recoverYn}, #{isTargetCpn}
+			)
+			</when>
+			<otherwise>
+				SELECT MAX(CPN_ID) AS CPN_ID
+					, '03'	AS CPN_STAT	/*-- 신청*/
+					, #{barConfType}, #{cpnIssueType}, #{membCompulsoryYn}, #{usimCompId}, #{usimBranId}, #{autoIssueTarget}, #{autoIssueSday}, #{autoIssueEday}, #{barIssueType}, #{cmConfBarcd}
+					, #{cpnMaxIssueCnt}, #{cpnMaxUseCnt}, #{usableCntYn}, #{yearUsableCnt}, #{monthUsableCnt}, #{dayUsableCnt}, #{dayIssueYn}, #{dayIssueMaxCnt}
+					, #{dayIssueStime}, #{dayIssueEtime}, #{onoffType}, #{onlineUrl}, #{calculYn}, #{regUser}
+					, GETDATE() AS REG_DTM, '01', #{compId}, #{branId}, #{recoverYn}, #{isTargetCpn}
+				FROM CPN_LIST
+				WHERE CPN_ID LIKE 'CPN%' /*--TODO 운영 적용시 제거.. 기존 테스트용 데이트때문에 임시로 조건줌*/ 
+			</otherwise>
+		</choose>
+	</insert>
+		
+	
+	<!-- 조회조건에 대한 쿠폰 총수 -->
+	<select id="selectLastCpnId" parameterType="HashMap" resultType="java.lang.String">
+		SELECT MAX(CPN_ID) AS CPN_ID
+		FROM CPN_LIST 
+		WHERE CPN_ID LIKE 'CPN%' /*--TODO 운영 적용시 제거.. 기존 테스트용 데이트때문에 임시로 조건줌*/
+	</select>
+	
+	
+	
+	<resultMap id="CpnListAllMap" type="com.wallet.membership.model.CpnListAll" >
+	<id column="cpn_id" property="cpnId" jdbcType="VARCHAR" />
+	<result column="memb_id" property="membId" jdbcType="VARCHAR" />
+	<result column="memb_name" property="membName" jdbcType="VARCHAR" />
+	<result column="part_v" property="partV" jdbcType="VARCHAR" />
+	<result column="disp_type" property="dispType" jdbcType="VARCHAR" />
+	<result column="name" property="name" jdbcType="VARCHAR" />
+	<result column="use_name" property="useName" jdbcType="VARCHAR" />
+	<result column="use_code" property="useCode" jdbcType="VARCHAR" />
+	<result column="menufac_id" property="menufacId" jdbcType="VARCHAR" />
+	<result column="mode_v" property="modeV" jdbcType="VARCHAR" />
+	<result column="period_v" property="periodV" jdbcType="VARCHAR" />
+	<result column="sort_v" property="sortV" jdbcType="VARCHAR" />
+	<result column="cate_id" property="cateId" jdbcType="VARCHAR" />
+	<result column="chg_day" property="chgDay" jdbcType="VARCHAR" />
+	<result column="val_sday" property="valSday" jdbcType="VARCHAR" />
+	<result column="val_eday" property="valEday" jdbcType="VARCHAR" />
+	<result column="sday" property="sday" jdbcType="VARCHAR" />
+	<result column="eday" property="eday" jdbcType="VARCHAR" />
+	<!-- result column="reg_user" property="regUser" jdbcType="VARCHAR" / -->
+	<result column="reg_day" property="regDay" jdbcType="VARCHAR" />
+	<!-- result column="chg_user" property="chgUser" jdbcType="VARCHAR" / -->
+	<result column="memo" property="memo" jdbcType="VARCHAR" />
+	<result column="info" property="info" jdbcType="VARCHAR" />
+	<result column="usim_mode" property="usimMode" jdbcType="VARCHAR" />
+	<result column="prim_mode" property="primMode" jdbcType="CHAR" />
+	<result column="aff_type" property="affType" jdbcType="VARCHAR" />
+	<result column="main_display" property="mainDisplay" jdbcType="CHAR" />
+	<result column="disp_order" property="dispOrder" jdbcType="VARCHAR" />
+	<result column="PAY_FREE_YN" property="payFreeYn" jdbcType="CHAR" />
+	<result column="RECOMM_YN" property="recommYn" jdbcType="CHAR" />
+	<result column="RECOMM_SEQ" property="recommSeq" jdbcType="INTEGER" />
+	<result column="POPU_SEQ" property="popuSeq" jdbcType="INTEGER" />
+	<result column="chg_tm" property="chgTm" jdbcType="VARCHAR" />
+	<result column="COMP_PAY_YN" property="compPayYn" jdbcType="CHAR" />
+	<result column="USIM_ID" property="usimId" jdbcType="VARCHAR" />
+	<!-- id column="CPN_ID" property="cpnId" jdbcType="VARCHAR" / -->
+	<result column="CPN_STAT" property="cpnStat" jdbcType="CHAR" />
+	<result column="POINT_DUP_USABLE_YN" property="pointDupUsableYn" jdbcType="CHAR" />
+	<result column="MEMB_COMPULSORY_YN" property="membCompulsoryYn" jdbcType="CHAR" />
+	<result column="ROAMING_TYPE" property="roamingType" jdbcType="CHAR" />
+	<result column="ROAMING_CPN_NO" property="roamingCpnNo" jdbcType="VARCHAR" />
+	<result column="USIM_CPN_NAME" property="usimCpnName" jdbcType="VARCHAR" />
+	<result column="USIM_COMP_ID" property="usimCompId" jdbcType="VARCHAR" />
+	<result column="USIM_BRAN_ID" property="usimBranId" jdbcType="VARCHAR" />
+	<result column="POS_CPN_NAME" property="posCpnName" jdbcType="VARCHAR" />
+	<result column="CPN_ISSUE_TYPE" property="cpnIssueType" jdbcType="CHAR" />
+	<result column="BAR_ISSUE_TYPE" property="barIssueType" jdbcType="CHAR" />
+	<result column="BAR_CONF_TYPE" property="barConfType" jdbcType="CHAR" />
+	<result column="CM_CONF_BARCD" property="cmConfBarcd" jdbcType="VARCHAR" />
+	<result column="ONOFF_TYPE" property="onoffType" jdbcType="CHAR" />
+	<result column="ONLINE_URL" property="onlineUrl" jdbcType="VARCHAR" />
+	<result column="CPN_NOTI_URL" property="cpnNotiUrl" jdbcType="VARCHAR" />
+	<result column="CPN_MAX_USE_CNT" property="cpnMaxUseCnt" jdbcType="INTEGER" />
+	<result column="CPN_MAX_ISSUE_CNT" property="cpnMaxIssueCnt" jdbcType="INTEGER" />
+	<result column="YEAR_USABLE_CNT" property="yearUsableCnt" jdbcType="INTEGER" />
+	<result column="MONTH_USABLE_CNT" property="monthUsableCnt" jdbcType="INTEGER" />
+	<result column="DAY_USABLE_CNT" property="dayUsableCnt" jdbcType="INTEGER" />
+	<result column="DAY_ISSUE_MAX_CNT" property="dayIssueMaxCnt" jdbcType="INTEGER" />
+	<result column="DAY_ISSUE_STIME" property="dayIssueStime" jdbcType="VARCHAR" />
+	<result column="DAY_ISSUE_ETIME" property="dayIssueEtime" jdbcType="VARCHAR" />
+	<result column="CPN_DISC_TYPE" property="cpnDiscType" jdbcType="CHAR" />
+	<result column="CPN_DISC_AMOUNT" property="cpnDiscAmount" jdbcType="INTEGER" />
+	<result column="ROUND_TYPE" property="roundType" jdbcType="CHAR" />
+	<result column="DC_UNIT" property="dcUnit" jdbcType="CHAR" />
+	<result column="MIN_PAY_PRICE" property="minPayPrice" jdbcType="INTEGER" />
+	<result column="MAX_DIC_PRICE" property="maxDicPrice" jdbcType="INTEGER" />
+	<result column="CALCUL_YN" property="calculYn" jdbcType="CHAR" />
+	<result column="COMP_ID" property="compId" jdbcType="VARCHAR" />
+	<result column="COMP_NAME" property="compName" jdbcType="VARCHAR" />
+	<result column="BRAN_ID" property="branId" jdbcType="VARCHAR" />
+	<result column="BRAN_NAME" property="branName" jdbcType="VARCHAR" />
+	<result column="SHOP_SVC_LIST" property="shopSvcList" jdbcType="CHAR" />
+	<result column="BANK_SVC_LIST" property="bankSvcList" jdbcType="CHAR" />
+	<result column="PAYCOM_SVC_LIST" property="paycomSvcList" jdbcType="CHAR" />
+	<result column="CPN_DUP_USABLE_YN" property="cpnDupUsableYn" jdbcType="CHAR" />
+	<result column="RECOVER_YN" property="recoverYn" jdbcType="CHAR" />
+	<result column="ISSUE_COMP_ID" property="issueCompId" jdbcType="VARCHAR" />
+	<result column="REG_USER" property="regUser" jdbcType="VARCHAR" />
+	<result column="REG_DTM" property="regDtm" jdbcType="TIMESTAMP" />
+	<result column="CHG_USER" property="chgUser" jdbcType="VARCHAR" />
+	<result column="CHG_DTM" property="chgDtm" jdbcType="TIMESTAMP" />
+	<result column="CPN_ISSUE_STAT" property="cpnIssueStat" jdbcType="VARCHAR" />
+	<result column="USABLE_CNT_YN" property="usableCntYn" jdbcType="CHAR" />
+	<result column="DAY_ISSUE_YN" property="dayIssueYn" jdbcType="CHAR" />
+	<result column="AUTO_ISSUE_TARGET" property="autoIssueTarget" jdbcType="CHAR" />
+	<result column="AUTO_ISSUE_SDAY" property="autoIssueSday" jdbcType="VARCHAR" />
+	<result column="AUTO_ISSUE_EDAY" property="autoIssueEday" jdbcType="VARCHAR" />
+	<result column="i3gsList" property="i3gsList" jdbcType="VARCHAR" />
+	<result column="i4sList" property="i4sList" jdbcType="VARCHAR" />
+	<result column="a1List" property="a1List" jdbcType="VARCHAR" />
+	<result column="i3gsDetail" property="i3gsDetail" jdbcType="VARCHAR" />
+	<result column="i4sDetail" property="i4sDetail" jdbcType="VARCHAR" />
+	<result column="a1Detail" property="a1Detail" jdbcType="VARCHAR" />
+	<result column="i3gsIntro" property="i3gsIntro" jdbcType="VARCHAR" />
+	<result column="i4sIntro" property="i4sIntro" jdbcType="VARCHAR" />
+	<result column="a1Intro" property="a1Intro" jdbcType="VARCHAR" />
+	<result column="STAT_COMMENT" property="statComment" jdbcType="VARCHAR" />
+	<result column="IS_SHARE" property="isShare" jdbcType="VARCHAR" />
+	<result column="IS_COMP_PAY" property="isCompPay" jdbcType="VARCHAR" />
+	<result column="IS_POOL" property="isPool" jdbcType="VARCHAR" />
+	<result column="REG_USER_NM" property="regUserNm" jdbcType="VARCHAR" />
+	<result column="CHG_USER_NM" property="chgUserNm" jdbcType="VARCHAR" />
+	<result column="IS_TARGET_CPN" property="isTargetCpn" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 쿠폰발행정보 -->
+	<select id="selectCpnListAll" parameterType="HashMap" resultMap="CpnListAllMap" >
+		SELECT 
+			A.CPN_ID
+			, A.MEMB_ID
+			, (SELECT name FROM memb_cardlist WHERE memb_id = A.MEMB_ID) AS MEMB_NAME
+			, A.PART_V
+			, A.DISP_TYPE
+			, A.NAME
+			, A.USE_NAME
+			, A.USE_CODE
+			, A.MENUFAC_ID
+			, A.MODE_V
+			, A.PERIOD_V
+			, A.SORT_V
+			, A.CATE_ID
+			, CONVERT(VARCHAR(10),CONVERT(datetime, A.CHG_DAY, 120),120) AS CHG_DAY
+			, CONVERT(VARCHAR(10),CONVERT(datetime, A.VAL_SDAY, 120),120) AS VAL_SDAY
+			, CONVERT(VARCHAR(10),CONVERT(datetime, A.VAL_EDAY, 120),120) AS VAL_EDAY
+			, CONVERT(VARCHAR(10),CONVERT(datetime, A.SDAY, 120),120) AS SDAY
+			, CONVERT(VARCHAR(10),CONVERT(datetime, A.EDAY, 120),120) AS EDAY
+			, CONVERT(VARCHAR(10),CONVERT(datetime, A.REG_DAY, 120),120) AS REG_DAY
+			, A.MEMO as INFO
+			, A.INFO as MEMO
+			, A.USIM_MODE
+			, A.PRIM_MODE
+			, A.AFF_TYPE
+			, A.MAIN_DISPLAY
+			, A.DISP_ORDER
+			, A.PAY_FREE_YN
+			, A.RECOMM_YN
+			, A.RECOMM_SEQ
+			, A.POPU_SEQ
+			, A.CHG_TM
+			, A.COMP_PAY_YN
+			, A.USIM_ID
+			, B.CPN_STAT
+			, B.POINT_DUP_USABLE_YN
+			, B.MEMB_COMPULSORY_YN
+			, B.ROAMING_TYPE
+			, B.ROAMING_CPN_NO
+			, B.USIM_CPN_NAME
+			, B.USIM_COMP_ID
+			, B.USIM_BRAN_ID
+			, B.POS_CPN_NAME
+			, B.CPN_ISSUE_TYPE
+			, B.AUTO_ISSUE_TARGET
+			, CONVERT(VARCHAR(10),CONVERT(datetime, B.AUTO_ISSUE_SDAY, 120),120) AS AUTO_ISSUE_SDAY
+			, CONVERT(VARCHAR(10),CONVERT(datetime, B.AUTO_ISSUE_EDAY, 120),120) AS AUTO_ISSUE_EDAY
+			, B.BAR_ISSUE_TYPE
+			, B.BAR_CONF_TYPE
+			, B.CM_CONF_BARCD
+			, B.ONOFF_TYPE
+			, B.ONLINE_URL
+			, B.CPN_NOTI_URL
+			, B.CPN_MAX_USE_CNT
+			, B.CPN_MAX_ISSUE_CNT
+			, B.USABLE_CNT_YN
+			, B.YEAR_USABLE_CNT
+			, B.MONTH_USABLE_CNT
+			, B.DAY_USABLE_CNT
+			, B.DAY_ISSUE_YN
+			, B.DAY_ISSUE_MAX_CNT
+			, B.DAY_ISSUE_STIME
+			, B.DAY_ISSUE_ETIME
+			, B.CPN_DISC_TYPE
+			, B.CPN_DISC_AMOUNT
+			, B.ROUND_TYPE
+			, B.DC_UNIT
+			, B.DC_NOTICE
+			, B.MIN_PAY_PRICE
+			, B.MAX_DIC_PRICE
+			, B.CALCUL_YN
+			, B.COMP_ID
+			, dbo.GET_COMP_NM(B.COMP_ID) AS COMP_NAME
+			, B.BRAN_ID
+			, dbo.GET_COMP_NM(B.BRAN_ID) AS BRAN_NAME
+			, B.SHOP_SVC_LIST
+			, B.BANK_SVC_LIST
+			, B.PAYCOM_SVC_LIST
+			, B.CPN_DUP_USABLE_YN
+			, B.RECOVER_YN
+			, B.CPN_ISSUE_STAT
+			, B.ISSUE_COMP_ID
+			, B.REG_USER
+			, B.REG_DTM
+			, B.CHG_USER
+			, B.CHG_DTM
+			, dbo.GET_ADMIN_NM(B.REG_USER) AS REG_USER_NM
+			, dbo.GET_ADMIN_NM(B.CHG_USER) AS CHG_USER_NM
+			, C.*
+			, (
+				SELECT TOP 1 STAT_COMMENT
+				FROM MW_CS_CPNREG_HIST
+				WHERE CPN_ID = A.CPN_ID
+				ORDER BY SEQ_NO DESC	
+			) AS STAT_COMMENT
+			, (SELECT DUMMY FROM DUAL WHERE EXISTS (SELECT * FROM MW_CS_CPN_SHARERATIO WHERE CPN_ID = B.CPN_ID)) AS IS_SHARE
+			, (SELECT DUMMY FROM DUAL WHERE EXISTS (SELECT * FROM MW_MS_COMP_PAYMENT WHERE COMP_ID = (SELECT COMP_ID FROM MW_CS_CPN_LIST WHERE CPN_ID = B.CPN_ID))) AS IS_COMP_PAY
+			, (SELECT DUMMY FROM DUAL WHERE EXISTS (SELECT * FROM MW_CS_BULK_CPN WHERE CPN_ID = B.CPN_ID)) AS IS_POOL
+			, B.IS_TARGET_CPN
+		FROM CPN_LIST A INNER JOIN MW_CS_CPN_LIST B ON A.CPN_ID = B.CPN_ID
+		LEFT OUTER JOIN (
+			SELECT ID
+				, MAX(CASE WHEN OS_TYPE='01' AND USE_TYPE='07' THEN IMAGE_HOST+IMAGE_URL END) AS i3gsList
+				, MAX(CASE WHEN OS_TYPE='02' AND USE_TYPE='07' THEN IMAGE_HOST+IMAGE_URL END) AS i4sList
+				, MAX(CASE WHEN OS_TYPE='11' AND USE_TYPE='07' THEN IMAGE_HOST+IMAGE_URL END) AS a1List
+				, MAX(CASE WHEN OS_TYPE='01' AND USE_TYPE='08' THEN IMAGE_HOST+IMAGE_URL END) AS i3gsDetail
+				, MAX(CASE WHEN OS_TYPE='02' AND USE_TYPE='08' THEN IMAGE_HOST+IMAGE_URL END) AS i4sDetail
+				, MAX(CASE WHEN OS_TYPE='11' AND USE_TYPE='08' THEN IMAGE_HOST+IMAGE_URL END) AS a1Detail
+				, MAX(CASE WHEN OS_TYPE='01' AND USE_TYPE='09' THEN IMAGE_HOST+IMAGE_URL END) AS i3gsIntro
+				, MAX(CASE WHEN OS_TYPE='02' AND USE_TYPE='09' THEN IMAGE_HOST+IMAGE_URL END) AS i4sIntro
+				, MAX(CASE WHEN OS_TYPE='11' AND USE_TYPE='09' THEN IMAGE_HOST+IMAGE_URL END) AS a1Intro
+			FROM MW_CM_IMAGE
+			WHERE USE_TYPE IN ('07','08','09')
+			GROUP BY ID 
+		) C ON A.cpn_id = C.ID
+		WHERE B.CPN_ID = #{cpnId}
+	</select>
+
+
+	<update id="updateCouponList"  parameterType="HashMap" >
+		update cpn_list
+		<set>
+		<trim prefix="" suffix="" suffixOverrides="," >
+			chg_day = CONVERT(VARCHAR(8), GETDATE() , 112),
+			chg_tm = REPLACE(CONVERT(VARCHAR(8),GETDATE(),108),':',''),
+		<if test="membId != null and membId != ''" >
+			memb_id = #{membId},
+		</if>
+		<if test="partV != null" >
+			part_v = #{partV},
+		</if>
+		<if test="dispType != null " >
+			disp_type = #{dispType},
+		</if>
+		<if test="cpnName != null" >
+			name = #{cpnName},
+		</if>
+		<if test="useName != null" >
+			use_name = #{useName},
+		</if>
+		<if test="useCode != null" >
+			use_code = #{useCode},
+		</if>
+		<if test="menufacId != null " >
+			menufac_id = #{menufacId},
+		</if>
+		<if test="modeV != null" >
+			mode_v = #{modeV},
+		</if>
+		<if test="periodV != null" >
+			period_v = #{periodV},
+		</if>
+		<if test="sortV != null" >
+			sort_v = #{sortV},
+		</if>
+		<if test="cateId != null" >
+			cate_id = #{cateId},
+		</if>
+		<if test="valSday != null " >
+			val_sday = #{valSday},
+		</if>
+		<if test="valEday != null" >
+			val_eday = #{valEday},
+		</if>
+		<if test="sday != null" >
+			sday = #{sday},
+		</if>
+		<if test="eday != null" >
+			eday = #{eday},
+		</if>
+		<if test="regUser != null and regUser != ''" >
+			reg_user = #{regUser},
+		</if>
+		<if test="regDay != null and regDay != ''" >
+			reg_day = #{regDay},
+		</if>
+		<if test="chgUser != null and chgUser != ''" >
+			chg_user = #{chgUser},
+		</if>
+<!-- 		<if test="memo != null and memo != ''" > -->
+		<if test="info != null and info != ''" >
+			memo = #{info},
+		</if>
+<!-- 		<if test="memo == null or memo == ''" > -->
+		<if test="info == null or info == ''" >
+			memo = '',
+		</if>
+<!-- 		<if test="info != null and info != ''" > -->
+		<if test="memo != null and memo != ''" >
+			info = #{memo},
+		</if>
+		<if test="memo == null or memo == ''" >
+			info = '',
+		</if>
+		<if test="usimMode != null and usimMode != ''" >
+			usim_mode = #{usimMode},
+		</if>
+		<if test="primMode != null and primMode != ''" >
+			prim_mode = #{primMode},
+		</if>
+		<if test="affType != null and affType != ''" >
+			aff_type = #{affType},
+		</if>
+		<if test="mainDisplay != null and mainDisplay != ''" >
+			main_display = #{mainDisplay},
+		</if>
+		<if test="dispOrder != null and dispOrder != ''" >
+			disp_order = #{dispOrder},
+		</if>
+		<if test="payFreeYn != null and payFreeYn != ''" >
+			PAY_FREE_YN = #{payFreeYn},
+		</if>
+		<if test="recommYn != null and recommYn != ''" >
+			RECOMM_YN = #{recommYn},
+		</if>
+		<if test="recommSeq != null and recommSeq != ''" >
+			RECOMM_SEQ = #{recommSeq},
+		</if>
+		<if test="popuSeq != null and popuSeq != ''" >
+			POPU_SEQ = #{popuSeq},
+		</if>
+		<if test="compPayYn != null and compPayYn != ''" >
+			COMP_PAY_YN = #{compPayYn},
+		</if>
+		<if test="usimId != null and usimId != ''" >
+			USIM_ID = #{usimId},
+		</if>
+		</trim>
+		</set>
+		where cpn_id = #{cpnId}
+	</update>
+	
+		
+	<update id="updateMwCsCouponList" parameterType="HashMap">
+		update MW_CS_CPN_LIST
+		<set>
+		<trim prefix="" suffix="" suffixOverrides="," >
+		<if test="cpnStat != null and cpnStat != ''" >
+			CPN_STAT = #{cpnStat},
+		</if>
+		<if test="pointDupUsableYn != null and pointDupUsableYn != ''" >
+			POINT_DUP_USABLE_YN = #{pointDupUsableYn},
+		</if>
+		<if test="membCompulsoryYn != null and membCompulsoryYn != ''" >
+			MEMB_COMPULSORY_YN = #{membCompulsoryYn},
+		</if>
+		<if test="roamingType != null and roamingType != ''" >
+			ROAMING_TYPE = #{roamingType},
+		</if>
+		<if test="roamingCpnNo != null and roamingCpnNo != ''" >
+			ROAMING_CPN_NO = #{roamingCpnNo},
+		</if>
+		<if test="usimCpnName != null and usimCpnName != ''" >
+			USIM_CPN_NAME = #{usimCpnName},
+		</if>
+		<if test="usimCompId != null and usimCompId != ''" >
+			USIM_COMP_ID = #{usimCompId},
+		</if>
+		<if test="usimBranId != null and usimBranId != ''" >
+			USIM_BRAN_ID = #{usimBranId},
+		</if>
+		<if test="posCpnName != null and posCpnName != ''" >
+			POS_CPN_NAME = #{posCpnName},
+		</if>
+		<if test="cpnIssueType != null and cpnIssueType != ''" >
+			CPN_ISSUE_TYPE = #{cpnIssueType},
+		</if>
+		<if test="barIssueType != null and barIssueType != ''" >
+			BAR_ISSUE_TYPE = #{barIssueType},
+		</if>
+		<if test="barConfType != null and barConfType != ''" >
+			BAR_CONF_TYPE = #{barConfType},
+		</if>
+		<if test="cmConfBarcd != null and cmConfBarcd != ''" >
+			CM_CONF_BARCD = #{cmConfBarcd},
+		</if>
+		<if test="onoffType != null and onoffType != ''" >
+			ONOFF_TYPE = #{onoffType},
+		</if>
+		<if test="onlineUrl != null and onlineUrl != ''" >
+			ONLINE_URL = #{onlineUrl},
+		</if>
+		<if test="cpnNotiUrl != null and cpnNotiUrl != ''" >
+			CPN_NOTI_URL = #{cpnNotiUrl},
+		</if>
+		<if test="cpnMaxUseCnt != null and cpnMaxUseCnt != ''" >
+			CPN_MAX_USE_CNT = #{cpnMaxUseCnt},
+		</if>
+		<if test="cpnMaxIssueCnt != null and cpnMaxIssueCnt != ''" >
+			CPN_MAX_ISSUE_CNT = #{cpnMaxIssueCnt},
+		</if>
+		<if test="yearUsableCnt != null and yearUsableCnt != ''" >
+			YEAR_USABLE_CNT = #{yearUsableCnt},
+		</if>
+		<if test="monthUsableCnt != null and monthUsableCnt != ''" >
+			MONTH_USABLE_CNT = #{monthUsableCnt},
+		</if>
+		<if test="dayUsableCnt != null and dayUsableCnt != ''" >
+			DAY_USABLE_CNT = #{dayUsableCnt},
+		</if>
+		<if test="dayIssueMaxCnt != null and dayIssueMaxCnt != ''" >
+			DAY_ISSUE_MAX_CNT = #{dayIssueMaxCnt},
+		</if>
+		<if test="dayIssueStime != null and dayIssueStime != ''" >
+			DAY_ISSUE_STIME = #{dayIssueStime},
+		</if>
+		<if test="dayIssueEtime != null and dayIssueEtime != ''" >
+			DAY_ISSUE_ETIME = #{dayIssueEtime},
+		</if>
+		<if test="cpnDiscType != null and cpnDiscType != ''" >
+			CPN_DISC_TYPE = #{cpnDiscType},
+		</if>
+		<if test="cpnDiscAmount != null and cpnDiscAmount != ''" >
+			CPN_DISC_AMOUNT = #{cpnDiscAmount},
+		</if>
+		<if test="roundType != null and roundType != ''" >
+			ROUND_TYPE = #{roundType},
+		</if>
+		<if test="dcUnit != null and dcUnit != ''" >
+			DC_UNIT = #{dcUnit},
+		</if>
+		<if test="minPayPrice != null and minPayPrice != ''" >
+			MIN_PAY_PRICE = #{minPayPrice},
+		</if>
+		<if test="maxDicPrice != null and maxDicPrice != ''" >
+			MAX_DIC_PRICE = #{maxDicPrice},
+		</if>
+		<if test="calculYn != null and calculYn != ''" >
+			CALCUL_YN = #{calculYn},
+		</if>
+		<if test="compId != null and compId != ''" >
+			COMP_ID = #{compId},
+		</if>
+		<if test="branId != null and branId != ''" >
+			BRAN_ID = #{branId},
+		</if>
+		<if test="shopSvcList != null and shopSvcList != ''" >
+			SHOP_SVC_LIST = #{shopSvcList},
+		</if>
+		<if test="bankSvcList != null and bankSvcList != ''" >
+			BANK_SVC_LIST = #{bankSvcList},
+		</if>
+		<if test="paycomSvcList != null and paycomSvcList != ''" >
+			PAYCOM_SVC_LIST = #{paycomSvcList},
+		</if>
+		<if test="cpnDupUsableYn != null and cpnDupUsableYn != ''" >
+			CPN_DUP_USABLE_YN = #{cpnDupUsableYn},
+		</if>
+		<if test="recoverYn != null and recoverYn != ''" >
+			RECOVER_YN = #{recoverYn},
+		</if>
+		<if test="issueCompId != null and issueCompId != ''" >
+			ISSUE_COMP_ID = #{issueCompId},
+		</if>
+		<if test="regUser != null and regUser != ''" >
+			REG_USER = #{regUser},
+		</if>
+		<if test="regDtm != null and regDtm != ''" >
+			REG_DTM = #{regDtm},
+		</if>
+		<if test="chgUser != null and chgUser != ''" >
+			CHG_USER = #{chgUser},
+		</if>
+		<if test="chgDtm != null and chgDtm != ''" >
+			CHG_DTM = #{chgDtm},
+		</if>
+		<if test="cpnIssueStat != null and cpnIssueStat != ''" >
+			CPN_ISSUE_STAT = #{cpnIssueStat},
+		</if>
+		<if test="usableCntYn != null and usableCntYn != ''" >
+			USABLE_CNT_YN = #{usableCntYn},
+		</if>
+		<if test="dayIssueYn != null and dayIssueYn != ''" >
+			DAY_ISSUE_YN = #{dayIssueYn},
+		</if>
+		<if test="autoIssueTarget != null and autoIssueTarget != ''" >
+			AUTO_ISSUE_TARGET = #{autoIssueTarget},
+		</if>
+		<if test="autoIssueSday != null and autoIssueSday != ''" >
+			AUTO_ISSUE_SDAY = #{autoIssueSday},
+		</if>
+		<if test="autoIssueEday != null and autoIssueEday != ''" >
+			AUTO_ISSUE_EDAY = #{autoIssueEday},
+		</if>
+		<if test="dcNotice != null and dcNotice != ''" >
+			DC_NOTICE = #{dcNotice},
+		</if>
+		<if test="isTargetCpn != null and isTargetCpn != ''">
+			IS_TARGET_CPN = #{isTargetCpn},
+		</if>
+		</trim>
+		</set>
+		where CPN_ID = #{cpnId}
+	</update>
+	
+	<delete id="deleteCouponList" parameterType="HashMap">
+		delete from cpn_list where CPN_ID = #{cpnId}
+	</delete>
+	
+	<delete id="deleteMwCsCouponList" parameterType="HashMap">
+		delete from mw_cs_cpn_list where CPN_ID = #{cpnId}
+	</delete>
+  
+
+	<!-- 쿠폰 승인 리스트  -->
+	<resultMap id="ApprovalMap" type="com.wallet.membership.model.custom.Coupon" >
+	<result column="ROW_NUM" property="rowNum" jdbcType="INTEGER" />
+		<result column="CPN_ID" property="cpnId" jdbcType="VARCHAR"/>
+		<result column="PART_V" property="partV" jdbcType="VARCHAR"/>
+		<result column="PART_V_NM" property="partVNm" jdbcType="VARCHAR"/>
+		<result column="COMP_ID" property="compId" jdbcType="VARCHAR"/>
+		<result column="COMP_NAME" property="compName" jdbcType="VARCHAR"/>
+		<result column="CPN_NAME" property="cpnName" jdbcType="VARCHAR"/>
+		<result column="SDAY" property="sday" jdbcType="VARCHAR"/>
+		<result column="EDAY" property="eday" jdbcType="VARCHAR"/>
+		<result column="VAL_SDAY" property="valSday" jdbcType="VARCHAR"/>
+		<result column="VAL_EDAY" property="valEday" jdbcType="VARCHAR"/>
+		<result column="REG_DAY" property="regDay" jdbcType="VARCHAR"/>
+		<result column="CHG_DAY" property="chgDay" jdbcType="VARCHAR"/>
+		<result column="CPN_STAT" property="cpnStat" jdbcType="CHAR" />
+		<result column="CPN_STAT_NM" property="cpnStatNm" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 조회조건에 대한 쿠폰 목록 -->
+	<select id="selectCouponApprList" parameterType="HashMap" resultMap="ApprovalMap" >
+		SELECT *
+		FROM (
+		
+		SELECT <if test='top!=null and top!=""'> top ${top} </if>
+			ROW_NUMBER() OVER(ORDER BY C.REG_DAY DESC) AS ROW_NUM 
+			, C.CPN_ID AS CPN_ID
+			, C.PART_V
+			, dbo.GET_CODE_NM('0030',C.PART_V) AS PART_V_NM
+			, M.COMP_ID
+			, dbo.GET_COMP_NM(M.COMP_ID) AS COMP_NAME
+			, C.NAME AS CPN_NAME
+			, M.CPN_STAT
+			, dbo.GET_CODE_NM('0032',M.CPN_STAT) AS CPN_STAT_NM
+			, CONVERT(VARCHAR(10),CONVERT(datetime, C.SDAY, 120),120) AS SDAY
+			, CONVERT(VARCHAR(10),CONVERT(datetime, C.EDAY, 120),120) AS EDAY
+			, CONVERT(VARCHAR(10),CONVERT(datetime, C.VAL_SDAY, 120),120) AS VAL_SDAY
+			, CONVERT(VARCHAR(10),CONVERT(datetime, C.VAL_EDAY, 120),120) AS VAL_EDAY
+			, CONVERT(VARCHAR(10),CONVERT(datetime, C.REG_DAY, 120),120) AS REG_DAY
+			, CONVERT(VARCHAR(10),CONVERT(datetime, C.CHG_DAY, 120),120) AS CHG_DAY
+		FROM CPN_LIST C 
+				INNER JOIN MW_CS_CPN_LIST M ON C.CPN_ID = M.CPN_ID
+			LEFT OUTER JOIN MW_CM_COMPANY P ON M.COMP_ID = P.COMP_ID
+		WHERE 1=1
+		<if test='partV != null and partV != ""'>
+			AND PART_V LIKE #{partV}
+		</if>
+		<if test='compName != null and compName != ""'>
+			AND P.COMP_NAME LIKE '%${compName}%'
+		</if>
+		<if test='cpnName != null and cpnName != ""'>
+			AND C.NAME LIKE '%${cpnName}%'
+		</if>
+		<if test='cpnStat != null and cpnStat != ""'>
+			<if test='cpnStat == "all"'>
+				AND M.CPN_STAT IN ('03','04','05','11')
+			</if>
+			<if test='cpnStat != "all"'>
+				AND M.CPN_STAT LIKE #{cpnStat}
+			</if>
+		</if>
+		<if test='rSearchTerm != "all"'>
+			<![CDATA[
+				AND C.REG_DAY BETWEEN #{sdate} AND #{edate}
+			]]>
+		</if>
+		) AA
+		WHERE 1=1
+		<if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+				AND AA.ROW_NUM BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+	</select>
+	
+	<!-- 쿠폰발행정보 총수 -->
+	<select id="selectCouponApprCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS CNT
+		FROM CPN_LIST C 
+				INNER JOIN MW_CS_CPN_LIST M ON C.CPN_ID = M.CPN_ID
+			LEFT OUTER JOIN MW_CM_COMPANY P ON M.COMP_ID = P.COMP_ID
+		WHERE 1=1
+		<if test='partV != null and partV != ""'>
+			AND PART_V LIKE #{partV}
+		</if>
+		<if test='compName != null and compName != ""'>
+			AND P.COMP_NAME LIKE '%${compName}%'
+		</if>
+		<if test='cpnName != null and cpnName != ""'>
+			AND C.NAME LIKE '%${cpnName}%'
+		</if>
+		<if test='cpnStat != null and cpnStat != ""'>
+			<if test='cpnStat == "all"'>
+				AND M.CPN_STAT IN ('03','04','05','11')
+			</if>
+			<if test='cpnStat != "all"'>
+				AND M.CPN_STAT LIKE #{cpnStat}
+			</if>
+		</if>
+		<if test='rSearchTerm != "all"'>
+			<![CDATA[
+				AND C.REG_DAY BETWEEN #{sdate} AND #{edate}
+			]]>
+		</if>
+	</select>
+	
+	<insert id="insertCouponRegHist" parameterType="HashMap">
+		INSERT INTO MW_CS_CPNREG_HIST
+		(CPN_ID, SEQ_NO, CPN_STAT, STAT_COMMENT, REG_USER, REG_DTM)
+		SELECT #{cpnId} AS CPN_ID
+			, ISNULL(MAX(SEQ_NO),0)+1 AS SEQ_NO
+			, #{cpnStat} AS CPN_STAT
+			, #{statComment} AS STAT_COMMENT
+			, #{regUser} AS REG_USER
+			, GETDATE() AS REG_DTM
+		FROM MW_CS_CPNREG_HIST
+		WHERE CPN_ID = #{cpnId}
+	</insert>
+	
+	
+	<!-- 쿠폰 등록 HISTORY  -->
+	<resultMap id="CpnregHistMap" type="com.wallet.membership.model.MwCsCpnregHist" >
+		<id column="CPN_ID" property="cpnId" jdbcType="VARCHAR" />
+		<id column="SEQ_NO" property="seqNo" jdbcType="INTEGER" />
+		<result column="CPN_STAT" property="cpnStat" jdbcType="CHAR" />
+		<result column="STAT_COMMENT" property="statComment" jdbcType="VARCHAR" />
+		<result column="REG_USER" property="regUser" jdbcType="VARCHAR" />
+		<result column="REG_DTM" property="regDtm" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<!-- 보류/반려 사유 확인 -->
+	<select id="selectCpnregHist" parameterType="HashMap" resultMap="CpnregHistMap" >
+		SELECT TOP 1 *
+		FROM MW_CS_CPNREG_HIST
+		WHERE CPN_ID = #{cpnId}
+		ORDER BY SEQ_NO DESC
+	</select>
+	
+	
+	<!-- 조회조건에 대한 쿠폰 목록 -->
+	<select id="selectCouponHandIssuePopList" parameterType="HashMap" resultMap="CpnIssueListMap" >
+		SELECT *
+		FROM (
+		
+			select <if test='top!=null and top!=""'> top ${top} </if>
+						ROW_NUMBER() OVER(ORDER BY b.REG_DAY DESC) AS ROW_NUM
+				, a.user_id
+				, a.auth_name as user_name
+				, a.phone
+				, b.cpn_id
+				, b.name as cpn_name
+				, case when b.cpn_id IS NULL  then '미발행' else '발행' end as issue_yn
+				, b.reg_day
+			from (
+					select top 1  
+						ui.user_id
+						, ui.phone
+						, ud.auth_name
+					from user_info ui inner join user_desc ud on ui.user_id = ud.user_id and ui.phone = '${phone}'
+					where ui.stat = 'R'
+					order by ui.user_id
+				) a left outer join (
+					select mc.user_id
+						, cl.cpn_id
+						, cl.name
+						, mc.reg_day
+					from cpn_list cl inner join my_cpn mc on cl.cpn_id = mc.cpn_id
+					where cl.cpn_id = #{cpnId}
+					) b on a.user_id = b.user_id
+			where 1=1
+			
+			<if test='issueStat != null and issueStat == "N"'>
+				and b.cpn_id is null
+			</if>
+			<if test='issueStat != null and issueStat == "Y"'>
+				and b.cpn_id is not null
+			</if>
+			
+		) AA
+		WHERE 1=1
+		<if test='startRow!=null and startRow!=""'>
+			<if test='rowsPerPage!=null and rowsPerPage!=""'>
+ 				AND AA.ROW_NUM BETWEEN #{startRow, jdbcType=INTEGER} AND #{endRow, jdbcType=INTEGER}
+			</if>
+		</if>
+			
+	</select>
+	
+	<!-- 쿠폰발행정보 총수 -->
+	<select id="selectCouponHandIssuePopListCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		select count(*) as cnt
+		from (
+				select top 1  
+					ui.user_id
+					, ui.phone
+					, ud.auth_name
+				from user_info ui inner join user_desc ud on ui.user_id = ud.user_id and ui.phone = '${phone}'
+				where ui.stat = 'R'
+				order by ui.user_id
+			) a left outer join (
+				select mc.user_id
+					, cl.cpn_id
+					, cl.name
+					, mc.reg_day
+				from cpn_list cl inner join my_cpn mc on cl.cpn_id = mc.cpn_id
+				where cl.cpn_id = #{cpnId}
+			) b on a.user_id = b.user_id
+		where 1=1
+		<if test='issueStat != null and issueStat == "N"'>
+			and b.cpn_id is null
+		</if>
+		<if test='issueStat != null and issueStat == "Y"'>
+			and b.cpn_id is not null
+		</if>
+	</select>
+	
+	
+	<insert id="insertMyCpn" parameterType="HashMap">
+		INSERT INTO my_cpn
+		(user_id, cpn_id, memb_id, cpart, barcode, reg_day, stat, sday, eday, img_host, img_url, chg_day, chg_tm, use_cnt, usim_data)
+		select #{userId} as user_id
+			, cl.cpn_id
+			, memb_id
+			, #{cpart} as cpart
+			, #{barcode} as barcode
+			, CONVERT(VARCHAR(8),GETDATE(),112) as reg_day
+			, #{stat} as stat
+			, val_sday as sday
+			, val_eday as eday
+			, #{imgHost} as img_host
+			, #{imgUrl} as img_url
+			, CONVERT(VARCHAR(8),GETDATE(),112) as chg_day
+			, REPLACE(CONVERT(VARCHAR(8),GETDATE(),108),':','') as chg_tm
+			, mccl.CPN_MAX_USE_CNT as use_cnt
+			, #{usimData} as usim_data
+		from cpn_list cl inner join MW_CS_CPN_LIST mccl on cl.cpn_id = mccl.cpn_id
+		WHERE cl.cpn_id = #{cpnId}
+	</insert>
+	
+	
+	<insert id="insertCpnGenHis" parameterType="HashMap">
+		insert into cpn_gen_his(cust_id, cpn_id, barcode, stat, reg_dt, reg_tm) 
+		values(#{custId},#{cpnId},#{barcode},#{stat}, CONVERT(VARCHAR(8),GETDATE(),112), REPLACE(CONVERT(VARCHAR(8),GETDATE(),108),':',''))
+	</insert>
+	
+
+	<!-- 수동발행쿠폰: 사용자ID 조회  -->
+	<resultMap id="UserInfoMap" type="com.wallet.membership.model.UserInfo" >
+		<id column="phone" property="phone" jdbcType="VARCHAR" />
+		<id column="auth_name" property="authName" jdbcType="VARCHAR" />
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="os" property="os" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getUserInfo" parameterType="HashMap" resultMap="UserInfoMap" >
+		select top 1 /*--top 실제는 불필요.. 테스트 데이터의 중복된 값들 때문에 임시 처리*/ 
+					ui.user_id as user_id
+				, ui.os
+		from user_info ui inner join user_desc ud on ui.user_id = ud.user_id
+		where ui.stat = 'R'
+			<if test='authName != null and authName != ""'>
+		and ud.auth_name = #{authName}
+		</if>
+			<if test='phone != null and phone != ""'>
+		and ui.phone = #{phone}
+		</if>
+			<if test='userId != null and userId != ""'>
+		and ui.user_id = #{userId}
+		</if>
+		order by ui.user_id desc
+	</select>
+	
+	<select id="getDeviceWidth" parameterType="HashMap" resultType="java.lang.String" >
+		select gps_x
+		from user_desc
+		where user_id = #{userId}
+	</select>
+	
+	<select id="getMyCpn" parameterType="HashMap" resultType="java.lang.String">
+		select cpn_id from my_cpn
+		where user_id = #{userId}
+		and cpn_id = #{cpnId}
+		and stat = 'R'
+	</select>
+	
+	
+	<!-- 수동발행쿠폰: 사용자ID 조회  -->
+	<resultMap id="MwCsBulkCpnMap" type="com.wallet.membership.model.MwCsBulkCpn" >
+		<id column="CPN_ID" property="cpnId" jdbcType="VARCHAR" />
+		<id column="ISSUE_SEQ" property="issueSeq" jdbcType="INTEGER" />
+		<result column="BARCODE" property="barcode" jdbcType="VARCHAR" />
+		<result column="ISSUE_YN" property="issueYn" jdbcType="CHAR" />
+		<result column="COMP_BARCODE" property="compBarcode" jdbcType="VARCHAR" />
+		<result column="REG_USER" property="regUser" jdbcType="VARCHAR" />
+		<result column="REG_DTM" property="regDtm" jdbcType="TIMESTAMP" />
+		<result column="IS_TARGET_CPN" property="isTargetCpn" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="getMwCsBulkCpnLast" parameterType="HashMap" resultMap="MwCsBulkCpnMap" >
+		select top 1 
+			CPN_ID
+			, ISSUE_SEQ
+			, BARCODE
+			, ISSUE_YN
+			, COMP_BARCODE
+			, REG_USER
+			, REG_DTM 
+		from MW_CS_BULK_CPN
+		where CPN_ID = #{cpnId}
+		<if test='barcode != null and barcode !=""'>
+			and BARCODE =  #{barcode}
+		</if>
+		and ISSUE_YN = 'N'
+		order by ISSUE_SEQ
+	</select>
+	
+	<update id="updateMwCsBulkCpnIssueYn"  parameterType="HashMap" >
+		update MW_CS_BULK_CPN
+		set ISSUE_YN = 'Y'
+		where cpn_id = #{cpnId} and ISSUE_SEQ = #{issueSeq}
+	</update>
+	
+	<insert id="insertMwCsIssueCpn"  parameterType="HashMap" >
+		insert into MW_CS_ISSUE_CPN(CPN_ID, ISSUE_SEQ, USER_ID, BARCODE, CM_CONF_BARCD_YN, USE_YN, REG_USER, REG_DTM)
+		select #{cpnId} as cpn_id
+			, ISNULL(max(ISSUE_SEQ)+1,1) as issue_seq
+			, #{userId} as user_id
+			, #{barcode} as barcode
+			, #{cmConfBarcdYn} as cm_conf_barcd_yn
+			, 'N' as use_yn
+			, #{regUser} as reg_user
+			, GETDATE() as reg_dtm 
+		from MW_CS_ISSUE_CPN
+		where CPN_ID = #{cpnId}
+	</insert>
+	
+	<select id="cpnIdDupCheck" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS CNT
+		FROM CPN_LIST L
+		WHERE L.CPN_ID = #{manualCpnId}
+		<!--
+		join 사용하면, cpnlist 에는 있는데 ms_cs_cpn_list 에는 없는 경우의 쿠폰이 있어서 주석처리 해둠.  
+		SELECT COUNT(*) AS CNT
+		FROM CPN_LIST L, MW_CS_CPN_LIST C
+		WHERE L.CPN_ID = #{manualCpnId}
+		AND L.CPN_ID = C.CPN_ID
+		--> 
+	</select>
+</mapper>

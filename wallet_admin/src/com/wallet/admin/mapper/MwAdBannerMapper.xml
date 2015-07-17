@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wallet.admin.mapper.MwAdBannerMapper" >
+  <resultMap id="BaseResultMap" type="com.wallet.admin.model.MwAdBanner" >
+    <id column="idx" property="idx" jdbcType="INTEGER" />
+    <result column="stat" property="stat" jdbcType="CHAR" />
+    <result column="os" property="os" jdbcType="VARCHAR" />
+    <result column="sday" property="sday" jdbcType="VARCHAR" />
+    <result column="eday" property="eday" jdbcType="VARCHAR" />
+    <result column="img_host" property="imgHost" jdbcType="VARCHAR" />
+    <result column="img_i3" property="imgI3" jdbcType="VARCHAR" />
+    <result column="img_i4" property="imgI4" jdbcType="VARCHAR" />
+    <result column="img_r4" property="imgR4" jdbcType="VARCHAR" />
+    <result column="img_r5" property="imgR5" jdbcType="VARCHAR" />
+    <result column="img_r6" property="imgR6" jdbcType="VARCHAR" />
+    <result column="img_r7" property="imgR7" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="goto_mode" property="gotoMode" jdbcType="VARCHAR" />
+    <result column="goto_id" property="gotoId" jdbcType="VARCHAR" />
+    <result column="goto_info" property="gotoInfo" jdbcType="VARCHAR" />
+    <result column="reg_tm" property="regTm" jdbcType="VARCHAR" />
+    <result column="chg_tm" property="chgTm" jdbcType="VARCHAR" />
+    <result column="row_num" property="rowNum" jdbcType="INTEGER" />
+    
+    <result column="select_id" property="selectId" jdbcType="VARCHAR" />
+	  <result column="select_title" property="selectTitle" jdbcType="VARCHAR" />
+	  <result column="select_stat" property="selectStat" jdbcType="VARCHAR" />
+	  <result column="select_stat_str" property="selectStatStr" jdbcType="VARCHAR" />
+ 	</resultMap>
+ 
+	<!-- 배너  TB 조회 -->
+	<select id="selectBannerList" parameterType="HashMap" resultMap="BaseResultMap">
+		select a.row_num 
+		      ,a.idx
+		      ,a.stat
+		      ,a.os
+		      ,left(convert(varchar, convert(datetime, a.sday, 120), 120), 10) sday
+			  	,left(convert(varchar, convert(datetime, a.eday, 120), 120), 10) eday
+			  	,a.img_host
+		      ,a.img_i3
+		      ,a.img_i4
+		      ,a.img_r4
+		      ,a.img_r5
+		      ,a.img_r6
+		      ,a.img_r7
+		      ,a.name
+		      ,a.goto_mode
+		      ,a.goto_id
+		      ,a.goto_info
+		      ,left(convert(varchar, convert(datetime, a.reg_tm, 120), 120), 16) reg_tm
+			  	,left(convert(varchar, convert(datetime, a.chg_tm, 120), 120), 16) chg_tm
+		from (
+		select <if test="top != null and top != ''">
+							top ${top}
+					 </if>  
+					row_number()over(order by reg_tm desc, convert(varchar, idx))as row_num
+			  	,*
+		  from mw_ws_banner
+		 <where>
+		 	<choose>
+				<when test="view.equals('dtl')">
+				 	and idx = #{idx,jdbcType=VARCHAR}
+			  	and os = #{os,jdbcType=VARCHAR}
+				</when>
+				<otherwise>
+					<if test="os != null and os != ''">
+		        and os = #{os,jdbcType=VARCHAR}
+		    	</if>
+				</otherwise>
+			</choose>
+	  </where>
+		) a
+		where 1=1
+		<if test="start_row != null and start_row != ''">
+       and row_num BETWEEN #{start_row,jdbcType=INTEGER} AND #{end_row,jdbcType=INTEGER}
+     </if>
+	</select>
+	
+	<!-- 배너total count 조회 -->
+	<select id="selectBannerListTotalCnt" parameterType="HashMap" resultType="java.lang.Integer">
+		select count(idx) total_count
+		from mw_ws_banner
+		where 1=1
+      <if test="os != null and os != ''">
+        and ( os = #{os,jdbcType=VARCHAR} or os = 'common' )
+      </if>
+	</select>
+	
+	 <!-- 배너 정보 등록 INSERT -->
+  <insert id="insertBannerReg" parameterType="HashMap">
+  	insert into mw_ws_banner (
+				<if test="stat != null and stat != ''">
+	        stat
+				</if>
+				<if test="os != null and os != ''">
+	        ,os
+				</if>
+         <if test="sday != null and sday != ''">
+	        ,sday
+				</if>
+				<if test="eday != null and eday != ''">
+	        ,eday
+				</if>
+				 <if test="img_host != null and img_host != ''">
+	        ,img_host
+				</if>
+        <if test="img_i3 != null and img_i3 != ''">
+	        ,img_i3
+				</if>
+				<if test="img_i4 != null and img_i4 != ''">
+	        ,img_i4
+				</if>
+				<if test="img_r4 != null and img_r4 != ''">
+	        ,img_r4
+				</if>
+         <if test="img_r5 != null and img_r5 != ''">
+	        ,img_r5
+				</if>
+        <if test="img_r6 != null and img_r6 != ''">
+	        ,img_r6
+				</if>
+				<if test="img_r7 != null and img_r7 != ''">
+	        ,img_r7
+				</if>
+				<if test="name != null and name != ''">
+	        ,name
+				</if>
+				<if test="goto_mode != null and goto_mode != ''">
+	        ,goto_mode
+				</if>
+         
+        <if test="goto_id != null and goto_id != ''">
+	        ,goto_id
+				</if>
+				<if test="goto_info != null and goto_info != ''">
+	        ,goto_info
+				</if>
+          ,reg_tm
+          ,chg_tm
+		)	VALUES  (
+				<if test="stat != null and stat != ''">
+	        #{stat,jdbcType=VARCHAR}
+				</if>
+				<if test="os != null and os != ''">
+	        ,#{os,jdbcType=VARCHAR}
+				</if>
+         <if test="sday != null and sday != ''">
+	        ,#{sday,jdbcType=VARCHAR}
+				</if>
+				<if test="eday != null and eday != ''">
+	        ,#{eday,jdbcType=VARCHAR}
+				</if>
+				<if test="img_host != null and img_host != ''">
+	        ,#{img_host,jdbcType=VARCHAR}
+				</if>
+        <if test="img_i3 != null and img_i3 != ''">
+	        ,#{img_i3,jdbcType=VARCHAR}
+				</if>
+				<if test="img_i4 != null and img_i4 != ''">
+	        ,#{img_i4,jdbcType=VARCHAR}
+				</if>
+				<if test="img_r4 != null and img_r4 != ''">
+	        ,#{img_r4,jdbcType=VARCHAR}
+				</if>
+         <if test="img_r5 != null and img_r5 != ''">
+	        ,#{img_r5,jdbcType=VARCHAR}
+				</if>
+        <if test="img_r6 != null and img_r6 != ''">
+	        ,#{img_r6,jdbcType=VARCHAR}
+				</if>
+				<if test="img_r7 != null and img_r7 != ''">
+	        ,#{img_r7,jdbcType=VARCHAR}
+				</if>
+				<if test="name != null and name != ''">
+	        ,#{name,jdbcType=VARCHAR}
+				</if>
+				<if test="goto_mode != null and goto_mode != ''">
+	        ,#{goto_mode,jdbcType=VARCHAR}
+				</if>
+        <if test="goto_id != null and goto_id != ''">
+	        ,#{goto_id,jdbcType=VARCHAR}
+				</if>
+				<if test="goto_info != null and goto_info != ''">
+	        ,#{goto_info,jdbcType=VARCHAR}
+				</if>
+          ,GETDATE()
+          ,GETDATE()
+		)
+
+  </insert>
+  
+  <!-- 배너 정보 TB UPDATE -->
+	<update id="updateBannerDtl" parameterType="HashMap">
+		 update mw_ws_banner
+	    <set>
+	    	chg_tm = GETDATE()
+	    <if test="stat != null and stat != ''">
+        ,stat = #{stat,jdbcType=VARCHAR}
+      </if>
+      <if test="os != null and os != ''">
+        ,os = #{os,jdbcType=VARCHAR}
+      </if>
+      <if test="sday != null and sday != ''">
+        ,sday = #{sday,jdbcType=VARCHAR}
+      </if>
+      <if test="eday != null and eday != ''">
+        ,eday = #{eday,jdbcType=VARCHAR}
+      </if>
+      <if test="img_host != null and img_host != ''">
+	      ,img_host = #{img_host,jdbcType=VARCHAR}
+			</if>
+      <if test="img_i3 != null and img_i3 != ''">
+        ,img_i3 = #{img_i3,jdbcType=VARCHAR}
+      </if>
+      <if test="img_i4 != null and img_i4 != ''">
+        ,img_i4 = #{img_i4,jdbcType=VARCHAR}
+      </if>
+      <if test="img_r4 != null and img_r4 != ''">
+        ,img_r4 = #{img_r4,jdbcType=VARCHAR}
+      </if>
+      <if test="img_r5 != null and img_r5 != ''">
+        ,img_r5 = #{img_r5,jdbcType=VARCHAR}
+      </if>
+      <if test="img_r6 != null and img_r6 != ''">
+        ,img_r6 = #{img_r6,jdbcType=VARCHAR}
+      </if>
+      <if test="img_r7 != null and img_r7 != ''">
+        ,img_r7 = #{img_r7,jdbcType=VARCHAR}
+      </if>
+      <if test="name != null and name != ''">
+        ,name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="goto_mode != null and goto_mode != ''">
+        ,goto_mode = #{goto_mode,jdbcType=VARCHAR}
+      </if>
+      <if test="goto_id != null and goto_id != ''">
+        ,goto_id = #{goto_id,jdbcType=VARCHAR}
+      </if>
+      <if test="goto_info != null and goto_info != ''">
+        ,goto_info = #{goto_info,jdbcType=VARCHAR}
+      </if>
+	    </set>
+	    where 1=1
+	    and idx = #{idx,jdbcType=INTEGER}
+	    and os = #{os_org,jdbcType=VARCHAR}
+  </update>
+  
+	<!-- 배너 TB DELETE -->
+	<delete id="deleteBannerDtl" parameterType="HashMap">
+    delete from mw_ws_banner
+    where idx = #{idx,jdbcType=INTEGER}
+    <if test="os != null and os != ''">
+        and os = #{os,jdbcType=VARCHAR}
+    </if>
+  </delete>
+
+  
+	<!-- SELECT BOX 조회 (멤버쉽 상세, 쿠폰상세, 이벤트/공지사항  조회) -->
+	<select id="jsonBannerSelectbox" parameterType="HashMap" resultMap="BaseResultMap">
+		<if test="goto_mode != null and goto_mode != ''">
+		
+			<if test="view.equals('bannerReg')">
+				<if test="goto_mode.equals('EVENT')">
+						<include refid="EVENT_bannerRegSelectBox" />
+				</if>
+				<if test="goto_mode.equals('NOTICE')">
+						<include refid="EVENT_bannerRegSelectBox" />
+				</if>
+				<if test="goto_mode.equals('MEMDT')">
+					<include refid="MEMDT_bannerRegSelectBox" />
+       	</if>
+       	<if test="goto_mode.equals('CPNDT')">
+       		<include refid="CPNDT_bannerRegSelectBox" />
+       	</if>
+			</if>
+			
+			<if test="view.equals('bannerDtl')">
+				<if test="goto_mode.equals('EVENT')">
+						<include refid="EVENT_bannerDtlSelectBox" />
+				</if>
+				<if test="goto_mode.equals('NOTICE')">
+						<include refid="EVENT_bannerDtlSelectBox" />
+				</if>
+				<if test="goto_mode.equals('MEMDT')">
+					<include refid="MEMDT_bannerDtlSelectBox" />
+       	</if>
+       	<if test="goto_mode.equals('CPNDT')">
+       		<include refid="CPNDT_bannerDtlSelectBox" />
+       	</if>
+			</if>
+    </if>
+    
+		
+	</select>
+	
+	<!-- 배너 등록화면 : 이벤트/공지사항  selecbox 조회 -->
+	<sql id="EVENT_bannerRegSelectBox">
+		select idx			as select_id
+		      ,title		as select_title
+		from mw_ws_event
+		<where>
+			and stat = 'R'
+			and eday >= CONVERT(VARCHAR, CONVERT(datetime, GETDATE(), 112), 112)
+			<if test="os != null and os != ''">
+				and (os = #{os,jdbcType=VARCHAR} or os = 'common')
+			</if>
+			<if test="evt_mode != null and evt_mode != ''">
+				and evt_mode = #{evt_mode,jdbcType=VARCHAR}
+			</if>
+			order by title asc
+		</where>
+	</sql>
+	
+	<!-- 배너 상세화면 : 이벤트/공지사항  selecbox 조회 (종료되었어도 자신의 이벤트도 조회)-->
+	<sql id="EVENT_bannerDtlSelectBox">
+		select a.select_id, 
+		       a.select_title, 
+		       a.select_stat,
+		       case when a.select_stat = 'F' then '[종료]'
+		       end select_stat_str
+		from (
+		select idx	as select_id, 
+		       title	as select_title, 
+		       case when stat = 'F' then 'F'
+		       when (stat = 'R' and eday &lt; CONVERT(VARCHAR, CONVERT(datetime, GETDATE(), 112), 112)) then  'F'
+		       when (stat = 'R' and eday &gt;= CONVERT(VARCHAR, CONVERT(datetime, GETDATE(), 112), 112)) then  'R'
+		       end select_stat
+		from   mw_ws_event 
+		<where>
+			and os = #{os,jdbcType=VARCHAR}
+			and idx = #{goto_id,jdbcType=VARCHAR}
+			and evt_mode = #{evt_mode,jdbcType=VARCHAR}
+		</where>
+		union
+		select idx as select_id,
+					 title	as select_title, 
+		       'R' select_stat
+		from   mw_ws_event 
+		<where>
+			and stat = 'R'
+			and eday >= CONVERT(VARCHAR, CONVERT(datetime, GETDATE(), 112), 112)
+			and evt_mode = #{evt_mode,jdbcType=VARCHAR}
+			<if test="os != null and os != ''">
+				and (os = #{os,jdbcType=VARCHAR} or os = 'common')
+			</if>
+		</where>
+		) a
+		order by a.select_title asc
+	</sql>
+	
+	<!-- 배너 등록화면 : 멤버십  selecbox  조회 (종료되었어도 자신의 멤버십 조회)-->
+	<sql id="MEMDT_bannerRegSelectBox">
+		select memb_id		as select_id
+		      ,name				as select_title
+		from memb_cardlist
+		<where>
+		and stat = 'R'
+		and dis_eday >= CONVERT(VARCHAR, CONVERT(datetime, GETDATE(), 112), 112)
+		order by name asc
+		</where>
+	</sql>
+	
+	<!-- 배너 상세화면 : 멤버십  selecbox  조회 (종료되었어도 자신의 멤버십 조회)-->
+	<sql id="MEMDT_bannerDtlSelectBox">
+		select a.select_id, 
+		       a.select_title, 
+		       a.select_stat, 
+		       CASE 
+		       WHEN a.select_stat = 'F' THEN '[종료]' 
+		       END select_stat_str 
+		from   (
+						select memb_id		select_id
+								  ,name				select_title
+								  ,CASE WHEN stat = 'F' THEN 'F' 
+		               WHEN ( stat = 'R' AND dis_eday &lt; CONVERT(VARCHAR, CONVERT(DATETIME, Getdate(),112), 112) ) 
+		               THEN 'F' 
+		               WHEN ( stat = 'R' AND dis_eday &gt;= CONVERT(VARCHAR, CONVERT(DATETIME, Getdate(), 112), 112) ) 
+		               THEN 'R' 
+		                END   select_stat 
+						from memb_cardlist
+						<where>
+						  and memb_id = #{goto_id,jdbcType=VARCHAR}
+						</where>
+						union 
+						select memb_id		select_id
+								  ,name				select_title
+								  ,'R'				select_stat 
+						from memb_cardlist
+						<where>
+							and stat = 'R'
+							and dis_eday >= CONVERT(VARCHAR, CONVERT(datetime, GETDATE(), 112), 112)
+						</where>
+		) a
+		order by a.select_title asc
+	</sql>
+	
+	<!-- 배너 등록화면 : 쿠폰 selecbox  조회 -->
+	<sql id="CPNDT_bannerRegSelectBox">
+		select cpn_id		as select_id
+		      ,name			as select_title
+		from cpn_list
+		<where>
+		and eday >= CONVERT(VARCHAR, CONVERT(datetime, GETDATE(), 112), 112)
+		order by name asc
+		</where>
+	</sql>
+	
+	<!-- 배너 상세화면 : 쿠폰  selecbox  조회 (종료되었어도 자신의 이벤트도 조회)-->
+	<sql id="CPNDT_bannerDtlSelectBox">
+		SELECT a.select_id, 
+		       a.select_title, 
+		       a.select_stat, 
+		       CASE WHEN a.select_stat = 'F' THEN '[종료]' 
+		       END select_stat_str 
+		FROM   (
+						select cpn_id		select_id
+								  ,name			select_title
+								  ,CASE WHEN ( eday &lt; CONVERT(VARCHAR, CONVERT(DATETIME, Getdate(),112), 112) )  THEN 'F' 
+		               WHEN ( eday &gt;= CONVERT(VARCHAR, CONVERT(DATETIME, Getdate(), 112), 112) ) THEN 'R' 
+		                END   select_stat 
+						from cpn_list
+						<where>
+							and cpn_id = #{goto_id,jdbcType=VARCHAR}
+						</where>
+						union 
+						select cpn_id		select_id
+								  ,name			select_title
+								  ,'R'   		select_stat 
+						from cpn_list
+						<where>
+						and eday >= CONVERT(VARCHAR, CONVERT(datetime, GETDATE(), 112), 112)
+						</where>
+		) a
+		order by a.select_title asc
+		
+	</sql>
+	
+</mapper>
